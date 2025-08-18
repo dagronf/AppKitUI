@@ -19,9 +19,7 @@
 
 import AppKit.NSSwitch
 
-/// NSSwitch wrapper
-///
-/// If you need support for older versions of macOS, use AUISwitch instead
+// If you need support for older versions of macOS, use AUISwitch instead
 
 @available(macOS 10.15, *)
 @MainActor
