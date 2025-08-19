@@ -25,11 +25,13 @@ public extension NSStackView {
 	///   - orientation: The orientation (horizontal or vertical)
 	///   - alignment: The stack alignment
 	///   - spacing: The spacing between elements in a stack
+	///   - gravity: The gravity to apply to ALL elements in the stack
 	///   - views: The child views
 	convenience init(
 		orientation: NSUserInterfaceLayoutOrientation,
 		alignment: NSLayoutConstraint.Attribute? = nil,
 		spacing: Double? = nil,
+		gravity: NSStackView.Gravity? = nil,
 		_ views: [NSView]
 	) {
 		self.init()
@@ -47,7 +49,13 @@ public extension NSStackView {
 		views.forEach { view in
 			if view !== NSView.empty {
 				view.translatesAutoresizingMaskIntoConstraints = false
-				self.addArrangedSubview(view)
+
+				if let gravity = view.gravityArea() {
+					self.addView(view, in: gravity)
+				}
+				else {
+					self.addArrangedSubview(view)
+				}
 			}
 		}
 	}
@@ -57,14 +65,16 @@ public extension NSStackView {
 	///   - orientation: The orientation (horizontal or vertical)
 	///   - alignment: The stack alignment
 	///   - spacing: The spacing between elements in a stack
+	///   - gravity: The gravity to apply to ALL elements in the stack
 	///   - views: The builder for the child views
 	convenience init(
 		orientation: NSUserInterfaceLayoutOrientation,
 		alignment: NSLayoutConstraint.Attribute? = nil,
 		spacing: Double? = nil,
+		gravity: NSStackView.Gravity? = nil,
 		@NSViewsBuilder builder: () -> [NSView]
 	) {
-		self.init(orientation: orientation, alignment: alignment, spacing: spacing, builder())
+		self.init(orientation: orientation, alignment: alignment, spacing: spacing, gravity: gravity, builder())
 	}
 }
 
@@ -129,14 +139,10 @@ public extension NSStackView {
 	/// - Parameter identifier: The NSUserInterfaceItemIdentifier to search for
 	/// - Returns: The matching NSView, or nil if no match is found
 	override func allSubviews() -> [NSView] {
-		// Check if this view matches the identifier
 		var items: [NSView] = [self]
-
-		// Recursively search through all subviews
-		for subview in arrangedSubviews {
+		for subview in self.arrangedSubviews {
 			items.append(contentsOf: subview.allSubviews())
 		}
-
 		return items
 	}
 }
@@ -153,6 +159,26 @@ public extension NSStackView {
 	func hugging(_ priority: NSLayoutConstraint.Priority, for orientation: NSLayoutConstraint.Orientation) -> Self {
 		self.setHuggingPriority(priority, for: orientation)
 		return self
+	}
+}
+
+// MARK: - NSStackView Gravity
+
+private let __gravityIdentifier = "AppKitUI.NSStackView.Gravity"
+
+@MainActor
+extension NSView {
+	/// Set the gravity area for this view (used only if its parent is a stack view)
+	/// - Parameter value: The gravity
+	/// - Returns: self
+	public func gravityArea(_ value: NSStackView.Gravity) -> Self {
+		self.setArbitraryValue(value, forKey: __gravityIdentifier)
+		return self
+	}
+
+	/// Get the gravity for this view if it has been set
+	func gravityArea() -> NSStackView.Gravity? {
+		self.getArbitraryValue(forKey: __gravityIdentifier)
 	}
 }
 

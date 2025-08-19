@@ -18,6 +18,7 @@
 //
 
 import AppKit
+import os.log
 
 @MainActor
 public extension NSView {
@@ -48,26 +49,84 @@ public extension NSView {
 	convenience init(_ viewBodyGenerator: AUIViewBodyGenerator) {
 		self.init(layoutStyle: .fill, builder: { viewBodyGenerator.body })
 	}
+}
 
-	/// Store this control
-	@discardableResult @inlinable
-	func store<View>(in ctrl: inout View?) -> Self where View: NSView {
-		ctrl = self as? View
+// MARK: - Advanced NSView
+
+@MainActor
+public extension NSView {
+	/// Store this view into a separate variable
+	@discardableResult
+	func store<T: NSView>(in ctrl: inout T?) -> Self {
+		ctrl = self as? T
 		return self
 	}
 
 	/// Perform a block, passing the created control as the parameter
-	@discardableResult @inlinable
-	func extras<View>(_ block: (View) -> Void) -> Self where View: NSView {
-		if let v = self as? View {
+	@discardableResult
+	func extras<T: NSView>(_ block: (T) -> Void) -> Self {
+		if let v = self as? T {
 			block(v)
 		}
 		else {
-			Swift.print("Cannot cast \(self) to type \(View.self) - ignoring 'extra' call. Internal error?")
+			let msg = "Cannot cast \(self) to type \(T.self) - ignoring 'extra' call. Internal error?"
+			os_log("%@", log: logger, type: .debug, msg)
 		}
 		return self
 	}
+}
 
+// MARK: - Background and overlay views
+
+@MainActor
+public extension NSView {
+	/// Overlay a view on this view
+	/// - Parameter block: The view
+	/// - Returns: self
+	@discardableResult
+	func overlay(_ overlayView: NSView) -> Self {
+		self.content(fill: overlayView)
+	}
+
+	/// Overlay a view on this view
+	/// - Parameter block: The view generator block
+	/// - Returns: self
+	@discardableResult
+	func overlay(_ block: () -> NSView) -> Self {
+		self.overlay(block())
+	}
+
+	/// Set the background view for this view
+	/// - Parameter backgroundView: The view to use as the background for this view
+	/// - Returns: The background view
+	///
+	/// Note: This function returns the background view
+	@discardableResult @inlinable
+	func background<T: NSView>(_ backgroundView: T) -> T {
+		backgroundView.overlay(self)
+	}
+
+	/// Set the background view for this view
+	/// - Parameter block: The block that builds the background view
+	/// - Returns: The background view
+	///
+	/// Note: This function returns the background view
+	@discardableResult @inlinable
+	func background<T: NSView>(_ block: () -> T) -> T {
+		self.background(block())
+	}
+}
+
+// MARK: - Setting the view's content
+
+@MainActor
+public extension NSView {
+	/// Set the content of this view
+	/// - Parameters:
+	///   - layoutStyle: The layout style for the child view
+	///   - padding: The padding to apply to between the child and this view
+	///   - content: The view to add
+	/// - Returns: self
 	@discardableResult @inlinable
 	func content(layoutStyle: LayoutStyle = .fill, padding: Double = 0, content: NSView) -> Self {
 		switch layoutStyle {
@@ -94,7 +153,6 @@ public extension NSView {
 	/// - Returns: self
 	@discardableResult
 	func content(fill content: NSView, padding: Double = 0) -> Self {
-
 		// Remove the existing content first
 		self.subviews.forEach { $0.removeFromSuperview() }
 
@@ -116,7 +174,6 @@ public extension NSView {
 	/// - Returns: self
 	@discardableResult
 	func content(center content: NSView, padding: Double = 0) -> Self {
-
 		// Remove the existing content first
 		self.subviews.forEach { $0.removeFromSuperview() }
 
@@ -135,7 +192,12 @@ public extension NSView {
 
 		return self
 	}
+}
 
+// MARK: - Padding
+
+@MainActor
+public extension NSView {
 	/// Add padding around this view by installing this view within a new NSView with contraints
 	/// - Parameter padding: The padding value
 	/// - Returns: self
@@ -175,7 +237,12 @@ public extension NSView {
 
 		return view
 	}
+}
 
+// MARK: - Modifiers
+
+@MainActor
+public extension NSView {
 	/// A Boolean value indicating whether the view’s autoresizing mask is translated into constraints for the
 	/// constraint-based layout system.
 	@discardableResult @inlinable
@@ -211,12 +278,64 @@ public extension NSView {
 		return self
 	}
 
+	/// Set the dark mode state for the view
+	/// - Parameter value: If true, mark the view appearance as dark mode
+	/// - Returns: self
+	@discardableResult
+	func isDarkMode(_ value: Bool) -> Self {
+		if #available(macOS 10.14, *) {
+			self.appearance = value ? NSAppearance(named: .darkAqua)! : NSAppearance(named: .aqua)!
+		}
+		else {
+			self.appearance = NSAppearance(named: .aqua)!
+		}
+		return self
+	}
+
+	/// Apply a drop shadow to this view
+	/// - Parameters:
+	///   - offset: The shadow’s relative position, which you specify with horizontal and vertical offset values.
+	///   - color: The color of the shadow.
+	///   - blurRadius: The blur radius of the shadow.
+	/// - Returns: self
+	@discardableResult
+	func shadow(
+		offset: CGSize? = nil,
+		color: NSColor? = nil,
+		blurRadius: Double? = nil
+	) -> Self {
+		let s = NSShadow()
+		if let offset {
+			s.shadowOffset = offset
+		}
+		if let color {
+			s.shadowColor = color
+		}
+		if let blurRadius {
+			s.shadowBlurRadius = blurRadius
+		}
+		self.shadow = s
+		return self
+	}
+
 	/// Mark the view as wanting a CALayer
 	/// - Parameter value: If true, adds a CALayer to the NSView
 	/// - Returns: self
 	@discardableResult @inlinable
 	func wantsLayer(_ value: Bool) -> Self {
 		self.wantsLayer = value
+		return self
+	}
+
+	/// Set the user interface layout direction
+	/// - Parameter value: The direction
+	/// - Returns: self
+	@discardableResult
+	func userInterfaceLayoutDirection(_ value: NSUserInterfaceLayoutDirection) -> Self {
+		for subview in self.allSubviews() {
+			subview.userInterfaceLayoutDirection = value
+			subview.needsLayout = true
+		}
 		return self
 	}
 }
@@ -235,7 +354,7 @@ public extension NSView {
 		self.layer.usingUnwrappedValue {
 			$0.borderColor = color
 			$0.borderWidth = 0.5
-			$0.backgroundColor = color.copy(alpha: 0.05)
+			$0.backgroundColor = color.copy(alpha: 0.02)
 		}
 		return self
 	}
@@ -302,7 +421,6 @@ public extension NSView {
 	}
 }
 
-
 // MARK: - View builders
 
 @resultBuilder
@@ -325,20 +443,20 @@ public extension NSViewsBuilder {
 
 	/// Add support for if statements.
 	static func buildEither(first components: [NSView]) -> [NSView] {
-		 components
+		components
 	}
 
 	static func buildEither(second components: [NSView]) -> [NSView] {
-		 components
+		components
 	}
 
 	/// Add support for loops.
 	static func buildArray(_ components: [[NSView]]) -> [NSView] {
-		 components.flatMap { $0 }
+		components.flatMap { $0 }
 	}
 }
 
-// MARK: - Setting the layer background stroke and fill
+// MARK: - Setting the view's layer background stroke and fill
 
 @MainActor
 public extension NSView {
@@ -355,10 +473,12 @@ public extension NSView {
 	/// Set the background fill color
 	/// - Parameter fillColor: The fill color
 	/// - Returns: self
-	@discardableResult @inlinable
+	@discardableResult
 	func backgroundFill(_ fillColor: NSColor) -> Self {
 		self.wantsLayer = true
-		self.layer!.backgroundColor = fillColor.cgColor
+		self.usingEffectiveAppearance {
+			self.layer!.backgroundColor = fillColor.cgColor
+		}
 		return self
 	}
 
@@ -367,11 +487,13 @@ public extension NSView {
 	///   - borderColor: The color for the border
 	///   - lineWidth: The line width
 	/// - Returns: self
-	@discardableResult @inlinable
+	@discardableResult
 	func backgroundBorder(_ borderColor: NSColor, lineWidth: Double) -> Self {
 		self.wantsLayer = true
-		self.layer!.borderColor = borderColor.cgColor
-		self.layer!.borderWidth = lineWidth
+		self.usingEffectiveAppearance {
+			self.layer!.borderColor = borderColor.cgColor
+			self.layer!.borderWidth = lineWidth
+		}
 		return self
 	}
 
@@ -411,8 +533,7 @@ public extension NSView {
 // MARK: - Storage
 
 @MainActor
-internal extension NSView {
-
+extension NSView {
 	func usingViewStorage(_ block: @escaping (Storage) -> Void) {
 		self.usingAssociatedValue(key: "__nsview_bond", initialValue: { Storage() }, block)
 	}
@@ -424,12 +545,39 @@ internal extension NSView {
 		func addWindowedContent(_ content: WindowedContentProtocol) {
 			self.windowedContent.append(content)
 		}
+
+		deinit {
+			os_log("deinit: NSView.Storage", log: logger, type: .debug)
+		}
 	}
 }
 
 // MARK: - Previews
 
 #if DEBUG
+
+@available(macOS 14, *)
+#Preview("shadows") {
+	HStack(spacing: 20) {
+		NSView()
+			.backgroundFill(.systemRed)
+			.shadow(offset: CGSize(width: 1, height: -1), color: .textColor, blurRadius: 3)
+			.frame(width: 50, height: 50)
+		NSView()
+			.backgroundFill(.systemGreen)
+			.shadow(offset: CGSize(width: 0, height: 0), color: .textColor, blurRadius: 5)
+			.frame(width: 50, height: 50)
+		NSView()
+			.backgroundFill(.systemBlue)
+			.shadow(offset: CGSize(width: -2, height: 2), color: .textColor, blurRadius: 3)
+			.frame(width: 50, height: 50)
+		NSView()
+			.backgroundFill(.systemYellow)
+			.backgroundCornerRadius(5)
+			.shadow(offset: CGSize(width: 0, height: 0), color: .black, blurRadius: 10)
+			.frame(width: 50, height: 50)
+	}
+}
 
 @available(macOS 14, *)
 #Preview("checkerboard") {
@@ -454,4 +602,3 @@ internal extension NSView {
 }
 
 #endif
-

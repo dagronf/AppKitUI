@@ -6,6 +6,7 @@
 //
 
 import AppKit
+import os.log
 
 /// A string-based Token Field that expands vertically to fit the content as needed
 @MainActor
@@ -117,6 +118,10 @@ fileprivate extension NSTokenField {
 			self.parent = parent
 			super.init()
 			parent.delegate = self
+		}
+
+		deinit {
+			os_log("deinit: NSTokenField.Storage", log: logger, type: .debug)
 		}
 	}
 }

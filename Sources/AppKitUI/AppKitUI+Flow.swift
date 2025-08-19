@@ -54,10 +54,7 @@ public class Flow: NSView {
 	/// - Parameter identifier: The NSUserInterfaceItemIdentifier to search for
 	/// - Returns: The matching NSView, or nil if no match is found
 	override func allSubviews() -> [NSView] {
-		// Check if this view matches the identifier
 		var items: [NSView] = [self]
-
-		// Recursively search through all subviews
 		for subview in self.childViews {
 			items.append(contentsOf: subview.allSubviews())
 		}

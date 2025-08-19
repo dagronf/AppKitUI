@@ -105,9 +105,9 @@ class StepperPane: Pane {
 						}
 						.toolTip("Reset the value back to its initial value")
 						.huggingPriority(.defaultLow, for: .horizontal)
+						.gridCell(xPlacement: .center, yPlacement: .center)
 					}
 				}
-				.cell(atColumnIndex: 3, rowIndex: 2, xPlacement: .center)
 
 				HDivider()
 
@@ -151,7 +151,6 @@ class StepperPane: Pane {
 							.withEmbeddedTextControl {
 								$0.font(.monospacedDigit.size(24).weight(.medium))
 							}
-							.debugFrame(.systemYellow)
 						NSButton.checkbox(title: "Enable")
 							.state(enabled)
 					}

@@ -59,6 +59,7 @@ class DetailPane: NSView {
 
 private let trashImage__ = NSImage(named: "trash")!
 	.isTemplate(true)
+	.size(width: 10, height: 12)
 
 @MainActor
 private func makeLoggingOutputView(model: Model) -> NSView {
@@ -72,15 +73,15 @@ private func makeLoggingOutputView(model: Model) -> NSView {
 			NSButton(title: "Clear Log") { _ in
 				logging.clear()
 			}
-			.bezelStyle(.accessoryBar)
+			.bezelStyle(.accessoryBarAction)
 			.image(trashImage__)
 			.imageScaling(.scaleProportionallyDown)
 			.imagePosition(.imageLeading)
 			.controlSize(.small)
 			.toolTip("Clear log")
-
-			NSView.Spacer()
+			.gravityArea(.leading)
 		}
+		.hugging(.init(10), for: .horizontal)
 		.backgroundFill(.textBackgroundColor)
 		.padding(4)
 	}
@@ -88,6 +89,17 @@ private func makeLoggingOutputView(model: Model) -> NSView {
 
 @MainActor
 class LoggingView: AUIScrollingTextView, Logger {
+
+	override init() {
+		super.init()
+
+		self.isEditable(false)
+	}
+	
+	required init?(coder: NSCoder) {
+		fatalError("init(coder:) has not been implemented")
+	}
+	
 	func clear() {
 		self.textView.textStorage?.mutableString.setString("")
 	}

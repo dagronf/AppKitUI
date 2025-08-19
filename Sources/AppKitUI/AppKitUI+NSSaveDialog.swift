@@ -19,6 +19,7 @@
 
 import AppKit
 import UniformTypeIdentifiers
+import os.log
 
 @available(macOS 11.0, *)
 @MainActor
@@ -169,7 +170,7 @@ private class SavePanelInstance: WindowedContentProtocol {
 	}
 
 	deinit {
-		Swift.print("deinit: SavePanelInstance")
+		os_log("deinit: SavePanelInstance", log: logger, type: .debug)
 	}
 
 	@MainActor

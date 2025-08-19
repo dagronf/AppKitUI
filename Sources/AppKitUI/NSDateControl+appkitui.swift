@@ -18,6 +18,7 @@
 //
 
 import AppKit.NSDatePicker
+import os.log
 
 @MainActor
 public extension NSDatePicker {
@@ -223,6 +224,10 @@ private extension NSDatePicker {
 			control.delegate = self
 			control.target = self
 			control.action = #selector(actionCalled(_:))
+		}
+
+		deinit {
+			os_log("deinit: NSDatePicker.Storage", log: logger, type: .debug)
 		}
 
 		@MainActor @objc func actionCalled(_ sender: NSDatePicker) {

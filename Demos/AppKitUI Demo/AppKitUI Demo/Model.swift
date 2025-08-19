@@ -30,6 +30,12 @@ class Model {
 			TextFieldPane(),
 			FlowPane(),
 			SecureTextPane(),
+			LicenseExamplePane(),
+			ExtractExamplePane(),
+			NVivoLicenseExamplePane(),
+			VisualEffectPane(),
+			ShadowsPane(),
+			ShapesPane()
 		]
 		if #available(macOS 11, *) {
 			p.append(SwitchPane())

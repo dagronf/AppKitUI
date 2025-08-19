@@ -18,6 +18,7 @@
 //
 
 import AppKit.NSComboButton
+import os.log
 
 @available(macOS 13, *)
 @MainActor
@@ -145,6 +146,10 @@ private extension NSComboButton {
 			self.parent = control
 			control.target = self
 			control.action = #selector(performAction(_:))
+		}
+
+		deinit {
+			os_log("deinit: NSComboButton.Storage", log: logger, type: .debug)
 		}
 
 		@MainActor

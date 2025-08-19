@@ -18,6 +18,7 @@
 //
 
 import AppKit.NSImageView
+import os.log
 
 @MainActor
 public extension NSImageView {
@@ -143,6 +144,10 @@ private extension NSImageView {
 					self?.imageDidChange(w)
 				}
 			}
+		}
+
+		deinit {
+			os_log("deinit: NSImageView.Storage", log: logger, type: .debug)
 		}
 
 		@MainActor

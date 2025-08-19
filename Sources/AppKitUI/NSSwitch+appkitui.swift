@@ -18,6 +18,7 @@
 //
 
 import AppKit.NSSwitch
+import os.log
 
 // If you need support for older versions of macOS, use AUISwitch instead
 
@@ -89,6 +90,10 @@ private extension NSSwitch {
 		init(_ control: NSSwitch) {
 			control.target = self
 			control.action = #selector(actionCalled(_:))
+		}
+
+		deinit {
+			os_log("deinit: NSSwitch.Storage", log: logger, type: .debug)
 		}
 
 		@objc func actionCalled(_ sender: NSSwitch) {

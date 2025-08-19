@@ -18,6 +18,7 @@
 //
 
 import AppKit
+import os.log
 
 @MainActor
 public extension NSSearchField {
@@ -95,6 +96,10 @@ private extension NSSearchField {
 
 			control.target = self
 			control.action = #selector(performSearch(_:))
+		}
+
+		deinit {
+			os_log("deinit: NSSearchField.Storage", log: logger, type: .debug)
 		}
 
 		@objc func performSearch(_ sender: NSSearchField) {

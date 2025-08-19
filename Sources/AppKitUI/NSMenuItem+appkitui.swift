@@ -18,6 +18,7 @@
 //
 
 import AppKit
+import os.log
 
 @MainActor
 public extension NSMenuItem {
@@ -236,6 +237,10 @@ private extension NSMenuItem {
 			self.parent = parent
 			parent.target = self
 			parent.action = #selector(onActionCalled(_:))
+		}
+
+		deinit {
+			os_log("deinit: NSMenuItem.Storage", log: logger, type: .debug)
 		}
 
 		@objc private func onActionCalled(_ sender: NSMenuItem) {

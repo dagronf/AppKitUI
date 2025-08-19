@@ -27,6 +27,8 @@ class EmptyPane: Pane {
 		return NSView(layoutStyle: .centered) {
 			VStack {
 				NSTextField(label: "Select an item from the list on the left")
+					.alignment(.center)
+					.compressionResistancePriority(.defaultLow, for: .horizontal)
 					.padding()
 			}
 		}

@@ -58,6 +58,22 @@ public extension NSGridView {
 			rowItem.bottomPadding = row.1.bottomPadding
 			rowItem.rowAlignment = row.1.rowAlignment
 
+			views.enumerated().forEach { view in
+				let cell = self.cell(atColumnIndex: view.offset, rowIndex: row.offset)
+				if let placement = view.element.gridCellPlacement() {
+					if let xp = placement.xPlacement {
+						cell.xPlacement = xp
+					}
+					if let yp = placement.xPlacement {
+						cell.yPlacement = yp
+					}
+				}
+
+				if let rowAlignment = view.element.gridCellRowAlignment() {
+					cell.rowAlignment = rowAlignment
+				}
+			}
+
 			row.element.mergedCells.forEach {
 				rowItem.mergeCells(in: NSRange($0))
 			}
@@ -151,8 +167,6 @@ public extension NSGridView {
 	}
 }
 
-
-
 // MARK: - Rows
 
 @available(macOS 10.12, *)
@@ -207,6 +221,17 @@ public extension NSGridView {
 	@discardableResult @inlinable
 	func rowAlignment(_ value: NSGridRow.Alignment) -> Self {
 		self.rowAlignment = value
+		return self
+	}
+
+	/// Set the row alignment for a specific row
+	/// - Parameters:
+	///   - value: The alignment
+	///   - row: The index of the row to apply
+	/// - Returns: self
+	@discardableResult @inlinable
+	func rowAlignment(_ value: NSGridRow.Alignment, forRowIndex row: Int) -> Self {
+		self.row(at: row).rowAlignment = value
 		return self
 	}
 
@@ -334,6 +359,49 @@ public extension NSGridView {
 		return self
 	}
 }
+
+// MARK: - NSGridView cell conveniences
+
+private let __gridViewCellPlacementIdentifier = "AppKitUI.NSGridView.Cell.Placement"
+private let __gridViewCellRowAlignmentIdentifier = "AppKitUI.NSGridView.Cell.RowAlignment"
+
+@MainActor
+extension NSView {
+	/// Set the gravity area for this view (used only if its parent is a grid view)
+	/// - Parameter value: The gravity
+	/// - Returns: self
+	public func gridCell(xPlacement xp: NSGridCell.Placement? = nil, yPlacement yp: NSGridCell.Placement? = nil) -> Self {
+		let value = GridCellPlacement(xPlacement: xp, yPlacement: yp)
+		self.setArbitraryValue(value, forKey: __gridViewCellPlacementIdentifier)
+		return self
+	}
+
+	public func gridCell(rowAlignment: NSGridRow.Alignment) -> Self {
+		self.setArbitraryValue(rowAlignment, forKey: __gridViewCellRowAlignmentIdentifier)
+		return self
+	}
+
+	/// Get the gravity for this view if it has been set
+	func gridCellPlacement() -> NSView.GridCellPlacement? {
+		self.getArbitraryValue(forKey: __gridViewCellPlacementIdentifier)
+	}
+
+	/// Get the gravity for this view if it has been set
+	func gridCellRowAlignment() -> NSGridRow.Alignment? {
+		self.getArbitraryValue(forKey: __gridViewCellRowAlignmentIdentifier)
+	}
+
+	/// Grid Cell Placement storage
+	struct GridCellPlacement {
+		let xPlacement: NSGridCell.Placement?
+		let yPlacement: NSGridCell.Placement?
+		init(xPlacement: NSGridCell.Placement? = nil, yPlacement: NSGridCell.Placement? = nil) {
+			self.xPlacement = xPlacement
+			self.yPlacement = yPlacement
+		}
+	}
+}
+
 
 // MARK: - Previews
 

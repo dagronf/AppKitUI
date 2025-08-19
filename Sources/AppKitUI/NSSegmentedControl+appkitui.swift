@@ -18,6 +18,7 @@
 //
 
 import AppKit
+import os.log
 
 public extension NSSegmentedControl {
 	/// A segment definition
@@ -379,7 +380,7 @@ private extension NSSegmentedControl {
 		}
 
 		deinit {
-			Swift.print("deinit: NSSegmentedControl.Storage")
+			os_log("deinit: NSSegmentedControl.Storage", log: logger, type: .debug)
 		}
 
 		@objc func actionCalled(_ sender: NSSegmentedControl) {

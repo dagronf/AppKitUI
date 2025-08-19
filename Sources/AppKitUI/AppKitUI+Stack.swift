@@ -25,28 +25,38 @@ import AppKit
 /// - Parameters:
 ///   - alignment: The view alignment within the stack view
 ///   - spacing: The spacing
+///   - gravity: The gravity to apply to ALL elements in the stack.
 ///   - builder: The stack builder
 /// - Returns: A new stack object
+///
+/// The gravity, if supplied, applies to all items in a stack. This is useful for example when you want to
+/// add a bunch of buttons to the trailing of a stack instead of in the center.
 @MainActor
 public func VStack(
 	alignment: NSLayoutConstraint.Attribute? = nil,
 	spacing: Double? = nil,
+	gravity: NSStackView.Gravity? = nil,
 	@NSViewsBuilder builder: () -> [NSView]
 ) -> NSStackView {
-	NSStackView(orientation: .vertical, alignment: alignment, spacing: spacing, builder: builder)
+	NSStackView(orientation: .vertical, alignment: alignment, spacing: spacing, gravity: gravity, builder: builder)
 }
 
 /// Create a horizontal stack
 /// - Parameters:
 ///   - alignment: The view alignment within the stack view
 ///   - spacing: The spacing
+///   - gravity: The gravity to apply to ALL elements in the stack
 ///   - builder: The stack builder
 /// - Returns: A new stack object
+///
+/// The gravity, if supplied, applies to all items in a stack. This is useful for example when you want to
+/// add a bunch of buttons to the trailing of a stack instead of in the center.
 @MainActor
 public func HStack(
 	alignment: NSLayoutConstraint.Attribute? = nil,
 	spacing: Double? = nil,
+	gravity: NSStackView.Gravity? = nil,
 	@NSViewsBuilder builder: () -> [NSView]
 ) -> NSStackView {
-	NSStackView(orientation: .horizontal, alignment: alignment, spacing: spacing, builder: builder)
+	NSStackView(orientation: .horizontal, alignment: alignment, spacing: spacing, gravity: gravity, builder: builder)
 }

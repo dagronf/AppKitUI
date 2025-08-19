@@ -18,6 +18,7 @@
 //
 
 import AppKit.NSAlert
+import os.log
 
 @MainActor
 public extension NSAlert {
@@ -109,7 +110,7 @@ internal extension NSAlert {
 		var accessoryViewBuilder: (() -> NSView)?
 		var suppressionState: Bind<Bool>?
 		deinit {
-			Swift.print("deinit: NSAlert.Storage")
+			os_log("deinit: NSAlert.Storage", log: logger, type: .debug)
 		}
 	}
 

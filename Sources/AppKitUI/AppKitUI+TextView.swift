@@ -18,6 +18,7 @@
 //
 
 import AppKit
+import os.log
 
 @MainActor
 open class AUIScrollingTextView: ScrollableTextView {
@@ -161,6 +162,10 @@ private extension AUIScrollingTextView {
 			super.init()
 			self.parent = parent
 			parent.textView.delegate = self
+		}
+
+		deinit {
+			os_log("deinit: AUIScrollingTextView.Storage", log: logger, type: .debug)
 		}
 
 		@MainActor

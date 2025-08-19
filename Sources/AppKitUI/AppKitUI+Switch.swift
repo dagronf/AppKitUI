@@ -18,6 +18,7 @@
 //
 
 import AppKit
+import os.log
 
 /// An NSSwitch equivalent supported back to 10.11
 @MainActor
@@ -411,6 +412,10 @@ private extension AUISwitch {
 		init(_ control: AUISwitch) {
 			control.target = self
 			control.action = #selector(actionCalled(_:))
+		}
+
+		deinit {
+			os_log("deinit: AUISwitch.Storage", log: logger, type: .debug)
 		}
 
 		@objc func actionCalled(_ sender: AUISwitch) {

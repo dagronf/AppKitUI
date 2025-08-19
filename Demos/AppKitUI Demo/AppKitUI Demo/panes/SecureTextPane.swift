@@ -33,11 +33,13 @@ class SecureTextPane: Pane {
 					NSSecureTextField(content: password1)
 						.onChange { Swift.print("password1 is '\($0)'") }
 						.bezelStyle(.roundedBezel)
+						.width(200)
 					NSImageView(imageNamed: NSImage.goRightTemplateName)
 						.huggingPriority(.required, for: .horizontal)
 					NSTextField(content: password1)
 						.isEnabled(false)
 						.placeholder("<no password>")
+						.width(200)
 				}
 				
 				NSGridView.Row(rowAlignment: .firstBaseline) {
@@ -45,16 +47,17 @@ class SecureTextPane: Pane {
 					NSSecureTextField(content: password2)
 						.echoesBullets(false)
 						.onChange { Swift.print("password2 is '\($0)'") }
+						.width(200)
 					NSImageView(imageNamed: NSImage.goRightTemplateName)
 					NSTextField(content: password2)
 						.isEnabled(false)
 						.placeholder("<no password>")
+						.width(200)
 				}
 			}
 			.columnAlignment(.trailing, forColumn: 0)
-			.columnWidth(200, forColumn: 1)
-			.columnWidth(200, forColumn: 3)
 		}
+		.debugFrames()
 	}
 }
 

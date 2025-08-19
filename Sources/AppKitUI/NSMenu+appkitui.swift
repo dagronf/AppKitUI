@@ -18,6 +18,7 @@
 //
 
 import AppKit
+import os.log
 
 @MainActor
 public extension NSMenu {
@@ -74,6 +75,10 @@ private extension NSMenu {
 		init(_ menu: NSMenu) {
 			super.init()
 			menu.delegate = self
+		}
+
+		deinit {
+			os_log("deinit: NSMenu.Storage", log: logger, type: .debug)
 		}
 
 		func menuWillOpen(_ menu: NSMenu) {

@@ -18,6 +18,7 @@
 //
 
 import AppKit
+import os.log
 
 @MainActor
 public extension NSLevelIndicator {
@@ -163,7 +164,7 @@ internal extension NSLevelIndicator {
 		}
 
 		deinit {
-			Swift.print("\(self.self) deinit")
+			os_log("deinit: NSLevelIndicator.Storage", log: logger, type: .debug)
 		}
 
 		func setupListener() {

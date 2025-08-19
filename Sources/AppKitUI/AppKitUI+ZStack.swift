@@ -44,7 +44,7 @@ public func ZStack(
 
 		if child !== NSView.empty {
 			child.translatesAutoresizingMaskIntoConstraints = false
-			view.addSubview(child, positioned: .below, relativeTo: v)
+			view.addSubview(child, positioned: .above, relativeTo: v)
 
 			view.addConstraint(NSLayoutConstraint(item: child, attribute: .centerX, relatedBy: .equal, toItem: view, attribute: .centerX, multiplier: 1, constant: 0))
 			view.addConstraint(NSLayoutConstraint(item: child, attribute: .centerY, relatedBy: .equal, toItem: view, attribute: .centerY, multiplier: 1, constant: 0))
@@ -64,14 +64,21 @@ public func ZStack(
 #if DEBUG
 
 @available(macOS 14, *)
-#Preview("ZStack") {
+#Preview("Basic") {
 	ZStack {
 		NSView()
-			.backgroundFill(.systemBrown)
-			.frame(width: 30, height: 30)
-		NSButton()
-			.title("Fish and chips")
-			.huggingPriority(.defaultLow, for: .horizontal)
+			.backgroundFill(.systemRed)
+			.frame(width: 100, height: 50)
+		NSView()
+			.backgroundFill(.systemBlue)
+			.frame(width: 50, height: 100)
+	}
+	.backgroundBorder(.systemGreen, lineWidth: 1)
+}
+
+@available(macOS 14, *)
+#Preview("ZStack") {
+	ZStack {
 		HStack {
 			NSView()
 				.backgroundFill(.systemRed)
@@ -83,7 +90,13 @@ public func ZStack(
 				.backgroundFill(.systemBlue)
 				.frame(width: 50, height: 50)
 		}
-		.padding(0)
+		NSView()
+			.backgroundFill(.systemBrown)
+			.frame(width: 30, height: 30)
+		NSButton()
+			.title("Fish and chips")
+			.huggingPriority(.defaultLow, for: .horizontal)
+
 	}
 }
 

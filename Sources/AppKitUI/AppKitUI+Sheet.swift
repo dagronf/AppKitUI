@@ -18,6 +18,7 @@
 //
 
 import AppKit
+import os.log
 
 @MainActor
 public extension NSView {
@@ -68,8 +69,7 @@ internal class SheetInstance: WindowedContentProtocol {
 	}
 
 	deinit {
-		Swift.print("deinit: SheetInstance")
-		//self.contentBuilder = nil
+		os_log("deinit: SheetInstance", log: logger, type: .debug)
 	}
 
 	weak var parent: NSView?

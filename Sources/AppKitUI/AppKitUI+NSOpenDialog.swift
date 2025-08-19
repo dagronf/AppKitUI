@@ -19,6 +19,7 @@
 
 import AppKit
 import UniformTypeIdentifiers
+import os.log
 
 protocol FileTypeIdentifier { }
 extension String: FileTypeIdentifier { }
@@ -147,7 +148,7 @@ private class OpenPanelInstance: WindowedContentProtocol {
 	}
 
 	deinit {
-		Swift.print("deinit: OpenPanelInstance")
+		os_log("deinit: OpenPanelInstance", log: logger, type: .debug)
 	}
 
 	@MainActor

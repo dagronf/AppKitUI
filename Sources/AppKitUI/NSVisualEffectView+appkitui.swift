@@ -29,7 +29,6 @@ public extension NSVisualEffectView {
 	///   - layoutStyle: The layout for the view builder
 	///   - content: block content builder
 	/// - Returns: A visual effect view set to light mode (.aqua)
-	@available(macOS 10.14, *)
 	@discardableResult @inlinable
 	static func lightMode(layoutStyle: LayoutStyle = .fill, content: () -> NSView) -> NSVisualEffectView {
 		NSVisualEffectView(isDarkMode: false, layoutStyle: layoutStyle, content: content)
@@ -40,7 +39,6 @@ public extension NSVisualEffectView {
 	///   - layoutStyle: The layout for the view builder
 	///   - content: block content builder
 	/// - Returns: A visual effect view set to light mode (.aqua)
-	@available(macOS 10.14, *)
 	@discardableResult @inlinable
 	static func darkMode(layoutStyle: LayoutStyle = .fill, content: () -> NSView) -> NSVisualEffectView {
 		NSVisualEffectView(isDarkMode: true, layoutStyle: layoutStyle, content: content)
@@ -53,14 +51,20 @@ public extension NSVisualEffectView {
 	///   - isDarkMode: If true sets the view style to dark mode, otherwise light mode
 	///   - layoutStyle: The layout for the view builder
 	///   - content: block content builder
-	@available(macOS 10.14, *)
+	///
+	///   For systems that don't support dark mode (ie 10.13) this is ignored
 	@discardableResult @inlinable
 	convenience init(
 		isDarkMode: Bool,
 		layoutStyle: LayoutStyle = .fill,
 		content: () -> NSView
 	) {
-		let appearance = isDarkMode ? NSAppearance(named: .darkAqua)! : NSAppearance(named: .aqua)!
+		let appearance: NSAppearance
+		if #available(macOS 10.14, *) {
+			appearance = isDarkMode ? NSAppearance(named: .darkAqua)! : NSAppearance(named: .aqua)!
+		} else {
+			appearance = NSAppearance(named: .aqua)!
+		}
 		self.init(appearance: appearance, layoutStyle: layoutStyle, content: content)
 	}
 
@@ -70,7 +74,7 @@ public extension NSVisualEffectView {
 	///   - layoutStyle: The layout for the view builder
 	///   - content: block content builder
 	convenience init(
-		appearance: NSAppearance,
+		appearance: NSAppearance? = nil,
 		layoutStyle: LayoutStyle = .fill,
 		content: () -> NSView
 	) {
@@ -155,6 +159,24 @@ public extension NSVisualEffectView {
 		return self
 	}
 
+	/// Set the corner radius for the visual effect view
+	/// - Parameter value: The corner radius
+	/// - Returns: self
+	@discardableResult @inlinable
+	func cornerRadius(_ value: Double) -> Self {
+		self.backgroundCornerRadius(value)
+	}
+
+	/// Set the border color and line width for the visual effect view
+	/// - Parameters:
+	///   - color: The stroke color
+	///   - lineWidth: The stroke line width
+	/// - Returns: self
+	@discardableResult @inlinable
+	func border(_ color: NSColor, lineWidth: Double) -> Self {
+		self.backgroundBorder(color, lineWidth: lineWidth)
+	}
+
 	/// An image whose alpha channel masks the visual effect view’s material.
 	/// - Parameter maskImage: The mask image
 	/// - Returns: self
@@ -172,35 +194,94 @@ public extension NSVisualEffectView {
 #if DEBUG
 
 @available(macOS 14, *)
+
 #Preview("default") {
-	VStack {
+
+	let imleft = NSImage(systemSymbolName: "chevron.left", accessibilityDescription: nil)!
+	let imright = NSImage(systemSymbolName: "chevron.right", accessibilityDescription: nil)!
+	let imcycle = NSImage(systemSymbolName: "figure.outdoor.cycle", accessibilityDescription: nil)!
+		.isTemplate(true)
+
+	VStack(spacing: 20) {
 		HStack {
 			NSVisualEffectView.lightMode {
-				NSTextField(labelWithString: "Aqua style (light mode)")
+				NSTextField(label: "Aqua style (light mode)")
 					.padding()
 			}
-			.debugFrame()
 
 			NSVisualEffectView.darkMode {
-				NSTextField(labelWithString: "Dark Aqua style (dark mode)")
+				NSTextField(label: "Dark Aqua style (dark mode)")
 					.padding()
 			}
-			.debugFrame()
 		}
 
 		HStack {
 			NSVisualEffectView(material: .popover) {
-				NSTextField(labelWithString: "Material = .popover")
+				NSTextField(label: "Material = .popover")
 					.padding()
 			}
 			.debugFrame()
 
 			NSVisualEffectView(material: .sheet) {
-				NSTextField(labelWithString: "Material = .sheet")
+				NSTextField(label: "Material = .sheet")
 					.padding()
 			}
-			.debugFrame()
 		}
+
+		HDivider()
+
+		HStack {
+			NSVisualEffectView() {
+				HStack {
+					NSImageView(imageNamed: NSImage.userName)
+					VStack(alignment: .leading, spacing: 2) {
+						NSTextField(label: "Distance")
+							.font(.headline)
+						NSTextField(label: "12.5 MI")
+							.font(.body)
+					}
+					VDivider()
+					VStack(alignment: .leading, spacing: 2) {
+						NSTextField(label: "Training Effort")
+							.font(.headline)
+						NSTextField(label: "Moderate")
+							.font(.body)
+					}
+				}
+				.padding(8)
+			}
+			.cornerRadius(8)
+			.border(.tertiaryLabelColor, lineWidth: 0.5)
+			.identifier("vs1")
+
+			NSVisualEffectView() {
+				HStack {
+					NSButton()
+						.isBordered(false)
+						.image(imleft)
+						.imageScaling(.scaleProportionallyDown)
+						.imagePosition(.imageOnly)
+					VStack(spacing: -2) {
+						NSImageView(image: imcycle)
+							.imageScaling(.scaleProportionallyUpOrDown)
+							.frame(width: 32, height: 32)
+						NSTextField(label: "Cycling")
+							.font(.footnote.weight(.semibold))
+					}
+					NSButton()
+						.isBordered(false)
+						.image(imright)
+						.imageScaling(.scaleProportionallyDown)
+						.imagePosition(.imageOnly)
+				}
+				.padding(8)
+			}
+			.cornerRadius(8)
+			.border(.tertiaryLabelColor, lineWidth: 0.5)
+			.identifier("vs2")
+		}
+		.equalHeights(["vs1", "vs2"])
 	}
 }
+
 #endif

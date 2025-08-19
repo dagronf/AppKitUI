@@ -18,6 +18,7 @@
 //
 
 import AppKit.NSPopUpButton
+import os.log
 
 @MainActor
 public extension NSPopUpButton {
@@ -129,6 +130,10 @@ fileprivate extension NSPopUpButton {
 			self.parent = parent
 			parent.target = self
 			parent.action = #selector(actionCalled(_:))
+		}
+
+		deinit {
+			os_log("deinit: NSPopUpButton.Storage", log: logger, type: .debug)
 		}
 
 		@objc private func actionCalled(_ sender: NSPopUpButton) {

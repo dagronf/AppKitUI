@@ -18,6 +18,7 @@
 //
 
 import AppKit.NSSlider
+import os.log
 
 @MainActor
 public extension NSSlider {
@@ -165,6 +166,10 @@ private extension NSSlider {
 
 			self.parent?.target = self
 			self.parent?.action = #selector(onAction(_:))
+		}
+
+		deinit {
+			os_log("deinit: NSSlider.Storage", log: logger, type: .debug)
 		}
 
 		@objc private func onAction(_ sender: NSSlider) {

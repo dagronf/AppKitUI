@@ -18,6 +18,7 @@
 //
 
 import AppKit
+import os.log
 
 protocol WindowedContentProtocol {
 
@@ -115,7 +116,7 @@ internal class AlertInstance: WindowedContentProtocol {
 	}
 
 	deinit {
-		Swift.print("deinit: AlertInstance")
+		os_log("deinit: AlertInstance", log: logger, type: .debug)
 		self.currentAlert = nil
 	}
 

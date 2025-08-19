@@ -61,9 +61,22 @@ public extension Bind where Wrapped == Bool {
 		self.oneWayTransform { $0 == false }
 	}
 
-	/// Transform a bool state value into a string representation of the state ("on"/"off")
+	/// Transform a bool state value into a read-only string representation of the state ("on"/"off")
 	func stateString() -> Bind<String> {
 		self.oneWayTransform { $0 ? "on" : "off" }
+	}
+}
+
+@MainActor
+public extension Bind where Wrapped == Int64 {
+	/// Format a int64 value as a byte value
+	/// - Parameters:
+	///  - countStyle: Specifies display of file or storage byte counts. The display style is platform specific.
+	/// - Returns: A read-only string binding
+	func byteFormatted(_ formatter: ByteCountFormatter) -> Bind<String> {
+		return self.oneWayTransform {
+			return formatter.string(for: $0) ?? ""
+		}
 	}
 }
 

@@ -18,6 +18,7 @@
 //
 
 import AppKit
+import os.log
 
 /// Delay types
 public enum DelayingCallType {
@@ -48,7 +49,7 @@ class DelayingCall {
 	}
 
 	deinit {
-		Swift.print("deinit: DelayingCall")
+		os_log("deinit: DelayingCall", log: logger, type: .debug)
 	}
 
 	func perform(action: @escaping (() -> Void)) {

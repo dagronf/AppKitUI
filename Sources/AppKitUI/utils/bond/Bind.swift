@@ -18,6 +18,7 @@
 //
 
 import Foundation
+import os.log
 
 /// A binder to pass/share a value and be notified when the value changes
 @MainActor
@@ -60,7 +61,7 @@ public class Bind<Wrapped: Equatable> {
 	}
 
 	deinit {
-		Swift.print("deinit: \(self)")
+		os_log("deinit: %{public}@", log: logger, type:.debug, "\(self)")
 	}
 
 	/// Register a callback block when the value changes
@@ -132,6 +133,6 @@ private class WeakWrapper<Wrapped: Equatable> {
 	}
 
 	deinit {
-		Swift.print("deinit: \(self)")
+		os_log("deinit: %{public}@", log: logger, type:.debug, "\(self)")
 	}
 }

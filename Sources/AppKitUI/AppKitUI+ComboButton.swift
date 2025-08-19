@@ -18,6 +18,7 @@
 //
 
 import AppKit
+import os.log
 
 /// An NSComboButton equivalent that is available for all supported macOS versions
 /// (NSComboButton is only available for macOS 13+)
@@ -163,7 +164,7 @@ private extension AUIComboButton {
 		}
 
 		deinit {
-			Swift.print("deinit: AUIComboButton.Storage")
+			os_log("deinit: AUIComboButton.Storage", log: logger, type: .debug)
 		}
 
 		@objc func performAction(_ sender: AUIComboButton) {

@@ -18,6 +18,7 @@
 //
 
 import AppKit.NSPathControl
+import os.log
 
 @MainActor
 public extension NSPathControl {
@@ -122,6 +123,10 @@ private extension NSPathControl {
 			super.init()
 			control.target = self
 			control.action = #selector(doAction(_:))
+		}
+
+		deinit {
+			os_log("deinit: NSPathControl.Storage", log: logger, type: .debug)
 		}
 
 		// Callback when the user single-clicks the path control

@@ -18,6 +18,7 @@
 //
 
 import AppKit.NSButton
+import os.log
 
 @MainActor
 public extension NSButton {
@@ -407,6 +408,10 @@ internal extension NSButton {
 		init(_ parent: NSButton) {
 			parent.target = self
 			parent.action = #selector(actionCalled(_:))
+		}
+
+		deinit {
+			os_log("deinit: NSButton.Storage", log: logger, type: .debug)
 		}
 
 		@MainActor

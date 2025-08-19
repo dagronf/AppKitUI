@@ -18,6 +18,7 @@
 //
 
 import AppKit
+import os.log
 
 /// A list generates a table containing a single column
 
@@ -129,6 +130,10 @@ private extension List {
 
 			control.dataSource = self
 			control.delegate = self
+		}
+
+		deinit {
+			os_log("deinit: List.Storage", log: logger, type: .debug)
 		}
 
 		func numberOfRows(in tableView: NSTableView) -> Int {

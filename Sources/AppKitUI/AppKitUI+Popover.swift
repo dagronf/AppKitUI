@@ -18,6 +18,7 @@
 //
 
 import AppKit
+import os.log
 
 @MainActor
 public extension NSView {
@@ -124,7 +125,7 @@ internal class PopoverInstance: NSObject, WindowedContentProtocol, NSPopoverDele
 	}
 
 	deinit {
-		Swift.print("deinit: SheetInstance")
+		os_log("deinit: SheetInstance", log: logger, type: .debug)
 	}
 
 	weak var parent: NSView?

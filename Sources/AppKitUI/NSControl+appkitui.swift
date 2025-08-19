@@ -20,6 +20,32 @@
 import Foundation
 import AppKit.NSControl
 
+// MARK: - NSControl.StateValue extensions
+
+public extension NSControl.StateValue {
+	/// Returns a basic on/off/mixed string representation for the control state
+	var stateString: String {
+		switch self {
+		case .on: return "on"
+		case .off: return "off"
+		case .mixed: return "mixed"
+		default:
+			assert(false)
+			return "<unknown>"
+		}
+	}
+}
+
+@MainActor
+public extension Bind where Wrapped == NSControl.StateValue {
+	/// Transform a number value (eg. Int, Double etc) into a string using a formatter
+	func stringRepresentation() -> Bind<String> {
+		self.oneWayTransform { $0.stateString }
+	}
+}
+
+// MARK: - NSControl extensions
+
 @MainActor
 public extension NSControl {
 	/// Set the tag for the control

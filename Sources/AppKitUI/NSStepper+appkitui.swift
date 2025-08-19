@@ -18,6 +18,7 @@
 //
 
 import AppKit.NSStepper
+import os.log
 
 @MainActor
 public extension NSStepper {
@@ -146,6 +147,10 @@ private extension NSStepper {
 			control.target = self
 			control.action = #selector(actionCalled(_:))
 			self.control = control
+		}
+
+		deinit {
+			os_log("deinit: NSStepper.Storage", log: logger, type: .debug)
 		}
 
 		@objc func actionCalled(_ sender: NSStepper) {

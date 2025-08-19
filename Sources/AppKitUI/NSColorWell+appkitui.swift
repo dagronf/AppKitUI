@@ -17,8 +17,8 @@
 //  OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-import AppKit.NSColorWell
-import AppKit.NSColor
+import AppKit
+import os.log
 
 @MainActor
 public extension NSColorWell {
@@ -139,6 +139,10 @@ private extension NSColorWell {
 		@MainActor init(_ control: NSColorWell) {
 			control.target = self
 			control.action = #selector(colorChanged(_:))
+		}
+
+		deinit {
+			os_log("deinit: NSColorWell.Storage", log: logger, type: .debug)
 		}
 
 		@MainActor @objc func colorChanged(_ sender: NSColorWell) {
