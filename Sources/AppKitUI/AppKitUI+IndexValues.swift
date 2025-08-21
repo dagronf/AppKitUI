@@ -20,6 +20,12 @@
 import Foundation
 
 /// A representation of multiple index values
+///
+/// Allows api definitions that support multiple index definitions
+///
+/// ```swift
+/// var selections: [AUIIndexes] = [1, 3 ... 6, [10, 16, 21]]
+/// ```
 public protocol AUIIndexes {
 	/// The represented index value(s)
 	var auiIndexValues: [Int] { get }

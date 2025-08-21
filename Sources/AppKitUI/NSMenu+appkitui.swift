@@ -35,6 +35,13 @@ public extension NSMenu {
 
 	/// Create an NSMenu
 	/// - Parameters:
+	///   - builder: The builder for generating the menu items
+	convenience init(@NSMenuItemsBuilder builder: () -> [NSMenuItem]) {
+		self.init(title: "", items: builder())
+	}
+
+	/// Create an NSMenu
+	/// - Parameters:
 	///   - title: The menu title
 	///   - builder: The builder for generating the menu items
 	convenience init(title: String, @NSMenuItemsBuilder builder: () -> [NSMenuItem] ) {

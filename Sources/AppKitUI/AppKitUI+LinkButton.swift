@@ -130,7 +130,7 @@ public extension AUILinkButton {
 	/// - Parameter font: The font
 	/// - Returns: self
 	@discardableResult
-	@objc override public func font(_ font: NSFont) -> Self {
+	@objc override func font(_ font: NSFont) -> Self {
 		self.font = font
 		return self
 	}
@@ -139,7 +139,7 @@ public extension AUILinkButton {
 	/// - Parameter title: The title
 	/// - Returns: self
 	@discardableResult
-	@objc public override func title(_ title: String) -> Self {
+	@objc override func title(_ title: String) -> Self {
 		self.title = title
 		return self
 	}

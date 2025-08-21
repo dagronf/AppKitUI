@@ -17,7 +17,7 @@
 //  OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-/// Methods for storing arbitrary values within an NSView
+/// Methods for storing arbitrary values within an NSObject-derived class
 ///
 /// Useful for items like `NSStackView` where you can specify a gravity value when you add the
 /// item to the stack.
@@ -28,14 +28,14 @@
 /// HStack {
 ///    NSButton(title: "􀎬 Customer Portal")
 ///       .isBordered(false)
-///       .gravityArea(.leading)  // align leading within the parent stack
+///       .gravityArea(.leading)  // align leading within the parent stack - stored in arbitrary values
 ///       .onAction { _ in
 ///           // Do something!
 ///       }
-///
+///    NSView()
 ///    NSButton(title: "Online Store 􁽇")
 ///       .isBordered(false)
-///       .gravityArea(.trailing)  // align trailing within the parent stack
+///       .gravityArea(.trailing)  // align trailing within the parent stack - stored in arbitrary values
 ///       .onAction { _ in
 ///           // do something!
 ///       }
@@ -45,15 +45,15 @@
 import AppKit
 import os.log
 
-private let __arbitraryValuesIdentifier = "AppKitUI.ArbitraryValues"
+private let __arbitraryValuesIdentifier = "AppKitUI.NSObject.ArbitraryValues"
 
 @MainActor
-internal extension NSView {
+internal extension NSObject {
 	/// A class holding a dictionary of arbitrary key-value pairs
 	private class Values {
 		var allValues = [String: Any]()
 		deinit {
-			os_log("deinit: NSView.Values", log: logger, type: .debug)
+			os_log("deinit: NSObject.Values", log: logger, type: .debug)
 		}
 	}
 

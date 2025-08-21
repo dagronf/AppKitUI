@@ -21,12 +21,30 @@ import AppKit
 
 @MainActor
 public extension NSView {
-	/// Set the human readable description
+	/// Sets the human-readable description of the accessibility element’s value.
 	/// - Parameter str: The description
 	/// - Returns: self
 	@discardableResult @inlinable
 	func accessibilityDescription(_ str: String) -> Self {
 		self.setAccessibilityValueDescription(str)
+		return self
+	}
+
+	/// Sets the title of the accessibility element
+	/// - Parameter str: The description
+	/// - Returns: self
+	@discardableResult @inlinable
+	func accessibilityTitle(_ str: String) -> Self {
+		self.setAccessibilityTitle(str)
+		return self
+	}
+
+	/// Sets the label of the accessibility element
+	/// - Parameter str: The description
+	/// - Returns: self
+	@discardableResult @inlinable
+	func accessibilityLabel(_ str: String) -> Self {
+		self.setAccessibilityLabel(str)
 		return self
 	}
 }

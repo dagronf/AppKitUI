@@ -19,6 +19,7 @@
 
 import AppKit.NSStackView
 
+@MainActor
 public extension NSStackView {
 	/// Create a stack view and populate it with views
 	/// - Parameters:
@@ -80,6 +81,7 @@ public extension NSStackView {
 
 // MARK: - Modifiers
 
+@MainActor
 public extension NSStackView {
 	/// The geometric padding, in points, inside the stack view, surrounding its views.
 	@discardableResult
@@ -147,6 +149,9 @@ public extension NSStackView {
 	}
 }
 
+// MARK: - Stack specific hugging and clipping
+
+@MainActor
 public extension NSStackView {
 	/// Sets the Auto Layout priority for the stack view to minimize its size, for a specified user interface axis.
 	/// - Parameters:
@@ -158,6 +163,19 @@ public extension NSStackView {
 	@discardableResult @inlinable
 	func hugging(_ priority: NSLayoutConstraint.Priority, for orientation: NSLayoutConstraint.Orientation) -> Self {
 		self.setHuggingPriority(priority, for: orientation)
+		return self
+	}
+
+	/// Sets the Auto Layout priority for resisting clipping of views in the stack view when Auto Layout attempts to reduce the stack view’s size.
+	/// - Parameters:
+	///   - priority: The priority
+	///   - orientation: The orientation
+	/// - Returns: self
+	///
+	/// [Stack hugging priority](https://developer.apple.com/documentation/appkit/nsstackview/sethuggingpriority(_:for:))
+	@discardableResult @inlinable
+	func clippingResistance(_ priority: NSLayoutConstraint.Priority, for orientation: NSLayoutConstraint.Orientation) -> Self {
+		self.setClippingResistancePriority(priority, for: orientation)
 		return self
 	}
 }
@@ -206,6 +224,32 @@ private let _text = "Call me Ishmael. Some years ago—never mind how long preci
 		.distribution(.fillEqually)
 	}
 	.debugFrames(.systemGreen)
+}
+
+@MainActor
+private func makeDockSizeStack__(_ dockSize: Bind<Double>) -> NSView {
+	VStack(alignment: .leading, spacing: 4) {
+		NSTextField(label: "Size:")
+		NSSlider(dockSize, range: 0 ... 1)
+			.numberOfTickMarks(2)
+		HStack {
+			NSTextField(label: "Small")
+				.font(.caption2)
+				.gravityArea(.leading)
+			NSView.Spacer()
+			NSTextField(label: "Large")
+				.font(.caption2)
+				.gravityArea(.trailing)
+		}
+	}
+}
+
+@available(macOS 14, *)
+#Preview("Simple slider") {
+	let dockSize = Bind(0.1)
+	makeDockSizeStack__(dockSize)
+		.width(250)
+		.debugFrames()
 }
 
 #endif

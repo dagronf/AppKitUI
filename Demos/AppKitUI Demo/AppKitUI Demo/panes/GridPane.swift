@@ -20,60 +20,90 @@
 import AppKit
 import AppKitUI
 
-
 class GridPane: Pane {
 	override func title() -> String { "Grid" }
 	@MainActor
 	override func make(model: Model) -> NSView {
-
-		let showContractedBraille = Bind(false)
-		let showEightDotBraille = Bind(false)
-
-		return NSView(layoutStyle: .centered) {
-			VStack(spacing: 16) {
-
-				VStack {
-					NSGridView {
-						NSGridView.Row(rowAlignment: .firstBaseline) {
-							NSTextField(label: "Braille Translation:")
-								.font(.system.weight(.medium))
-							NSPopUpButton()
-								.menu {
-									NSMenuItem(title: "English (Unified)")
-									NSMenuItem(title: "United States")
-								}
-						}
-						NSGridView.Row {
-							NSGridCell.emptyContentView
-							NSButton(checkboxWithTitle: "Show Contracted Braille")
-								.state(showContractedBraille)
-
-						}
-						NSGridView.Row {
-							NSGridCell.emptyContentView
-							NSButton(checkboxWithTitle: "Show Eight Dot Braille")
-								.state(showEightDotBraille)
-						}
-						NSGridView.Row(rowAlignment: .firstBaseline) {
-							NSTextField(label: "Status Cells:")
-								.font(.system.weight(.medium))
-							NSButton(checkboxWithTitle: "Show General Display Status")
-						}
-						NSGridView.Row {
-							NSGridCell.emptyContentView
-							NSButton(checkboxWithTitle: "Show Text Style")
-						}
-						NSGridView.Row {
-							NSGridCell.emptyContentView
-							NSButton(checkboxWithTitle: "Show alert messages for duration")
-						}
+		NSView(layoutStyle: .centered) {
+			let firstName = Bind("Caterpillar")
+			let lastName = Bind("Jones")
+			return VStack {
+				NSGridView(columnSpacing: 2, rowSpacing: 8) {
+					NSGridView.Row {
+						NSTextField(labelWithString: "First Name:")
+						NSTextField(labelWithString: "*")
+							.textColor(.systemRed)
+						NSTextField()
+							.content(firstName)
+							.onChange { newValue in
+								Swift.print("Cell -> \(newValue)")
+							}
 					}
-					//.rowSpacing(8)
-					.columnAlignment(.trailing, forColumn: 0)
-					.columnSpacing(8)
-					.rowAlignment(.firstBaseline)
-					//.debugFrames(.systemYellow)
+					NSGridView.Row {
+						NSTextField(labelWithString: "Last Name:")
+						NSTextField(labelWithString: "*")
+							.textColor(.systemRed)
+						NSTextField()
+							.content(lastName)
+					}
+
+					NSGridView.Row {
+						HDivider()
+					}
+					.mergeCells(0 ... 2)
+
+					NSGridView.Row {
+						NSTextField(labelWithString: "Email Address:")
+						NSTextField(labelWithString: "*")
+							.textColor(.systemRed)
+						NSTextField()
+					}
+					NSGridView.Row {
+						NSTextField(labelWithString: "Phone:")
+						NSGridCell.emptyContentView
+						NSTextField()
+					}
+					NSGridView.Row {
+						NSTextField(labelWithString: "Fax:")
+						NSGridCell.emptyContentView
+						NSTextField()
+					}
+
+					NSGridView.Row {
+						NSTextField(labelWithString: "Sector:")
+						NSTextField(labelWithString: "*")
+							.textColor(.systemRed)
+						NSPopUpButton()
+							.menuItems(["Astronomy", "University", "Wombles"])
+							.huggingPriority(.init(1), for: .horizontal)
+					}
+
+					NSGridView.Row {
+						NSGridCell.emptyContentView
+						NSTextField(labelWithString: "*")
+							.textColor(.systemRed)
+						NSTextField(labelWithString: "indicates a required field")
+					}
+
+					NSGridView.Row {
+						HDivider()
+					}
+					.mergeCells(0 ... 2)
+
+					NSGridView.Row {
+						NSButton.checkbox(title: "All cells merged")
+					}
+					.mergeCells(0 ... 2)
 				}
+				.rowAlignment(.firstBaseline)
+				.columnAlignment(.trailing, forColumn: 0)
+				.columnWidth(200, forColumn: 2)
+				.cell(atColumnIndex: 0, rowIndex: 9, xPlacement: .center)
+				//.debugFrames()
+			}
+
+			.onChange(firstName) { newValue in
+				Swift.print(newValue)
 			}
 		}
 	}

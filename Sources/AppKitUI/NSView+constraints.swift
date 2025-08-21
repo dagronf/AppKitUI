@@ -214,6 +214,22 @@ public extension NSView {
 		self.equalConstraint(.height, ids, priority: priority, constant: constant)
 	}
 
+	/// Add a constraint to make two views equal widths and heights
+	/// - Parameters:
+	///   - ids: The identifiers for the views to make equal
+	///   - priority: The constraint priority
+	///   - constant: The constraint constant value
+	/// - Returns: self
+	@discardableResult @inlinable
+	func equalSizes(
+		_ ids: [AUIIdentifier],
+		priority: NSLayoutConstraint.Priority? = nil,
+		constant: Double = 0
+	) -> Self {
+		self.equalConstraint(.width, ids, priority: priority, constant: constant)
+			.equalConstraint(.height, ids, priority: priority, constant: constant)
+	}
+
 	/// Add a constraint to make two views have the same leading position
 	/// - Parameters:
 	///   - ids: The identifiers for the views to make equal

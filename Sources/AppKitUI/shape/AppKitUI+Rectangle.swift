@@ -18,10 +18,11 @@
 //
 
 import AppKit
+import os.log
 
 /// A view that displays a rectangle
 @MainActor
-public class AUIRectangle: AUIShape {
+public class Rectangle: AUIShape {
 	/// The corner radius for the rectangle
 	public var cornerRadius: Double = 0 {
 		didSet {
@@ -29,10 +30,28 @@ public class AUIRectangle: AUIShape {
 		}
 	}
 
-	@discardableResult
+	/// Set the corner radius
+	/// - Parameter value: The corner radius
+	/// - Returns: self
+	@discardableResult @inlinable
 	public func cornerRadius(_ value: Double) -> Self {
 		self.cornerRadius = value
 		return self
+	}
+
+	/// Create a rectangle with an optional corner radius
+	/// - Parameter cornerRadius: The corner radius
+	public init(cornerRadius: Double = 0) {
+		super.init()
+		self.cornerRadius = cornerRadius
+	}
+	
+	required init?(coder: NSCoder) {
+		fatalError("init(coder:) has not been implemented")
+	}
+
+	deinit {
+		os_log("deinit: AUIShape.Rectangle", log: logger, type: .debug)
 	}
 
 	public override func shape(bounds: CGRect) -> CGPath {
@@ -42,3 +61,20 @@ public class AUIRectangle: AUIShape {
 	}
 }
 
+// MARK: - Previews
+
+#if DEBUG
+
+@available(macOS 14, *)
+#Preview("Basic") {
+	HStack {
+		Rectangle()
+			.fill(color: .systemRed)
+			.frame(width: 50, height: 50)
+		Rectangle()
+			.fill(color: .systemOrange)
+			.frame(width: 150, height: 50)
+	}
+}
+
+#endif

@@ -26,11 +26,11 @@ public class Bind<Wrapped: Equatable> {
 	/// The wrapped value
 	public var wrappedValue: Wrapped {
 		get {
-			self._wrappedValue
+			self.wrappedValue_
 		}
 		set {
-			if self._wrappedValue != newValue {
-				self._wrappedValue = newValue
+			if self.wrappedValue_ != newValue {
+				self.wrappedValue_ = newValue
 			}
 		}
 	}
@@ -38,9 +38,9 @@ public class Bind<Wrapped: Equatable> {
 	/// Create a binding
 	/// - Parameters:
 	///   - value: The initial value for the binding
-	///   - delayType: The delay to apply when calling observers, or nil to automatically update observers
+	///   - delayType: The delay operation to apply when calling observers, or nil to automatically update observers
 	public init(_ value: Wrapped, delayType: DelayingCallType? = nil) {
-		self._wrappedValue = value
+		self.wrappedValue_ = value
 
 		if let delayType {
 			self.delay = DelayingCall(delayType)
@@ -53,7 +53,7 @@ public class Bind<Wrapped: Equatable> {
 	/// Create a binding
 	/// - Parameters:
 	///   - value: The initial value for the binding
-	///   - delayType: The delay to apply when calling observers, or nil to automatically update observers
+	///   - delayType: The delay operation to apply when calling observers, or nil to automatically update observers
 	///   - block: An initial observation block
 	public convenience init(_ value: Wrapped, delayType: DelayingCallType? = nil, _ block: @escaping (Wrapped) -> Void) {
 		self.init(value, delayType: delayType)
@@ -64,18 +64,37 @@ public class Bind<Wrapped: Equatable> {
 		os_log("deinit: %{public}@", log: logger, type:.debug, "\(self)")
 	}
 
-	/// Register a callback block when the value changes
+	// MARK: Private
+
+	private let delay: DelayingCall?
+	private var observers: [WeakWrapper<Wrapped>] = []
+	private var wrappedValue_: Wrapped {
+		didSet {
+			self.update()
+		}
+	}
+}
+
+// MARK: - Register for changes
+
+@MainActor
+public extension Bind {
+	/// Register a callback block for when the value changes
 	/// - Parameters:
 	///   - owner: The owner for the block (usually `self`)
 	///   - block: The block to call when the change occurs
-	public func register(_ owner: AnyObject, _ block: @escaping (Wrapped) -> Void) {
+	func register(_ owner: AnyObject, _ block: @escaping (Wrapped) -> Void) {
 		self.observers.append(WeakWrapper(owner: owner, callback: block))
 	}
+}
 
-	// MARK: Update
+// MARK: - Update and notify
 
+@MainActor
+private extension Bind {
 	// Reflect our wrapped value to the observers
-	private func update() {
+	func update() {
+		assert(Thread.isMainThread)
 		if let delay {
 			// If there is a delay associated with this binding, make sure we use it
 			delay.perform { [weak self] in
@@ -87,40 +106,15 @@ public class Bind<Wrapped: Equatable> {
 		}
 	}
 
-	private func __update() {
+	// Reflect the changes immediately
+	func __update() {
+		assert(Thread.isMainThread)
 		for w in self.observers {
 			if w.owner != nil { w.callback(self.wrappedValue) }
 		}
 	}
-
-	// MARK: Private
-
-	private let delay: DelayingCall?
-	private var observers: [WeakWrapper<Wrapped>] = []
-	private var _wrappedValue: Wrapped {
-		didSet {
-			self.update()
-		}
-	}
 }
 
-// MARK: - Bond conveniences
-
-@MainActor
-public extension Bind where Wrapped == Bool {
-	/// Toggle the value of the binding
-	@inlinable func toggle() {
-		self.wrappedValue.toggle()
-	}
-
-	/// Return a one-way binding that present the inverse of this value
-	/// - Returns: a new binding
-	///
-	/// Note: any changes in the new binding will NOT reflect back to this binding (one way!)
-	@inlinable func inverted() -> Bind<Bool> {
-		self.oneWayTransform { $0 == false }
-	}
-}
 
 // MARK: - Private
 
@@ -136,3 +130,4 @@ private class WeakWrapper<Wrapped: Equatable> {
 		os_log("deinit: %{public}@", log: logger, type:.debug, "\(self)")
 	}
 }
+

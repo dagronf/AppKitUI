@@ -26,39 +26,69 @@ class ShadowsPane: Pane {
 	override func make(model: Model) -> NSView {
 		return NSView(layoutStyle: .centered) {
 			VStack {
-				for mode in [false, true] {
-					NSVisualEffectView(isDarkMode: mode) {
-						HStack(spacing: 20) {
-							AUIRectangle()
-								.fillColor(.systemRed)
-								.stroke(.textColor, lineWidth: 0.5)
-								.shadow(offset: CGSize(width: 1, height: -1), color: .textColor, blurRadius: 3)
-								.frame(width: 50, height: 50)
-								.overlay(NSView(layoutStyle: .centered) { NSTextField(label: "1").font(.title2) })
-							AUIRectangle()
-								.fillColor(.systemGreen)
-								.stroke(.textColor, lineWidth: 0.5)
-								.shadow(offset: CGSize(width: 0, height: 0), color: .textColor, blurRadius: 5)
-								.frame(width: 50, height: 50)
-								.overlay(NSView(layoutStyle: .centered) { NSTextField(label: "2").font(.title2) })
-							AUIRectangle()
-								.fillColor(.systemBlue)
-								.stroke(.textColor, lineWidth: 0.5)
-								.shadow(offset: CGSize(width: -2, height: 2), color: .textColor, blurRadius: 3)
-								.frame(width: 50, height: 50)
-								.overlay(NSView(layoutStyle: .centered) { NSTextField(label: "3").font(.title2) })
-							AUIRectangle()
-								.fillColor(.systemYellow)
-								.stroke(.textColor, lineWidth: 0.5)
-								.cornerRadius(5)
-								.shadow(offset: CGSize(width: 0, height: 0), color: .textColor, blurRadius: 10)
-								.frame(width: 50, height: 50)
-								.overlay(NSView(layoutStyle: .centered) { NSTextField(label: "4").font(.title2) })
+				VStack {
+					for mode in [false, true] {
+						NSVisualEffectView(isDarkMode: mode) {
+							HStack(spacing: 20) {
+								Rectangle()
+									.fill(color: .systemRed)
+									.stroke(.textColor, lineWidth: 0.5)
+									.shadow(offset: CGSize(width: 1, height: -1), color: .textColor, blurRadius: 3)
+									.frame(width: 50, height: 50)
+									.overlay(NSView(layoutStyle: .centered) { NSTextField(label: "1").font(.title2) })
+								Rectangle()
+									.fill(color: .systemGreen)
+									.stroke(.textColor, lineWidth: 0.5)
+									.shadow(offset: CGSize(width: 0, height: 0), color: .textColor, blurRadius: 5)
+									.frame(width: 50, height: 50)
+									.overlay(NSView(layoutStyle: .centered) { NSTextField(label: "2").font(.title2) })
+								Rectangle()
+									.fill(color: .systemBlue)
+									.stroke(.textColor, lineWidth: 0.5)
+									.shadow(offset: CGSize(width: -2, height: 2), color: .textColor, blurRadius: 3)
+									.frame(width: 50, height: 50)
+									.overlay(NSView(layoutStyle: .centered) { NSTextField(label: "3").font(.title2) })
+								Rectangle()
+									.fill(color: .systemYellow)
+									.stroke(.textColor, lineWidth: 0.5)
+									.cornerRadius(5)
+									.shadow(offset: CGSize(width: 0, height: 0), color: .textColor, blurRadius: 10)
+									.frame(width: 50, height: 50)
+									.overlay(NSView(layoutStyle: .centered) { NSTextField(label: "4").font(.title2) })
+							}
+							.padding()
+							.backgroundBorder(.white, lineWidth: 1)
 						}
-						.padding()
-						.backgroundBorder(.white, lineWidth: 1)
 					}
 				}
+
+				HStack(spacing: 20) {
+					NSView()
+						.backgroundFill(.systemRed)
+						.shadow(offset: CGSize(width: 1, height: -1), color: .textColor, blurRadius: 3)
+						.frame(width: 50, height: 50)
+					NSView()
+						.backgroundFill(.systemGreen)
+						.shadow(offset: CGSize(width: 0, height: 0), color: .textColor, blurRadius: 5)
+						.frame(width: 50, height: 50)
+					NSView()
+						.backgroundFill(.systemBlue)
+						.shadow(offset: CGSize(width: -2, height: 2), color: .textColor, blurRadius: 3)
+						.frame(width: 50, height: 50)
+					NSView()
+						.backgroundFill(.systemYellow)
+						.backgroundCornerRadius(5)
+						.shadow(offset: CGSize(width: 0, height: 0), color: .black, blurRadius: 10)
+						.frame(width: 50, height: 50)
+					NSView()
+						.backgroundBorder(.textColor, lineWidth: 2)
+						.backgroundFill(.quaternaryLabelColor)
+						.frame(width: 50, height: 50)
+					NSView()
+						.backgroundBorder(DynamicColor(dark: .systemRed, light: .systemBlue), lineWidth: 2)
+						.frame(width: 50, height: 50)
+				}
+				.padding()
 			}
 		}
 	}

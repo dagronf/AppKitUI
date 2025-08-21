@@ -82,8 +82,10 @@ private func makeLoggingOutputView(model: Model) -> NSView {
 			.gravityArea(.leading)
 		}
 		.hugging(.init(10), for: .horizontal)
-		.backgroundFill(.textBackgroundColor)
 		.padding(4)
+		.background(
+			NSVisualEffectView()
+		)
 	}
 }
 

@@ -180,6 +180,13 @@ public extension NSTextField {
 		return self
 	}
 
+	/// A Boolean value that controls whether the text field draws a solid black border around its contents.
+	@discardableResult @inlinable
+	func isBordered(_ s: Bool) -> Self {
+		self.isBordered = s
+		return self
+	}
+
 	/// Set whether the label wraps text whose length that exceeds the label's frame.
 	@discardableResult @inlinable
 	func wraps(_ wraps: Bool) -> Self {
@@ -345,6 +352,7 @@ public extension NSTextField {
 				self?.textColor = newValue
 			}
 		}
+		self.textColor = color.wrappedValue
 		return self
 	}
 
@@ -358,6 +366,7 @@ public extension NSTextField {
 				self?.backgroundColor = newValue
 			}
 		}
+		self.backgroundColor = color.wrappedValue
 		return self
 	}
 
@@ -367,6 +376,34 @@ public extension NSTextField {
 	@discardableResult
 	func hasText(_ hasText: Bind<Bool>) -> Self {
 		self.usingTextFieldStorage { $0.hasText = hasText }
+		return self
+	}
+
+	/// Bind the editable state
+	/// - Parameter isEditable: The state binding
+	/// - Returns: self
+	@discardableResult
+	func isEditable(_ isEditable: Bind<Bool>) -> Self {
+		isEditable.register(self) { @MainActor [weak self] newValue in
+			if self?.isEditable != newValue {
+				self?.isEditable = newValue
+			}
+		}
+		self.isEditable = isEditable.wrappedValue
+		return self
+	}
+
+	/// Bind the editable state
+	/// - Parameter isEditable: The state binding
+	/// - Returns: self
+	@discardableResult
+	func isSelectable(_ isSelectable: Bind<Bool>) -> Self {
+		isSelectable.register(self) { @MainActor [weak self] newValue in
+			if self?.isSelectable != newValue {
+				self?.isSelectable = newValue
+			}
+		}
+		self.isSelectable = isSelectable.wrappedValue
 		return self
 	}
 }
@@ -523,6 +560,12 @@ fileprivate extension NSTextField {
 				$0.minimumFractionDigits = 0
 				$0.maximumFractionDigits = 8
 			})
+
+			NSTextField(string: "Fish and chips")
+				.width(200)
+				.onChange { value in
+					Swift.print("onChange: \(value)")
+				}
 		}
 		.onChange(text) { newValue in
 			Swift.print("onChange detected -> '\(newValue)'")

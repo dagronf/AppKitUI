@@ -48,4 +48,11 @@ public extension NSImage {
 		self.size = value
 		return self
 	}
+
+	/// Create a new imageview containing a system symbol (macOS 11 and later)
+	/// - Parameter systemSymbolName: The symbol name
+	@available(macOS 11.0, *)
+	convenience init?(systemSymbolName: String) {
+		self.init(systemSymbolName: systemSymbolName, accessibilityDescription: nil)
+	}
 }

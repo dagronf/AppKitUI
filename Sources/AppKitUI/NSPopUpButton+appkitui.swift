@@ -39,32 +39,23 @@ public extension NSPopUpButton {
 		return self
 	}
 
+	/// Set the alignment of the text in the popup button
+	/// - Parameter value: The text alignment
+	/// - Returns: self
+	@discardableResult @inlinable
+	func alignment(_ value: NSTextAlignment) -> Self {
+		if let cell = self.cell as? NSPopUpButtonCell {
+			 cell.alignment = .right
+		}
+		return self
+	}
+
 	/// Set the menu item content for the combo box
 	/// - Parameter content: The menu items to appear for the combo box
 	/// - Returns: self
 	@discardableResult
 	func menuItems(_ content: [String]) -> Self {
 		self.setMenuItems(content)
-		return self
-	}
-
-	/// Set the menu for the popup button
-	/// - Parameter menu: The menu
-	/// - Returns: self
-	@discardableResult @inlinable
-	func menu(_ menu: NSMenu) -> Self {
-		self.menu = menu
-		return self
-	}
-
-	/// Set the menu for the popup button
-	/// - Parameters:
-	///   - title: The menu title
-	///   - builder: The block returning `NSMenuItem`s for the menu
-	/// - Returns: self
-	@discardableResult
-	func menu(title: String = "", @NSMenuItemsBuilder builder: () -> [NSMenuItem]) -> Self {
-		self.menu = NSMenu(title: title, builder: builder)
 		return self
 	}
 }
@@ -198,6 +189,14 @@ private extension NSPopUpButton {
 			}
 			.onSelectionChange { s in
 				Swift.print("pullsDown Selection did change to \(s)")
+			}
+
+		NSPopUpButton()
+			.alignment(.right)
+			.menu {
+				NSMenuItem(title: "Maximise")
+				NSMenuItem(title: "Zoom")
+				NSMenuItem(title: "Genie Effect")
 			}
 	}
 }

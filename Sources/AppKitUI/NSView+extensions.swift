@@ -48,5 +48,3 @@ extension NSView {
 		block()
 	}
 }
-
-

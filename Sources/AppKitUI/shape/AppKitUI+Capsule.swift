@@ -18,11 +18,41 @@
 //
 
 import AppKit
+import os.log
 
 /// A view that displays a capsule
 @MainActor
-public class AUICapsule: AUIShape {
+public class Capsule: AUIShape {
+	/// Draw a capsule shape
+	/// - Parameter bounds: The bounds to draw the capsule
+	/// - Returns: The capsule path
 	public override func shape(bounds: CGRect) -> CGPath {
-		CGPath(roundedRect: bounds, cornerWidth: bounds.height / 2, cornerHeight: bounds.height / 2, transform: nil)
+		let cr = min(bounds.width / 2, bounds.height / 2)
+		return CGPath(roundedRect: bounds, cornerWidth: cr, cornerHeight: cr, transform: nil)
+	}
+
+	deinit {
+		os_log("deinit: AUIShape.Capsule", log: logger, type: .debug)
 	}
 }
+
+// MARK: - Previews
+
+#if DEBUG
+
+@available(macOS 14, *)
+#Preview("Basic") {
+	HStack {
+		Capsule()
+			.fill(color: .systemRed)
+			.frame(width: 50, height: 50)
+		Capsule()
+			.fill(color: .systemOrange)
+			.frame(width: 150, height: 50)
+		Capsule()
+			.fill(color: .systemYellow)
+			.frame(width: 50, height: 150)
+	}
+}
+
+#endif

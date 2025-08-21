@@ -159,6 +159,29 @@ class ButtonPane: Pane {
 					}
 
 					NSGridView.Row {
+						StyledHeader(label: "Menu")
+						HStack {
+							NSButton()
+								.image(NSImage(named: NSImage.actionTemplateName))
+								.imagePosition(.imageOnly)
+								.isBordered(false)
+								.frame(width: 24, height: 24)
+								.imageScaling(.scaleProportionallyUpOrDown)
+								.onActionMenu(
+									NSMenu {
+										NSMenuItem(title: "Mark completed") { _ in model.log("first menu item") }
+										NSMenuItem(title: "Delay for two weeks") { _ in model.log("second menu item") }
+										NSMenuItem.separator()
+										NSMenuItem(title: "Pay online…") { _ in model.log("third menu item") }
+									}
+								)
+								.accessibilityTitle("More options")
+								.gravityArea(.trailing)
+							NSView()
+						}
+					}
+
+					NSGridView.Row {
 						StyledHeader(label: "Checkbox")
 						VStack {
 							HStack {
@@ -253,6 +276,9 @@ class ButtonPane: Pane {
 				.rowPlacement(.top, forRowIndex: 0)
 				.rowAlignment(.none, forRowIndex: 1)
 				.rowPlacement(.top, forRowIndex: 1)
+
+				.rowAlignment(.none, forRowIndex: 5)
+				.rowPlacement(.center, forRowIndex: 5)
 			}
 			.padding()
 			//.debugFrames()
@@ -264,6 +290,6 @@ class ButtonPane: Pane {
 @available(macOS 14, *)
 #Preview("default") {
 	ButtonPane().make(model: Model())
-		.frame(width: 600, height: 500)
+		.frame(width: 600, height: 700)
 }
 #endif

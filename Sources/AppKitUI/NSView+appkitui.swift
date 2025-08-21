@@ -27,6 +27,9 @@ public extension NSView {
 	/// Used for detecting empty views within (eg.) a stackview
 	static let empty = NSView()
 
+	@inlinable
+	var rootLayer: CALayer { self.layer! }
+
 	/// The layout style when building a view with a content builder
 	enum LayoutStyle {
 		/// Attach the builder view to the edges of this view
@@ -74,6 +77,16 @@ public extension NSView {
 		}
 		return self
 	}
+
+	/// Set the semantic context for this view and all subviews to the same as a macOS grouped form
+	/// - Returns: self
+	///
+	/// See: [https://stackoverflow.com/a/79607626](https://stackoverflow.com/a/79607626)
+	@discardableResult
+	func formSemanticContent() -> Self {
+		self.setValue(8, forKey: "semanticContext")
+		return self
+	}
 }
 
 // MARK: - Background and overlay views
@@ -96,21 +109,21 @@ public extension NSView {
 		self.overlay(block())
 	}
 
-	/// Set the background view for this view
+	/// Insert a background view behind this view
 	/// - Parameter backgroundView: The view to use as the background for this view
 	/// - Returns: The background view
 	///
-	/// Note: This function returns the background view
+	/// Note: This function returns the **background view** in order for the heirarchy to be maintained
 	@discardableResult @inlinable
 	func background<T: NSView>(_ backgroundView: T) -> T {
 		backgroundView.overlay(self)
 	}
 
-	/// Set the background view for this view
+	/// Insert a background view behind this view
 	/// - Parameter block: The block that builds the background view
 	/// - Returns: The background view
 	///
-	/// Note: This function returns the background view
+	/// Note: This function returns the **background view** in order for the heirarchy to be maintained
 	@discardableResult @inlinable
 	func background<T: NSView>(_ block: () -> T) -> T {
 		self.background(block())
@@ -151,6 +164,8 @@ public extension NSView {
 	/// Set the content for the view by attaching a child view to the edges of this view
 	/// - Parameter content: The view's content
 	/// - Returns: self
+	///
+	/// Check - self.canDrawSubviewsIntoLayer = true
 	@discardableResult
 	func content(fill content: NSView, padding: Double = 0) -> Self {
 		// Remove the existing content first
@@ -292,6 +307,15 @@ public extension NSView {
 		return self
 	}
 
+	/// Set the alpha value for the view
+	/// - Parameter value: The alpha value (clamped 0 ... 1)
+	/// - Returns: self
+	@discardableResult @inlinable
+	func alphaValue(_ value: Double) -> Self {
+		self.alphaValue = max(0, min(1, value))
+		return self
+	}
+
 	/// Apply a drop shadow to this view
 	/// - Parameters:
 	///   - offset: The shadow’s relative position, which you specify with horizontal and vertical offset values.
@@ -349,7 +373,7 @@ public extension NSView {
 	/// - Returns: self
 	@discardableResult
 	func debugFrame(_ color: CGColor? = nil) -> Self {
-		let color = color ?? CGColor(red: 1, green: 0, blue: 0, alpha: 1)
+		let color = color ?? CGColor(red: 1, green: 0, blue: 0, alpha: 0.4)
 		self.wantsLayer = true
 		self.layer.usingUnwrappedValue {
 			$0.borderColor = color
@@ -470,14 +494,48 @@ public extension NSView {
 		return self
 	}
 
-	/// Set the background fill color
+	// MARK: Background fill
+
+	/// Set the background fill color by setting the view's layer background color property
 	/// - Parameter fillColor: The fill color
 	/// - Returns: self
 	@discardableResult
 	func backgroundFill(_ fillColor: NSColor) -> Self {
 		self.wantsLayer = true
-		self.usingEffectiveAppearance {
-			self.layer!.backgroundColor = fillColor.cgColor
+		self.rootLayer.backgroundColor = fillColor.cgColor
+		self.onAppearanceChange { @MainActor [weak self] in
+			self?.rootLayer.backgroundColor = fillColor.effectiveCGColor
+		}
+		return self
+	}
+
+	/// Set the background fill color
+	/// - Parameter fillColor: The fill color
+	/// - Returns: self
+	@discardableResult
+	func backgroundFill(_ fillColor: DynamicColor) -> Self {
+		self.wantsLayer = true
+		self.rootLayer.backgroundColor = fillColor.effectiveCGColor
+		self.onAppearanceChange { @MainActor [weak self] in
+			self?.rootLayer.backgroundColor = fillColor.effectiveCGColor
+		}
+		return self
+	}
+
+	// MARK: Background stroke
+
+	/// Set the background border stroke
+	/// - Parameters:
+	///   - borderColor: The color for the border
+	///   - lineWidth: The line width
+	/// - Returns: self
+	@discardableResult
+	func backgroundBorder(_ borderColor: NSColor, lineWidth: Double) -> Self {
+		self.wantsLayer = true
+		self.rootLayer.borderColor = borderColor.cgColor
+		self.rootLayer.borderWidth = lineWidth
+		self.onAppearanceChange { @MainActor [weak self] in
+			self?.rootLayer.borderColor = borderColor.effectiveCGColor
 		}
 		return self
 	}
@@ -488,46 +546,64 @@ public extension NSView {
 	///   - lineWidth: The line width
 	/// - Returns: self
 	@discardableResult
-	func backgroundBorder(_ borderColor: NSColor, lineWidth: Double) -> Self {
+	func backgroundBorder(_ borderColor: DynamicColor, lineWidth: Double) -> Self {
 		self.wantsLayer = true
-		self.usingEffectiveAppearance {
-			self.layer!.borderColor = borderColor.cgColor
-			self.layer!.borderWidth = lineWidth
+		self.rootLayer.borderColor = borderColor.effectiveColor.effectiveCGColor
+		self.rootLayer.borderWidth = lineWidth
+		self.onAppearanceChange { @MainActor [weak self] in
+			self?.rootLayer.borderColor = borderColor.effectiveColor.effectiveCGColor
 		}
 		return self
 	}
+}
 
-	/// Apply a checkerboard effect to the background of this view
-	/// - Parameters:
-	///   - color1: color 1
-	///   - color2: color 2
-	///   - dimension: The dimension of each check
-	/// - Returns: self
-	///
-	/// Setting the background filter also sets `masksToBounds` on the NSView.
+/// MARK: - Observing appearance changes
+
+@MainActor
+public extension NSView {
+	/// Call a block when the application's appearance changes
+	/// - Parameter block: The block to call
 	@discardableResult
-	func checkerboardBackground(color1: NSColor = .white, color2: NSColor = .black, dimension: Double = 8) -> Self {
-		if let filter = CIFilter(name: "CICheckerboardGenerator") {
-			self.wantsLayer = true
-
-			let width = NSNumber(value: Float(dimension))
-			let center = CIVector(cgPoint: CGPoint(x: 0, y: 0))
-			let darkColor = CIColor(cgColor: color1.cgColor)
-			let lightColor = CIColor(cgColor: color2.cgColor)
-			let sharpness = NSNumber(value: 1.0)
-
-			filter.setDefaults()
-			filter.setValue(width, forKey: "inputWidth")
-			filter.setValue(center, forKey: "inputCenter")
-			filter.setValue(darkColor, forKey: "inputColor0")
-			filter.setValue(lightColor, forKey: "inputColor1")
-			filter.setValue(sharpness, forKey: "inputSharpness")
-
-			self.backgroundFilters.append(filter)
-			self.layer?.masksToBounds = true
+	func onAppearanceChange(_ block: @escaping () -> Void) -> Self {
+		self.usingViewStorage {
+			$0.registerAppearanceHandler(block)
 		}
 		return self
 	}
+}
+
+@MainActor
+private class AppearanceObservation {
+	fileprivate init() {
+		if #available(macOS 10.14, *) {
+			// Start observing straight away
+			self.observer = NSApp.observe(\.effectiveAppearance, options: [.new, .initial]) { @MainActor [weak self] app, change in
+				self?.reflectObservers()
+			}
+		}
+	}
+
+	deinit {
+		os_log("deinit: AppearanceObservation", log: logger, type: .debug)
+	}
+
+	/// Add a block to call when the appearance for the application changes
+	/// - Parameter block: The block to call
+	func registerAppearanceHandler(_ block: @escaping () -> Void) {
+		assert(Thread.isMainThread)
+		self.observations.append(block)
+	}
+
+	/// Called when the app's effective appearance has changed
+	private func reflectObservers() {
+		assert(Thread.isMainThread)
+		self.observations.forEach { block in
+			block()
+		}
+	}
+
+	var observer: NSKeyValueObservation? = nil
+	var observations: [() -> Void] = []
 }
 
 // MARK: - Storage
@@ -540,15 +616,23 @@ extension NSView {
 
 	@MainActor
 	class Storage {
-		var windowedContent: [WindowedContentProtocol] = []
-
 		func addWindowedContent(_ content: WindowedContentProtocol) {
 			self.windowedContent.append(content)
 		}
 
+		func registerAppearanceHandler(_ block: @escaping () -> Void) {
+			guard #available(macOS 10.14, *) else { return }
+			self.appearanceObserver.registerAppearanceHandler(block)
+		}
+
 		deinit {
 			os_log("deinit: NSView.Storage", log: logger, type: .debug)
+			self.windowedContent = []
 		}
+
+		/// Only create the appearance observer if we need it
+		private lazy var appearanceObserver = AppearanceObservation()
+		private var windowedContent: [WindowedContentProtocol] = []
 	}
 }
 
@@ -576,29 +660,14 @@ extension NSView {
 			.backgroundCornerRadius(5)
 			.shadow(offset: CGSize(width: 0, height: 0), color: .black, blurRadius: 10)
 			.frame(width: 50, height: 50)
-	}
-}
-
-@available(macOS 14, *)
-#Preview("checkerboard") {
-	HStack {
 		NSView()
-			.identifier("1")
-			.checkerboardBackground(color1: .white.withAlphaComponent(0.1), color2: .black.withAlphaComponent(0.1))
-			.onClickGesture {
-				Swift.print("User clicked 1")
-			}
+			.backgroundBorder(.textColor, lineWidth: 2)
+			.backgroundFill(.quaternaryLabelColor)
+			.frame(width: 50, height: 50)
 		NSView()
-			.identifier("2")
-			.checkerboardBackground(color1: .blue.withAlphaComponent(0.1), color2: .red.withAlphaComponent(0.1))
-			.onClickGesture {
-				Swift.print("User clicked 2")
-			}
+			.backgroundBorder(DynamicColor(dark: .systemRed, light: .systemBlue), lineWidth: 2)
+			.frame(width: 50, height: 50)
 	}
-	.equalWidths(["1", "2"])
-	.equalHeights(["1", "2"])
-	.padding(8)
-	.debugFrames()
 }
 
 #endif

@@ -368,6 +368,20 @@ public extension AUISwitch {
 	}
 }
 
+// MARK: - Actions
+
+@MainActor
+public extension AUISwitch {
+	/// Set the block callback when the user interacts with the switch
+	/// - Parameter block: The block to call, passing the new state
+	/// - Returns: self
+	@discardableResult
+	func onAction(_ block: @escaping (NSControl.StateValue) -> Void) -> Self {
+		self.usingStorage { $0.action = block }
+		return self
+	}
+}
+
 // MARK: - Bindings
 
 @MainActor

@@ -21,7 +21,7 @@ import AppKit
 import AppKitUI
 
 class TextFieldPane: Pane {
-	override func title() -> String { "NSTextField" }
+	override func title() -> String { "Text Fields" }
 	@MainActor
 	override func make(model: Model) -> NSView {
 		return ScrollView(borderType: .noBorder) {

@@ -20,6 +20,15 @@
 import AppKit
 import AppKitUI
 
+extension NSApplication {
+	func isDarkMode() -> Bool {
+		if #available(macOS 10.14, *) {
+			return NSApp.effectiveAppearance.bestMatch(from: [.darkAqua, .aqua]) == .darkAqua
+		}
+		return false
+	}
+}
+
 class VisualEffectPane: Pane {
 	override func title() -> String { "Visual Effect" }
 	@MainActor
@@ -32,6 +41,10 @@ class VisualEffectPane: Pane {
 		let imcycle = NSImage(named: "figure.outdoor.cycle")!
 			.isTemplate(true)
 		let imavatar = NSImage(named: "avatar")!
+
+		let lightMode = NSImage(named: "sun")!.isTemplate(true)
+		let darkMode  = NSImage(named: "moon")!.isTemplate(true)
+		let imageBinding = Bind<NSImage?>(NSApp.isDarkMode() ? darkMode : lightMode)
 
 		let isPopoverVisible = Bind(false)
 
@@ -130,8 +143,21 @@ class VisualEffectPane: Pane {
 					.backgroundCornerRadius(12)
 					.backgroundBorder(.quaternaryLabelColor, lineWidth: 0.5)
 					.identifier("vs2")
+
+					NSImageView()
+						.image(imageBinding)
+						.onAppearanceChange {
+							imageBinding.wrappedValue = NSApp.isDarkMode() ? darkMode : lightMode
+						}
+						.padding(8)
+						.identifier("vs3")
+						.background(
+							NSVisualEffectView()
+								.cornerRadius(12)
+								.border(.quaternaryLabelColor, lineWidth: 0.5)
+						)
 				}
-				.equalHeights(["vs1", "vs2"])
+				.equalHeights(["vs1", "vs2", "vs3"])
 			}
 
 		}

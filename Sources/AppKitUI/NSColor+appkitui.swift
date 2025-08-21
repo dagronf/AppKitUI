@@ -23,4 +23,51 @@ extension NSColor {
 			return NSColor.selectedMenuItemColor
 		}
 	}
+
+	/// Return a lighter representation of this color
+	@discardableResult @inlinable
+	public func lighter(withLevel value: Double) -> NSColor {
+		self.highlight(withLevel: value) ?? self
+	}
+
+	/// Return a darker representation of this color
+	@discardableResult @inlinable
+	public func darker(withLevel value: Double) -> NSColor? {
+		self.shadow(withLevel: value) ?? self
+	}
+
+	/// Return a representation of this color with a modified alpha value
+	@discardableResult @inlinable
+	public func alpha(_ alphaValue: Double) -> NSColor {
+		let a = max(0, min(1, alphaValue))
+		return self.withAlphaComponent(a)
+	}
+}
+
+
+// MARK: - Appearance handling
+
+// https://christiantietze.de/posts/2021/10/nscolor-performAsCurrentDrawingAppearance-resolve-current-appearance/
+
+extension NSAppearanceCustomization {
+	@discardableResult
+	func performWithEffectiveAppearanceAsDrawingAppearance<T>(_ block: () -> T) -> T {
+		// Similar to `NSAppearance.performAsCurrentDrawingAppearance`, but
+		// works below macOS 11 and assigns to `result` properly
+		// (capturing `result` inside a block doesn't work the way we need).
+		let result: T
+		let old = NSAppearance.current
+		NSAppearance.current = self.effectiveAppearance
+		result = block()
+		NSAppearance.current = old
+		return result
+	}
+}
+
+extension NSColor {
+	/// Uses the `NSApplication.effectiveAppearance`.
+	/// If you need per-view accurate appearance, prefer this instead:
+	///
+	///     let cgColor = aView.performWithEffectiveAppearanceAsDrawingAppearance { aColor.cgColor }
+	var effectiveCGColor: CGColor { NSApp.performWithEffectiveAppearanceAsDrawingAppearance { self.cgColor } }
 }

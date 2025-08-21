@@ -21,7 +21,7 @@ class AUISwitchPane: Pane {
 
 			HDivider()
 
-			VStack(alignment: .leading) {
+			VStack(alignment: .leading, spacing: 20) {
 				HStack {
 					NSButton.checkbox(title: "Enabled")
 						.state(enabled)

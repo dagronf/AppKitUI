@@ -23,7 +23,12 @@ import Foundation
 public extension Bind {
 	/// Returns a new value binder which returns a transformed value from this binder
 	/// - Parameter block: A block which transforms this binder's value to a new value
-	/// - Returns: A new ValueBinder
+	/// - Returns: A new binding
+	///
+	/// Note that being a one-way binding means that the created binding WILL NOT reflect changed
+	/// values back to this binding.
+	///
+	/// The benefit of a one-way transform is removing the overhead of the second binding observation
 	func oneWayTransform<NEWBINDERTYPE>(_ block: @escaping (Wrapped) -> NEWBINDERTYPE) -> Bind<NEWBINDERTYPE> {
 		// Grab out the current value of this binder, and transform it using the block
 		let initialValue = block(self.wrappedValue)
@@ -38,25 +43,13 @@ public extension Bind {
 		}
 		return newBinder
 	}
-
-	/// Reflect the value of this binding to another binding and vice versa (two-way binding)
-	/// - Parameter reflector: The binding to reflect
-	///
-	/// Note: The reflector should be stored somewhere
-	func reflect(_ reflector: Bind<Wrapped>) {
-		reflector.register(self) { @MainActor [weak self] newValue in
-			self?.wrappedValue = newValue
-		}
-
-		self.register(reflector) { @MainActor [weak reflector] newValue in
-			reflector?.wrappedValue = newValue
-		}
-	}
 }
+
+// MARK: - Bool conveniences
 
 @MainActor
 public extension Bind where Wrapped == Bool {
-	/// Transform a bool value to its toggled value
+	/// Create a one-way binding that represents the inverse of this binding
 	func toggled() -> Bind<Bool> {
 		self.oneWayTransform { $0 == false }
 	}
@@ -64,6 +57,11 @@ public extension Bind where Wrapped == Bool {
 	/// Transform a bool state value into a read-only string representation of the state ("on"/"off")
 	func stateString() -> Bind<String> {
 		self.oneWayTransform { $0 ? "on" : "off" }
+	}
+
+	/// Toggle the binding's bool value
+	@inlinable func toggle() {
+		self.wrappedValue.toggle()
 	}
 }
 

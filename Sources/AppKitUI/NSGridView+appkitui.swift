@@ -170,54 +170,11 @@ public extension NSGridView {
 // MARK: - Rows
 
 @available(macOS 10.12, *)
-@MainActor public extension NSGridView {
-	/// An NSGridView row definition
-	@MainActor class Row {
-		/// Create a grid row
-		/// - Parameters:
-		///   - topPadding: The padding to apply to the top of the row
-		///   - bottomPadding: The padding to apply to the bottom of the row
-		///   - rowAlignment: The alignment for all cells in the row
-		///   - builder: The cell builder
-		public init(
-			topPadding: CGFloat = 0,
-			bottomPadding: CGFloat = 0,
-			rowAlignment: NSGridRow.Alignment = .inherited,
-			@NSViewsBuilder builder: () -> [NSView]
-		) {
-			self.rowCells = builder()
-			self.topPadding = topPadding
-			self.bottomPadding = bottomPadding
-			self.rowAlignment = rowAlignment
-		}
-
-		/// Merge the cell indexes
-		/// - Parameter indexes: The indexes to merge
-		/// - Returns: self
-		public func mergeCells(_ indexes: ClosedRange<Int>) -> Self {
-			self.mergedCells.append(indexes)
-			return self
-		}
-
-		/// Merge the cell indexes
-		/// - Parameter indexes: The indexes to merge
-		/// - Returns: self
-		public func mergeCells(_ indexes: [ClosedRange<Int>]) -> Self {
-			self.mergedCells.append(contentsOf: indexes)
-			return self
-		}
-
-		fileprivate let topPadding: CGFloat
-		fileprivate let bottomPadding: CGFloat
-		fileprivate let rowAlignment: NSGridRow.Alignment
-		fileprivate let rowCells: [NSView]
-		fileprivate var mergedCells: [ClosedRange<Int>] = []
-	}
-}
-
-@available(macOS 10.12, *)
 @MainActor
 public extension NSGridView {
+	/// Set the global row alignment for the grid
+	/// - Parameter value: The alignment
+	/// - Returns: self
 	@discardableResult @inlinable
 	func rowAlignment(_ value: NSGridRow.Alignment) -> Self {
 		self.rowAlignment = value
@@ -269,54 +226,6 @@ public extension NSGridView {
 	}
 }
 
-@available(macOS 10.12, *)
-@MainActor
-public extension NSGridView {
-	/// Merge the specified cell indexes in 'row'
-	@discardableResult @inlinable
-	func mergeRowCells(_ columnIndexes: ClosedRange<Int>, inRowIndex row: Int) -> Self {
-		self.row(at: row).mergeCells(in: NSRange(columnIndexes))
-		return self
-	}
-}
-
-// MARK: GridRow Result builder
-
-@available(macOS 10.12, *)
-@resultBuilder
-public enum GridRowBuilder {
-	static func buildBlock() -> [NSGridView.Row] { [] }
-}
-
-@available(macOS 10.12, *)
-public extension GridRowBuilder {
-	static func buildBlock(_ settings: NSGridView.Row...) -> [NSGridView.Row] {
-		settings
-	}
-
-	static func buildBlock(_ settings: [NSGridView.Row]) -> [NSGridView.Row] {
-		settings
-	}
-
-	static func buildOptional(_ component: [NSGridView.Row]?) -> [NSGridView.Row] {
-		component ?? []
-	}
-
-	/// Add support for if statements.
-	static func buildEither(first components: [NSGridView.Row]) -> [NSGridView.Row] {
-		 components
-	}
-
-	static func buildEither(second components: [NSGridView.Row]) -> [NSGridView.Row] {
-		 components
-	}
-
-	/// Add support for loops.
-	static func buildArray(_ components: [[NSGridView.Row]]) -> [NSGridView.Row] {
-		 components.flatMap { $0 }
-	}
-}
-
 // MARK: - Cells
 
 @available(macOS 10.12, *)
@@ -356,6 +265,34 @@ public extension NSGridView {
 	@discardableResult @inlinable
 	func cell(atColumnIndex col: Int, rowIndex row: Int, yPlacement: NSGridCell.Placement) -> Self {
 		self.cell(atColumnIndex: col, rowIndex: row).yPlacement = yPlacement
+		return self
+	}
+}
+
+// MARK: - Cell merging
+
+@available(macOS 10.12, *)
+@MainActor
+public extension NSGridView {
+	/// Merge the specified cells within a row
+	/// - Parameters:
+	///   - columnIndexes: The column indexes to merge
+	///   - row: The row index
+	/// - Returns: self
+	@discardableResult
+	func mergeRowCells(_ columnIndexes: ClosedRange<Int>, inRowIndex row: Int) -> Self {
+		self.row(at: row).mergeCells(in: NSRange(columnIndexes))
+		return self
+	}
+
+	/// Merge the specified cells within a column
+	/// - Parameters:
+	///   - rowIndexes: The row indexes for the cells to merge within the column
+	///   - col: The column identifier
+	/// - Returns: self
+	@discardableResult
+	func mergeColumnCells(_ rowIndexes: ClosedRange<Int>, inColumnIndex col: Int) -> Self {
+		self.column(at: col).mergeCells(in: NSRange(rowIndexes))
 		return self
 	}
 }

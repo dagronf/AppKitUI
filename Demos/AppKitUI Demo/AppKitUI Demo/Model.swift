@@ -35,7 +35,12 @@ class Model {
 			NVivoLicenseExamplePane(),
 			VisualEffectPane(),
 			ShadowsPane(),
-			ShapesPane()
+			ShapesPane(),
+			DockExamplePane(),
+			FinanceSwatchPane(),
+			ImageViewPane(),
+			DelayedBindPane(),
+			BindingsPane()
 		]
 		if #available(macOS 11, *) {
 			p.append(SwitchPane())

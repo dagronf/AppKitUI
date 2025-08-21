@@ -47,6 +47,13 @@ public extension NSBox {
 		}
 	}
 
+	/// Create an NSBox without a displayed title
+	/// - Parameter block: The block to generate the content
+	convenience init(_ block: () -> NSView) {
+		self.init(title: "", block)
+		self.titlePosition(.noTitle)
+	}
+
 	/// Set the title's position within the box
 	/// - Parameter value: The position
 	/// - Returns: self

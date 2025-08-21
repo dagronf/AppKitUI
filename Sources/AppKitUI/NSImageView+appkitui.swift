@@ -20,6 +20,8 @@
 import AppKit.NSImageView
 import os.log
 
+private let cautionImage = NSImage(named: NSImage.cautionName)!
+
 @MainActor
 public extension NSImageView {
 	/// Create an NSImageView containing an image with the specified image name
@@ -27,18 +29,32 @@ public extension NSImageView {
 	///
 	/// If the image cannot be found, displays a placeholder caution image instead
 	convenience init(imageNamed name: String) {
-		let image = NSImage(named: name) ?? NSImage(named: NSImage.cautionName)!
+		let image = NSImage(named: name) ?? cautionImage
 		self.init(image: image)
+	}
+
+	/// Create a new image view with an image binding
+	/// - Parameter image: The image binding
+	convenience init(image: Bind<NSImage?>) {
+		self.init()
+		self.image(image)
 	}
 
 	/// Create a new imageview containing a system symbol (macOS 11 and later)
 	/// - Parameter systemSymbolName: The symbol name
+	///
+	/// If the symbol cannot be found, displays a placeholder caution image instead
 	@available(macOS 11.0, *)
 	convenience init(systemSymbolName: String) {
-		let image = NSImage(systemSymbolName: systemSymbolName, accessibilityDescription: nil) ?? NSImage(named: NSImage.cautionName)!
+		let image = NSImage(systemSymbolName: systemSymbolName, accessibilityDescription: nil) ?? cautionImage
 		self.init(image: image)
 	}
+}
 
+// MARK: - Modifiers
+
+@MainActor
+public extension NSImageView {
 	/// Set the frame style for the image view
 	/// - Parameter frameStyle: The frame style
 	/// - Returns: self
@@ -87,10 +103,22 @@ public extension NSImageView {
 	/// Set the image view content tint color
 	/// - Parameter color: The tint color
 	/// - Returns: self
-	@available(macOS 10.14, *)
+	///
+	/// Does nothing for macOS >10.14
 	@discardableResult @inlinable
 	func contentTintColor(_ color: NSColor?) -> Self {
-		self.contentTintColor = color
+		if #available(macOS 10.14, *) {
+			self.contentTintColor = color
+		}
+		return self
+	}
+
+	/// A Boolean value indicating whether the image view lets the user cut, copy, and paste the image contents.
+	/// - Parameter value: The cut/copy/paste state
+	/// - Returns: self
+	@discardableResult @inlinable
+	func allowsCutCopyPaste(_ value: Bool) -> Self {
+		self.allowsCutCopyPaste = value
 		return self
 	}
 }
@@ -102,6 +130,7 @@ public extension NSImageView {
 	/// Set the image for the image view
 	/// - Parameter image: The image
 	/// - Returns: self
+	@discardableResult
 	func image(_ image: Bind<NSImage?>) -> Self {
 		image.register(self) { @MainActor [weak self] newImage in
 			if let self = self, self.image != newImage {
@@ -137,11 +166,17 @@ private extension NSImageView {
 
 		@MainActor
 		init(_ imageView: NSImageView) {
-			self.imageObserver = imageView.observe(\.image, options: [.old, .new]) { [weak self] view, change in
+
+			// Observe any changes in the image stored in the imageview
+			self.imageObserver = imageView.observe(\.image, options: [.old, .new]) { @MainActor [weak self] view, change in
 				guard let newValue = change.newValue else { return }
-				let w = ImageWrapper(image: newValue)
-				DispatchQueue.main.async { [weak self] in
-					self?.imageDidChange(w)
+
+				if newValue !== self?.imageBond?.wrappedValue {
+					// Only reflect the change if the image is NOT the same as our bonded one!
+					let w = ImageWrapper(image: newValue)
+					DispatchQueue.main.async { [weak self] in
+						self?.imageDidChange(w)
+					}
 				}
 			}
 		}
@@ -152,11 +187,9 @@ private extension NSImageView {
 
 		@MainActor
 		private func imageDidChange(_ newValue: ImageWrapper) {
-			DispatchQueue.main.async { [weak self] in
-				guard let `self` = self, let bond = self.imageBond else { return }
-				if bond.wrappedValue != newValue.image {
-					bond.wrappedValue = newValue.image
-				}
+			guard let bond = self.imageBond else { return }
+			if bond.wrappedValue !== newValue.image {
+				bond.wrappedValue = newValue.image
 			}
 		}
 	}
@@ -183,4 +216,5 @@ private extension NSImageView {
 }
 
 #endif
+
 

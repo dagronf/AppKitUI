@@ -125,7 +125,7 @@ internal class PopoverInstance: NSObject, WindowedContentProtocol, NSPopoverDele
 	}
 
 	deinit {
-		os_log("deinit: SheetInstance", log: logger, type: .debug)
+		os_log("deinit: PopoverInstance", log: logger, type: .debug)
 	}
 
 	weak var parent: NSView?

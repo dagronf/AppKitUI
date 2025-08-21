@@ -24,7 +24,7 @@ class EmptyPane: Pane {
 	override func title() -> String { "Empty" }
 	@MainActor
 	override func make(model: Model) -> NSView {
-		return NSView(layoutStyle: .centered) {
+		NSView(layoutStyle: .centered) {
 			VStack {
 				NSTextField(label: "Select an item from the list on the left")
 					.alignment(.center)

@@ -181,6 +181,14 @@ private extension NSColorWell {
 				Swift.print("new color is \(newColor)")
 			}
 			.frame(width: 80)
+
+		NSColorWell()
+			.supportsAlpha(true)
+			.color(.systemYellow)
+			.onColorChange { newColor in
+				Swift.print("new color is \(newColor)")
+			}
+			.frame(width: 60, height: 60)
 	}
 }
 #endif

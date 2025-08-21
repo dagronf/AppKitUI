@@ -302,6 +302,26 @@ public extension NSButton {
 		self.imageScaling = imageScaling
 		return self
 	}
+
+	/// Set the menu for the popup button
+	/// - Parameter menu: The menu
+	/// - Returns: self
+	@discardableResult @inlinable
+	func menu(_ menu: NSMenu) -> Self {
+		self.menu = menu
+		return self
+	}
+
+	/// Set the menu for the popup button
+	/// - Parameters:
+	///   - title: The menu title
+	///   - builder: The block returning `NSMenuItem`s for the menu
+	/// - Returns: self
+	@discardableResult
+	func menu(title: String = "", @NSMenuItemsBuilder builder: () -> [NSMenuItem]) -> Self {
+		self.menu = NSMenu(title: title, builder: builder)
+		return self
+	}
 }
 
 // MARK: - Bindings
@@ -374,6 +394,18 @@ public extension NSButton {
 	func onAction(_ block: @escaping (NSControl.StateValue) -> Void) -> Self {
 		self.usingButtonStorage { storage in
 			storage.action = block
+		}
+		return self
+	}
+
+	/// Display a menu when the user clicks the button
+	/// - Parameter menu: The menu
+	/// - Returns: self
+	func onActionMenu(_ menu: NSMenu) -> Self {
+		self.onAction { @MainActor [weak self] _ in
+			guard let `self` = self else { return }
+			let menuLocation = NSPoint(x: self.bounds.minX, y: self.bounds.maxY)
+			menu.popUp(positioning: nil, at: menuLocation, in: self)
 		}
 		return self
 	}
@@ -468,6 +500,19 @@ internal extension NSButton {
 					Swift.print("clicked image")
 				}
 				.frame(width: 24, height: 24)
+
+				NSButton()
+					.title("􀍠")
+					.bezelStyle(.circular)
+					.onActionMenu(
+						NSMenu {
+							NSMenuItem(title: "first") { _ in Swift.print("first") }
+							NSMenuItem(title: "second") { _ in Swift.print("second") }
+							NSMenuItem(title: "third") { _ in Swift.print("third") }
+						}
+					)
+					.accessibilityTitle("More options 1")
+					.accessibilityLabel("More options 2")
 			}
 			.padding(2)
 

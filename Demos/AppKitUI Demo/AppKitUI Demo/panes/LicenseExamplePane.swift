@@ -27,71 +27,81 @@ class LicenseExamplePane: Pane {
 		let licenseKey = Bind("YTMG3-N6DKC-DKB77-7M9GH-8HVX7")
 		let isLicenseKeyActivated = Bind(true)
 
+		let imageActivated = NSImage(named: "checkmark.circle.fill")!
+		let imageNotActivated = NSImage(named: "xmark.square.fill")!
+		let activationState = Bind<NSImage?>(imageActivated)
+
 		return NSView(layoutStyle: .centered) {
-			VStack {
-				NSImageView(image: NSApplication.shared.applicationIconImage)
-					.padding(12)
 
-				VStack {
+			NSBox {
+				VStack(spacing: 32) {
+					NSImageView(image: NSApplication.shared.applicationIconImage)
+
+					VStack(spacing: 8) {
+						HStack {
+							NSTextField(label: "License Key:")
+								.font(.system.weight(.medium))
+							NSTextField(content: licenseKey)
+								.roundedBezel()
+								.isScrollable(true)
+								.isEditable(isLicenseKeyActivated.toggled())
+								.isSelectable(true)
+								.font(.monospaced.size(14))
+								.compressionResistancePriority(.required, for: .horizontal)
+								.width(275)
+							NSImageView(image: activationState)
+								.frame(width: 16, height: 16)
+						}
+						.onChange(isLicenseKeyActivated, { newValue in
+							// Listen for changes in the activation state and reflect in the image
+							activationState.wrappedValue = newValue ? imageActivated : imageNotActivated
+						})
+
+						HStack {
+							NSButton(title: "Deactivate")
+								.identifier("deactivate")
+								.isEnabled(isLicenseKeyActivated)
+								.onAction { _ in isLicenseKeyActivated.wrappedValue = false }
+								.gravityArea(.trailing)
+							NSButton(title: "Activate")
+								.identifier("activate")
+								.isEnabled(isLicenseKeyActivated.toggled())
+								.onAction { _ in isLicenseKeyActivated.wrappedValue = true }
+								.gravityArea(.trailing)
+						}
+						.equalWidths(["deactivate", "activate"])
+						.hugging(.init(10), for: .horizontal)
+					}
+
 					HStack {
-						NSTextField(label: "License Key:")
-							.font(.system.weight(.medium))
-						NSTextField(content: licenseKey)
-							.roundedBezel()
-							.font(.monospaced)
-							.compressionResistancePriority(.required, for: .horizontal)
+						NSButton(title: "􀎬 Customer Portal")
+							.isBordered(false)
+							.onAction { _ in
+								model.log("LicenseKey: Clicked 'Customer Portal'")
+							}
+							.gravityArea(.leading)
+
+						NSButton(title: "Online Store 􁽇")
+							.isBordered(false)
+							.onAction { _ in
+								model.log("LicenseKey: Clicked 'Online Store'")
+							}
+							.gravityArea(.trailing)
 					}
 					.hugging(.init(10), for: .horizontal)
-
-					HStack {
-						NSButton(title: "Deactivate")
-							.identifier("deactivate")
-							.isEnabled(isLicenseKeyActivated)
-							.onAction { _ in isLicenseKeyActivated.wrappedValue = false }
-							.gravityArea(.trailing)
-						NSButton(title: "Activate")
-							.identifier("activate")
-							.isEnabled(isLicenseKeyActivated.toggled())
-							.onAction { _ in isLicenseKeyActivated.wrappedValue = true }
-							.gravityArea(.trailing)
-					}
-					.equalWidths(["deactivate", "activate"])
-					.hugging(.init(10), for: .horizontal)
 				}
-				.padding(12)
-
-				NSView()
-					.huggingPriority(.defaultLow, for: .vertical)
-
-				HStack {
-					NSButton(title: "􀎬 Customer Portal")
-						.isBordered(false)
-						.onAction { _ in
-							model.log("LicenseKey: Clicked 'Customer Portal'")
-						}
-						.gravityArea(.leading)
-
-					NSButton(title: "Online Store 􁽇")
-						.isBordered(false)
-						.onAction { _ in
-							model.log("LicenseKey: Clicked 'Online Store'")
-						}
-						.gravityArea(.trailing)
-				}
-				.hugging(.init(10), for: .horizontal)
-
-				.padding(12)
+				.hugging(.defaultHigh, for: .horizontal)
+				.padding(20)
 			}
-			.minWidth(400)
 		}
 	}
 }
 
 #if DEBUG
 @available(macOS 14, *)
-#Preview("Basic") { //}, traits: .fixedLayout(width: 600, height: 400)) {
+#Preview("Basic") {
 	LicenseExamplePane().make(model: Model())
 		.width(500)
-		.debugFrames(.systemRed.withAlphaComponent(0.3))
+		//.debugFrames(.systemRed.withAlphaComponent(0.3))
 }
 #endif

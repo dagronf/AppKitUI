@@ -64,7 +64,7 @@ public class AUIDisclosure: NSView {
 				NSView.Spacer()
 			}
 			.spacing(0)
-			.isHidden(_internalState.inverted()) // .oneWayTransform { $0 == false })
+			.isHidden(_internalState.toggled()) // .oneWayTransform { $0 == false })
 			//.isHidden(_internalState.oneWayTransform { $0 == false })
 
 		let stackView = VStack {
@@ -89,8 +89,9 @@ public class AUIDisclosure: NSView {
 
 	private var font: NSFont?
 	// Track the connection between the header disclosure and the visibility of the content
-	private let _internalState = Bind(false) { Swift.print("newstate = \($0)") }
-	public var state: Bind<Bool>?
+	private let _internalState = Bind(false)
+	fileprivate var state: Bind<Bool>?
+
 	private let title = Bind("Disclosure")
 }
 
@@ -121,13 +122,13 @@ public extension AUIDisclosure {
 
 @MainActor
 public extension AUIDisclosure {
-	/// Set the title font
-	/// - Parameter font: The font
+	/// Bind the expanded state of the disclosure
+	/// - Parameter state: The state binding
 	/// - Returns: self
 	@discardableResult
 	func state(_ state: Bind<Bool>) -> Self {
 		self.state = state
-		self._internalState.reflect(state)
+		self.state?.reflect(_internalState)
 		return self
 	}
 }
