@@ -40,7 +40,8 @@ class Model {
 			FinanceSwatchPane(),
 			ImageViewPane(),
 			DelayedBindPane(),
-			BindingsPane()
+			BindingsPane(),
+			ColorSelectorPane()
 		]
 		if #available(macOS 11, *) {
 			p.append(SwitchPane())

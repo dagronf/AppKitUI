@@ -20,9 +20,22 @@
 import AppKit
 
 /// A selector/target pair
-struct ControlAction {
-	let target: AnyObject
-	let action: Selector
+class ControlAction {
+	init(target: AnyObject? = nil, action: Selector, from: AnyObject? = nil) {
+		self.target = target
+		self.action = action
+		self.from = from
+	}
+
+	func perform() {
+		if let target = self.target {
+			NSApp.sendAction(self.action, to: target, from: self.from)
+		}
+	}
+
+	private weak var target: AnyObject?  // Held weakly so we don't get a self-referential loop
+	private weak var from: AnyObject?
+	private let action: Selector
 }
 
 /// A window that can become the key window (ie. a window that accepts key and mouse events

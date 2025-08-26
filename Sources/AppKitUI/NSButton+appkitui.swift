@@ -419,7 +419,7 @@ public extension NSButton {
 	/// NOTE: This action is _not_ called if the state is changed programatically
 	@discardableResult
 	func onAction(target: AnyObject, action: Selector) -> Self {
-		let action = ControlAction(target: target, action: action)
+		let action = ControlAction(target: target, action: action, from: self)
 		self.usingButtonStorage { $0.actionSelector = action }
 		return self
 	}
@@ -452,13 +452,10 @@ internal extension NSButton {
 			self.onOffState?.wrappedValue = sender.state == .on
 			self.action?(sender.state)
 
-			if let s = self.actionSelector {
-				_ = s.target.perform(s.action)
-			}
+			// Call the control action if it exists
+			self.actionSelector?.perform()
 
-			if let menu,
-				let event = NSApplication.shared.currentEvent
-			{
+			if let menu, let event = NSApplication.shared.currentEvent {
 				NSMenu.popUpContextMenu(menu, with: event, for: sender)
 			}
 		}

@@ -32,7 +32,7 @@ extension NSColor {
 
 	/// Return a darker representation of this color
 	@discardableResult @inlinable
-	public func darker(withLevel value: Double) -> NSColor? {
+	public func darker(withLevel value: Double) -> NSColor {
 		self.shadow(withLevel: value) ?? self
 	}
 
@@ -55,12 +55,15 @@ extension NSAppearanceCustomization {
 		// Similar to `NSAppearance.performAsCurrentDrawingAppearance`, but
 		// works below macOS 11 and assigns to `result` properly
 		// (capturing `result` inside a block doesn't work the way we need).
-		let result: T
-		let old = NSAppearance.current
-		NSAppearance.current = self.effectiveAppearance
-		result = block()
-		NSAppearance.current = old
-		return result
+		if #available(macOS 10.14, *) {
+			let old = NSAppearance.current
+			NSAppearance.current = self.effectiveAppearance
+			defer { NSAppearance.current = old }
+			return block()
+		}
+		else {
+			return block()
+		}
 	}
 }
 
@@ -69,5 +72,12 @@ extension NSColor {
 	/// If you need per-view accurate appearance, prefer this instead:
 	///
 	///     let cgColor = aView.performWithEffectiveAppearanceAsDrawingAppearance { aColor.cgColor }
-	var effectiveCGColor: CGColor { NSApp.performWithEffectiveAppearanceAsDrawingAppearance { self.cgColor } }
+	var effectiveCGColor: CGColor {
+		if #available(macOS 10.14, *) {
+			return NSApp.performWithEffectiveAppearanceAsDrawingAppearance { self.cgColor }
+		}
+		else {
+			return self.cgColor
+		}
+	}
 }

@@ -43,6 +43,11 @@ public extension Bind {
 		}
 		return newBinder
 	}
+
+	/// Create a one-way binding displaying the debugging string for the wrapped value
+	func debugString() -> Bind<String> {
+		self.oneWayTransform { "\($0)" }
+	}
 }
 
 // MARK: - Bool conveniences
