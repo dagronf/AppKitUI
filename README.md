@@ -1,11 +1,22 @@
 # AppKitUI
 
-An AppKit UI toolkit to remove dependence on XIBs
+An AppKit UI toolkit help you create and manage `NSView` content easily 
+
+1. Remove dependence on requiring XIBs when creating UI views
+2. Reduce boilerplate code when manually creating `NSView` UI content.
+3. Easily bind data between controls
+
+There is a demo application in the 'Demo' folder that demonstrates many of the controls and features of this package. 
+
+Note that this beta level code!  Feedback and bug reports are always appreciated.
+
+## Features
 
 * Chainable properties for most AppKit NS- UI controls.
 * Preview your AppKitUI user interface directly in Xcode's `#Preview` pane.
 * Remove the need to create XIBs for laying out a view.
 * Simplify building your UI, using a DSL similar to SwiftUI
+* Easily handle moving and updating data between controls (eg. the value of an `NSSlider`)
 * Compatible back to 10.13!
 
 ## Chainable AppKit controls
@@ -13,6 +24,8 @@ An AppKit UI toolkit to remove dependence on XIBs
 Most AppKit UI controls have added chaining functions for most of the control's properties.
 
 This way you can create your control using a single statement.
+
+For example :-
 
 ```swift
 let commitButton = NSButton(title: "Commit")
@@ -182,3 +195,29 @@ Semantic system fonts let you specify fonts by role rather than point size.
 
 - On macOS 10.15+, uses monospacedSystemFont.
 - On earlier macOS, falls back to a system font with .monoSpace traits.
+
+## License
+
+```
+MIT License
+
+Copyright (c) 2025 Darren Ford
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+```

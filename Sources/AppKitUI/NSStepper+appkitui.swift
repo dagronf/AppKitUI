@@ -165,7 +165,6 @@ private extension NSStepper {
 	}
 }
 
-
 // MARK: - Previews
 
 #if DEBUG

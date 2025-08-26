@@ -35,6 +35,9 @@ class GridPane: Pane {
 							.textColor(.systemRed)
 						NSTextField()
 							.content(firstName)
+							.width(200)
+							.huggingPriority(.defaultLow, for: .horizontal)
+							.compressionResistancePriority(.defaultLow, for: .horizontal)
 							.onChange { newValue in
 								Swift.print("Cell -> \(newValue)")
 							}
@@ -45,6 +48,9 @@ class GridPane: Pane {
 							.textColor(.systemRed)
 						NSTextField()
 							.content(lastName)
+							.width(200)
+							.huggingPriority(.defaultLow, for: .horizontal)
+							.compressionResistancePriority(.defaultLow, for: .horizontal)
 					}
 
 					NSGridView.Row {
@@ -57,16 +63,25 @@ class GridPane: Pane {
 						NSTextField(labelWithString: "*")
 							.textColor(.systemRed)
 						NSTextField()
+							.width(200)
+							.huggingPriority(.defaultLow, for: .horizontal)
+							.compressionResistancePriority(.defaultLow, for: .horizontal)
 					}
 					NSGridView.Row {
 						NSTextField(labelWithString: "Phone:")
 						NSGridCell.emptyContentView
 						NSTextField()
+							.width(200)
+							.huggingPriority(.defaultLow, for: .horizontal)
+							.compressionResistancePriority(.defaultLow, for: .horizontal)
 					}
 					NSGridView.Row {
 						NSTextField(labelWithString: "Fax:")
 						NSGridCell.emptyContentView
 						NSTextField()
+							.width(200)
+							.huggingPriority(.defaultLow, for: .horizontal)
+							.compressionResistancePriority(.defaultLow, for: .horizontal)
 					}
 
 					NSGridView.Row {
@@ -75,7 +90,7 @@ class GridPane: Pane {
 							.textColor(.systemRed)
 						NSPopUpButton()
 							.menuItems(["Astronomy", "University", "Wombles"])
-							.huggingPriority(.init(1), for: .horizontal)
+							.huggingPriority(.init(10), for: .horizontal)
 					}
 
 					NSGridView.Row {
@@ -99,7 +114,14 @@ class GridPane: Pane {
 				.columnAlignment(.trailing, forColumn: 0)
 				.columnWidth(200, forColumn: 2)
 				.cell(atColumnIndex: 0, rowIndex: 9, xPlacement: .center)
-				//.debugFrames()
+
+				HDivider()
+
+				NSTextField(label: "NOTE: for macOS 10.13, you need to manually set the size of text fields within a grid cell, as autolayout doesn't seem to correctly set the size of a textfield within a grid cell")
+					.font(.caption1)
+					.textColor(.secondaryLabelColor)
+					.huggingPriority(.init(10), for: .horizontal)
+					.compressionResistancePriority(.init(10), for: .horizontal)
 			}
 
 			.onChange(firstName) { newValue in

@@ -19,6 +19,7 @@
 
 import AppKit.NSBox
 
+/// A horzontal divider
 @MainActor
 public class HDivider: NSBox {
 	public init() {
@@ -35,6 +36,7 @@ public class HDivider: NSBox {
 	}
 }
 
+/// A vertical divider
 @MainActor
 public class VDivider: NSBox {
 	public init() {

@@ -19,6 +19,14 @@
 
 import AppKit
 
+/// NSGridView support for AppKitUI
+
+/// NOTE: For macOS 10.13, adding an NSTextField to a cell and setting the hugging/compression resistance
+/// priorities so that it fills the cell does not seem to work.  Even if you set the column width, autolayout
+/// does not seem handle the text field layout correctly.
+/// As a fallback - if you need to target 10.13, you'll need to manually define the widths of text fields
+/// within cells.  Not ideal, but I can't find a nice resizing field.
+
 @available(macOS 10.12, *)
 @MainActor
 public extension NSGridView {
