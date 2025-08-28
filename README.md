@@ -109,17 +109,18 @@ func makeMyExcitingView() -> NSView {
 
 There are a number of provided view structures :-
 
-|  Type         |  Description              |
-|---------------|---------------------------|
-| `VStack`      | A vertical NSStackView    |
-| `HStack`      | A horizontal NSStackView  |
-| `NSGridView`  | A grid                    |
-| `Flow`        | A collection view that flows its child views horizontally, then moves to the next line when the row has run out of space |
-| `TabView`     | A NSTabView               |
-| `VSplitView`  | A vertical split view     |
-| `HSplitView`  | A horizontal split view   |
-| `ZStack`      | A z-order stack           |
-| `ScrollView`  | A scroll container        |
+|  Type              |  Description              |
+|--------------------|---------------------------|
+| `VStack`           | A vertical NSStackView    |
+| `HStack`           | A horizontal NSStackView  |
+| `NSGridView`       | A grid                    |
+| `Flow`             | A collection view that flows its child views horizontally, then moves to the next line when the row has run out of space |
+| `TabView`          | A NSTabView               |
+| `VSplitView`       | A vertical split view     |
+| `HSplitView`       | A horizontal split view   |
+| `ZStack`           | A z-order stack           |
+| `ScrollView`       | A scroll container        |
+| `LayoutContainer`  | A view container allowing arbitrary constraints between child views |
 
 The fun part with this is that you can use Xcode previews to preview your NSView!
 

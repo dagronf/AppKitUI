@@ -41,7 +41,8 @@ class Model {
 			ImageViewPane(),
 			DelayedBindPane(),
 			BindingsPane(),
-			ColorSelectorPane()
+			ColorSelectorPane(),
+			ContainerPane()
 		]
 		if #available(macOS 11, *) {
 			p.append(SwitchPane())

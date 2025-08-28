@@ -51,6 +51,11 @@ public class AUIColorSelector: NSView {
 		let s = NSStackView()
 		s.orientation = .horizontal
 		s.translatesAutoresizingMaskIntoConstraints = false
+
+		s.setContentHuggingPriority(.required, for: .horizontal)
+		s.setContentHuggingPriority(.required, for: .vertical)
+		s.setContentCompressionResistancePriority(.required, for: .horizontal)
+		s.setContentCompressionResistancePriority(.required, for: .vertical)
 		return s
 	}()
 
