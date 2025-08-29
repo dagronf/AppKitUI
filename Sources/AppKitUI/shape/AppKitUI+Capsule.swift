@@ -27,8 +27,10 @@ public class Capsule: AUIShape {
 	/// - Parameter bounds: The bounds to draw the capsule
 	/// - Returns: The capsule path
 	public override func shape(bounds: CGRect) -> CGPath {
-		let cr = min(bounds.width / 2, bounds.height / 2)
-		return CGPath(roundedRect: bounds, cornerWidth: cr, cornerHeight: cr, transform: nil)
+		let inset = self.strokeLineWidth / 2
+		let destination = bounds.insetBy(dx: inset, dy: inset)
+		let cr = min(destination.width / 2, destination.height / 2)
+		return CGPath(roundedRect: destination, cornerWidth: cr, cornerHeight: cr, transform: nil)
 	}
 
 	deinit {

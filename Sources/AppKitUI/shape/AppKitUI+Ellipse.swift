@@ -23,11 +23,13 @@ import os.log
 /// A view that displays an ellipse
 @MainActor
 public class Ellipse: AUIShape {
-	/// Draw a capsule shape
+	/// Draw an ellipse shape
 	/// - Parameter bounds: The bounds to draw the shape
 	/// - Returns: a path that represents the shape
 	public override func shape(bounds: CGRect) -> CGPath {
-		CGPath(ellipseIn: bounds, transform: nil)
+		let inset = self.strokeLineWidth / 2
+		let destination = bounds.insetBy(dx: inset, dy: inset)
+		return CGPath(ellipseIn: destination, transform: nil)
 	}
 
 	deinit {
@@ -44,6 +46,10 @@ public class Ellipse: AUIShape {
 	HStack {
 		Ellipse()
 			.fill(color: .systemRed)
+			.frame(width: 50, height: 50)
+		Ellipse()
+			.fill(color: .systemRed)
+			.stroke(.systemBlue, lineWidth: 2)
 			.frame(width: 50, height: 50)
 		Ellipse()
 			.fill(color: .systemOrange)

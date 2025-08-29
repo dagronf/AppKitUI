@@ -55,9 +55,13 @@ public class Rectangle: AUIShape {
 	}
 
 	public override func shape(bounds: CGRect) -> CGPath {
+		let inset = self.strokeLineWidth / 2
+		let destination = bounds.insetBy(dx: inset, dy: inset)
+
 		// We need to perform this check for macOS 10.13
-		let c = max(0, min(bounds.height / 2.0, self.cornerRadius))
-		return CGPath(roundedRect: bounds, cornerWidth: c, cornerHeight: c, transform: nil)
+		let c = max(0, min(destination.height / 2.0, self.cornerRadius))
+
+		return CGPath(roundedRect: destination, cornerWidth: c, cornerHeight: c, transform: nil)
 	}
 }
 
