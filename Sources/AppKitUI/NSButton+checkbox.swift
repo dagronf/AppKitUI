@@ -64,6 +64,18 @@ public extension NSButton {
 
 		HDivider()
 
+		HStack(spacing: 12) {
+			NSButton(checkboxWithTitle: "This title is hidden")
+				.hidesTitle(true)
+				.onAction { _ in
+					Swift.print("Clicked the checkbox with the hidden title")
+				}
+			NSTextField(label: "←")
+			NSTextField(label: "This checkbox has hidden its title")
+		}
+
+		HDivider()
+
 		HStack {
 			NSButton(checkboxWithTitle: "This is an optionally enabled checkbox")
 				.isEnabled(isEnabled)

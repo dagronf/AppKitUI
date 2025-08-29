@@ -234,6 +234,13 @@ public extension NSButton {
 		}
 		return self
 	}
+
+	/// If true, the checkbox is shown as the check only, no title
+	@discardableResult @inlinable
+	public func hidesTitle(_ hide: Bool) -> Self {
+		self.imagePosition = hide ? .imageOnly : .imageLeading
+		return self
+	}
 }
 
 //@MainActor
@@ -551,7 +558,19 @@ internal extension NSButton {
 
 			HDivider()
 
-			NSButton(checkboxWithTitle: "checkbox")
+			VStack(alignment: .leading) {
+				NSButton(checkboxWithTitle: "This is a checkbox")
+				HStack(spacing: 12) {
+					NSButton(checkboxWithTitle: "This title is hidden")
+						.hidesTitle(true)
+						.onAction { _ in
+							Swift.print("Clicked the checkbox with the hidden title")
+						}
+					NSTextField(label: "←")
+					NSTextField(label: "This checkbox has hidden its title")
+				}
+			}
+
 			HDivider()
 			NSButton.radioGroup()
 				.items(["one", "two", "three"])
