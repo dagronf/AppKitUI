@@ -29,8 +29,8 @@ public extension NSSlider {
 	convenience init(_ value: Bind<Double>, range: ClosedRange<Double>) {
 		self.init()
 		self
-			.value(value)
 			.range(range)
+			.value(value)
 	}
 }
 
@@ -143,11 +143,11 @@ public extension NSSlider {
 				self.doubleValue = newValue
 			}
 		}
-		self.doubleValue = bond.wrappedValue
-
 		self.usingSliderStorage { storage in
 			storage.value = bond
 		}
+
+		self.doubleValue = bond.wrappedValue
 
 		return self
 	}

@@ -24,7 +24,7 @@ class ContainerPane: Pane {
 	override func title() -> String { "Layout Container" }
 	@MainActor
 	override func make(model: Model) -> NSView {
-		let select = Bind<Int?>(nil)
+		let select = Bind<Int?>(1)
 		return ScrollView(borderType: .noBorder) {
 			NSView(layoutStyle: .fill) {
 				LayoutContainer {
@@ -41,20 +41,32 @@ class ContainerPane: Pane {
 								select.wrappedValue = nil
 							}
 					}
+					NSTextField(link: URL(fileURLWithPath: "https://developer.apple.com/"), title: "Apple Developer")
+					NSImageView(imageNamed: "NSToolbarBookmarks")
 				}
+				.debugFrames()
+
+				// Top leading in the container
 				.constraint(fromIndex: 0, attribute: .top, relatedBy: .equal, attribute: .top, constant: 20)
 				.constraint(fromIndex: 0, attribute: .leading, relatedBy: .equal, attribute: .leading, constant: 20)
 
 				.constraint(fromIndex: 1, attribute: .leading, relatedBy: .greaterThanOrEqual, toIndex: 0, attribute: .trailing, constant: 20)
-				.constraint(fromIndex: 1, attribute: .top, relatedBy: .equal, toIndex: 0, attribute: .bottom, constant: 20, priority: .defaultHigh)
-				.constraint(fromIndex: 1, attribute: .trailing, relatedBy: .equal, attribute: .trailing, constant: -20)
+				.constraint(fromIndex: 1, attribute: .top, relatedBy: .equal, toIndex: 0, attribute: .bottom, constant: 10, priority: .defaultHigh)
+				.constraint(fromIndex: 1, attribute: .trailing, relatedBy: .equal, attribute: .trailing, constant: -40)
 
 				.constraint(fromIndex: 2, attribute: .centerX, relatedBy: .equal, attribute: .centerX)
 				.constraint(fromIndex: 2, attribute: .top, relatedBy: .equal, toIndex: 1, attribute: .bottom, constant: 20)
 				.constraint(fromIndex: 2, attribute: .bottom, relatedBy: .equal, attribute: .bottom, constant: -20)
 
+				// Bottom trailing in the parent
+				.constraint(fromIndex: 3, attribute: .trailing, relatedBy: .equal, attribute: .trailing, constant: -4)
+				.constraint(fromIndex: 3, attribute: .bottom, relatedBy: .equal, attribute: .bottom, constant: -4)
+
+				// Centered in parent, leading edge to the trailing edge of the NSButton
+				.constraint(fromIndex: 4, attribute: .centerY, relatedBy: .equal, attribute: .centerY)
+				.constraint(fromIndex: 4, attribute: .leading, relatedBy: .equal, toIndex: 0, attribute: .trailing)
+
 				.padding()
-				.debugFrames()
 			}
 		}
 	}

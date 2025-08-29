@@ -42,7 +42,8 @@ class Model {
 			DelayedBindPane(),
 			BindingsPane(),
 			ColorSelectorPane(),
-			ContainerPane()
+			ContainerPane(),
+			LevelIndicatorPane(),
 		]
 		if #available(macOS 11, *) {
 			p.append(SwitchPane())

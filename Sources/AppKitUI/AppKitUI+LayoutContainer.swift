@@ -146,17 +146,21 @@ public extension LayoutContainer {
 		NSButton(title: "Reset all results")
 		NSTextField(label: "Do the funky chicken")
 		AUIColorSelector()
+		NSTextField(link: URL(fileURLWithPath: "hhtps://developer.apple.com/"), title: "Apple Developer")
 	}
 	.constraint(fromIndex: 0, attribute: .top, relatedBy: .equal, attribute: .top, constant: 20)
 	.constraint(fromIndex: 0, attribute: .leading, relatedBy: .equal, attribute: .leading, constant: 20)
 
 	.constraint(fromIndex: 1, attribute: .leading, relatedBy: .greaterThanOrEqual, toIndex: 0, attribute: .trailing, constant: 20)
-	.constraint(fromIndex: 1, attribute: .top, relatedBy: .equal, toIndex: 0, attribute: .bottom, constant: 20, priority: .defaultHigh)
-	.constraint(fromIndex: 1, attribute: .trailing, relatedBy: .equal, attribute: .trailing, constant: -20)
+	.constraint(fromIndex: 1, attribute: .top, relatedBy: .equal, toIndex: 0, attribute: .bottom, constant: 10, priority: .defaultHigh)
+	.constraint(fromIndex: 1, attribute: .trailing, relatedBy: .equal, attribute: .trailing, constant: -40)
 
 	.constraint(fromIndex: 2, attribute: .centerX, relatedBy: .equal, attribute: .centerX)
 	.constraint(fromIndex: 2, attribute: .top, relatedBy: .equal, toIndex: 1, attribute: .bottom, constant: 20)
 	.constraint(fromIndex: 2, attribute: .bottom, relatedBy: .equal, attribute: .bottom, constant: -20)
+
+	.constraint(fromIndex: 3, attribute: .trailing, relatedBy: .equal, attribute: .trailing, constant: -4)
+	.constraint(fromIndex: 3, attribute: .bottom, relatedBy: .equal, attribute: .bottom, constant: -4)
 
 	.padding(30)
 	.debugFrames()

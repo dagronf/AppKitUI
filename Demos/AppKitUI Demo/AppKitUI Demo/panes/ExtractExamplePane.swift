@@ -89,7 +89,7 @@ class ExtractExamplePane: Pane {
 				}
 				.rowAlignment(.firstBaseline)
 				.columnAlignment(.trailing, forColumn: 0)
-				.debugFrames()
+				//.debugFrames()
 			}
 		}
 	}

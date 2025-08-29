@@ -45,7 +45,7 @@ class FinanceSwatchPane: Pane {
 				buildSwatch(model: model, typeImage: buildingImage, type: "Transfer via PayPal", value: "$800")
 			}
 			.padding()
-			.debugFrames()
+			//.debugFrames()
 		}
 	}
 }
