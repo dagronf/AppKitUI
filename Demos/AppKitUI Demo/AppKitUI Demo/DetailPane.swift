@@ -29,6 +29,7 @@ class DetailPane: NSView {
 	func setup() {
 		let detailSplit = HSplitView(dividerStyle: .thin) {
 			detailView
+				.minWidth(300)
 			makeLoggingOutputView(model: model)
 				.minHeight(120)
 		}

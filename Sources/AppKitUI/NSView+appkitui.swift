@@ -44,7 +44,20 @@ public extension NSView {
 	///   - builder: The block to call to retrieve the content
 	convenience init(layoutStyle: LayoutStyle, builder: () -> NSView) {
 		self.init()
+		self.translatesAutoresizingMaskIntoConstraints = false
 		self.content(layoutStyle: layoutStyle, content: builder())
+	}
+
+	/// Create a view specifying the child subviews
+	/// - Parameters:
+	///   - builder: The block to call to retrieve the content
+	convenience init(@NSViewsBuilder subViewsBuilder: () -> [NSView]) {
+		self.init()
+		self.translatesAutoresizingMaskIntoConstraints = false
+		let subviews = subViewsBuilder()
+		subviews.forEach { view in
+			self.addChildView(view)
+		}
 	}
 
 	/// Create a view containing the result of a view body generator
@@ -93,18 +106,23 @@ public extension NSView {
 
 @MainActor
 public extension NSView {
-	/// Overlay a view on this view
+	/// Overlay a view on top this view
 	/// - Parameter block: The view
 	/// - Returns: self
+	///
+	/// On order for an overlay to work, we have to insert the overlay into a new view
 	@discardableResult
 	func overlay(_ overlayView: NSView) -> Self {
-		self.content(fill: overlayView)
+		self.translatesAutoresizingMaskIntoConstraints = false
+		overlayView.translatesAutoresizingMaskIntoConstraints = false
+		overlayView.pin(inside: self)
+		return self
 	}
 
 	/// Overlay a view on this view
 	/// - Parameter block: The view generator block
 	/// - Returns: self
-	@discardableResult
+	@discardableResult @inlinable
 	func overlay(_ block: () -> NSView) -> Self {
 		self.overlay(block())
 	}
@@ -209,26 +227,62 @@ public extension NSView {
 	}
 }
 
+// MARK: - Adding child views to this view
+
+@MainActor
+public extension NSView {
+	/// Set the layout style when this view is inserted as a subview within another view
+	/// - Parameter layout: The layout style
+	/// - Returns: self
+	@discardableResult
+	func subviewLayoutStyle(_ layout: LayoutStyle) -> Self {
+		self.setArbitraryValue(layout, forKey: "subviewLayoutStyle")
+		return self
+	}
+
+	/// Add a subview to this view
+	/// - Parameter view: The view
+	/// - Returns: self
+	@discardableResult
+	func addChildView(_ view: NSView) -> Self {
+		view.translatesAutoresizingMaskIntoConstraints = false
+		self.addSubview(view)
+
+		let padding: Double = 0.0
+		let layout: LayoutStyle = view.getArbitraryValue(forKey: "subviewLayoutStyle") ?? .fill
+		if layout == .fill {
+			self.addConstraint(NSLayoutConstraint(item: view, attribute: .leading, relatedBy: .equal, toItem: self, attribute: .leading, multiplier: 1, constant: padding))
+			self.addConstraint(NSLayoutConstraint(item: view, attribute: .trailing, relatedBy: .equal, toItem: self, attribute: .trailing, multiplier: 1, constant: -padding))
+			self.addConstraint(NSLayoutConstraint(item: view, attribute: .top, relatedBy: .equal, toItem: self, attribute: .top, multiplier: 1, constant: padding))
+			self.addConstraint(NSLayoutConstraint(item: view, attribute: .bottom, relatedBy: .equal, toItem: self, attribute: .bottom, multiplier: 1, constant: -padding))
+		}
+		else if layout == .centered {
+			// Center the child view within this view
+			self.addConstraint(NSLayoutConstraint(item: view, attribute: .centerX, relatedBy: .equal, toItem: self, attribute: .centerX, multiplier: 1, constant: 0))
+			self.addConstraint(NSLayoutConstraint(item: view, attribute: .centerY, relatedBy: .equal, toItem: self, attribute: .centerY, multiplier: 1, constant: 0))
+
+			// Make sure that the child view cannot expand beyond the bounds of the parent view
+			self.addConstraint(NSLayoutConstraint(item: view, attribute: .leading, relatedBy: .greaterThanOrEqual, toItem: self, attribute: .leading, multiplier: 1, constant: padding))
+			self.addConstraint(NSLayoutConstraint(item: view, attribute: .top, relatedBy: .greaterThanOrEqual, toItem: self, attribute: .top, multiplier: 1, constant: padding))
+		}
+		else {
+			fatalError()
+		}
+
+		return self
+	}
+}
+
 // MARK: - Padding
 
 @MainActor
 public extension NSView {
 	/// Add padding around this view by installing this view within a new NSView with contraints
 	/// - Parameter padding: The padding value
-	/// - Returns: self
+	/// - Returns: A new NSView containing this view as a child view with the specified padding
+	@discardableResult
 	@objc func padding(_ padding: Double = 20) -> NSView {
-		let view = NSView()
-		view.wantsLayer = true
-		view.translatesAutoresizingMaskIntoConstraints = false
-		self.translatesAutoresizingMaskIntoConstraints = false
-		view.addSubview(self)
-
-		view.addConstraint(NSLayoutConstraint(item: self, attribute: .leading, relatedBy: .equal, toItem: view, attribute: .leading, multiplier: 1, constant: padding))
-		view.addConstraint(NSLayoutConstraint(item: self, attribute: .trailing, relatedBy: .equal, toItem: view, attribute: .trailing, multiplier: 1, constant: -padding))
-		view.addConstraint(NSLayoutConstraint(item: self, attribute: .top, relatedBy: .equal, toItem: view, attribute: .top, multiplier: 1, constant: padding))
-		view.addConstraint(NSLayoutConstraint(item: self, attribute: .bottom, relatedBy: .equal, toItem: view, attribute: .bottom, multiplier: 1, constant: -padding))
-
-		return view
+		self.padding(top: padding, left: padding, bottom: padding, right: padding)
 	}
 
 	/// Add padding around this view by installing this view within a new NSView with contraints
@@ -237,7 +291,7 @@ public extension NSView {
 	///   - left: Left padding
 	///   - bottom: Bottom padding
 	///   - right: Right padding
-	/// - Returns: A new NSView containging this view as a child view with the specified padding
+	/// - Returns: A new NSView containing this view as a child view with the specified padding
 	@objc func padding(top: Double = 0, left: Double = 0, bottom: Double = 0, right: Double = 0) -> NSView {
 		let view = NSView()
 		view.wantsLayer = true
@@ -323,11 +377,7 @@ public extension NSView {
 	///   - blurRadius: The blur radius of the shadow.
 	/// - Returns: self
 	@discardableResult
-	func shadow(
-		offset: CGSize? = nil,
-		color: NSColor? = nil,
-		blurRadius: Double? = nil
-	) -> Self {
+	func shadow(offset: CGSize? = nil, color: NSColor? = nil, blurRadius: Double? = nil) -> Self {
 		let s = NSShadow()
 		if let offset {
 			s.shadowOffset = offset
@@ -639,6 +689,38 @@ extension NSView {
 // MARK: - Previews
 
 #if DEBUG
+
+@available(macOS 14, *)
+#Preview("background") {
+	HStack {
+		NSTextField(label: "This is a test")
+			.padding(20)
+			.background(
+				Rectangle(cornerRadius: 8)
+					.fill(color: .systemBlue)
+			)
+
+		Rectangle()
+			.fill(.gradient(color: .systemPurple))
+			.stroke(.systemPurple, lineWidth: 1.5)
+			.overlay(
+				NSTextField(label: "This is a test")
+					.padding(8)
+			)
+
+		VStack {
+			NSTextField(label: "Top layer")
+			NSButton(title: "The button!")
+				.bezelStyle(.accessoryBar)
+			NSTextField(label: "Bottom layer")
+		}
+		.padding(12)
+		.background(
+			Rectangle(cornerRadius: 8)
+				.fill(.gradient(color: .systemPink))
+		)
+	}
+}
 
 @available(macOS 14, *)
 #Preview("shadows") {

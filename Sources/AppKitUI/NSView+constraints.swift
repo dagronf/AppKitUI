@@ -58,6 +58,7 @@ public extension NSView {
 	/// - Returns: self
 	@discardableResult
 	func pin(inside view: NSView, padding: Double = 0) -> Self {
+		self.translatesAutoresizingMaskIntoConstraints = false
 		view.addSubview(self)
 		view.addConstraint(NSLayoutConstraint(item: self, attribute: .leading, relatedBy: .equal, toItem: view, attribute: .leading, multiplier: 1, constant: padding))
 		view.addConstraint(NSLayoutConstraint(item: self, attribute: .trailing, relatedBy: .equal, toItem: view, attribute: .trailing, multiplier: 1, constant: -padding))
@@ -74,6 +75,7 @@ public extension NSView {
 	@discardableResult @inlinable
 	func width(_ width: Double?, priority: NSLayoutConstraint.Priority? = nil) -> Self {
 		guard let width = width else { return self }
+		self.translatesAutoresizingMaskIntoConstraints = false
 		let c = self.widthAnchor.constraint(equalToConstant: width)
 		if let priority { c.priority = priority }
 		c.isActive = true
@@ -87,6 +89,7 @@ public extension NSView {
 	/// - Returns: self
 	@discardableResult @inlinable @inline(__always)
 	func minWidth(_ minWidth: Double, priority: NSLayoutConstraint.Priority? = nil) -> Self {
+		self.translatesAutoresizingMaskIntoConstraints = false
 		let c = NSLayoutConstraint(
 			item: self, attribute: .width,
 			relatedBy: .greaterThanOrEqual,
@@ -105,6 +108,7 @@ public extension NSView {
 	/// - Returns: self
 	@discardableResult @inlinable @inline(__always)
 	func maxWidth(_ maxWidth: Double, priority: NSLayoutConstraint.Priority? = nil) -> Self {
+		self.translatesAutoresizingMaskIntoConstraints = false
 		let c = NSLayoutConstraint(
 			item: self, attribute: .width,
 			relatedBy: .lessThanOrEqual,
@@ -124,6 +128,7 @@ public extension NSView {
 	@discardableResult @inlinable @inline(__always)
 	func height(_ height: Double?, priority: NSLayoutConstraint.Priority? = nil) -> Self {
 		guard let height = height else { return self }
+		self.translatesAutoresizingMaskIntoConstraints = false
 		let c = self.heightAnchor.constraint(equalToConstant: height)
 		if let priority { c.priority = priority }
 		c.isActive = true
@@ -137,6 +142,7 @@ public extension NSView {
 	/// - Returns: self
 	@discardableResult @inlinable
 	func minHeight(_ minHeight: Double, priority: NSLayoutConstraint.Priority? = nil) -> Self {
+		self.translatesAutoresizingMaskIntoConstraints = false
 		let c = NSLayoutConstraint(
 			item: self, attribute: .height,
 			relatedBy: .greaterThanOrEqual,
@@ -155,6 +161,7 @@ public extension NSView {
 	/// - Returns: self
 	@discardableResult @inlinable
 	func maxHeight(_ maxHeight: Double, priority: NSLayoutConstraint.Priority? = nil) -> Self {
+		self.translatesAutoresizingMaskIntoConstraints = false
 		let c = NSLayoutConstraint(
 			item: self, attribute: .height,
 			relatedBy: .lessThanOrEqual,
@@ -174,6 +181,7 @@ public extension NSView {
 	/// - Returns: self
 	@discardableResult @inlinable @inline(__always)
 	func frame(width: Double? = nil, height: Double? = nil, priority: NSLayoutConstraint.Priority? = nil) -> Self {
+		self.translatesAutoresizingMaskIntoConstraints = false
 		if let width { self.width(width, priority: priority) }
 		if let height { self.height(height, priority: priority) }
 		return self
@@ -226,7 +234,8 @@ public extension NSView {
 		priority: NSLayoutConstraint.Priority? = nil,
 		constant: Double = 0
 	) -> Self {
-		self.equalConstraint(.width, ids, priority: priority, constant: constant)
+		self
+			.equalConstraint(.width, ids, priority: priority, constant: constant)
 			.equalConstraint(.height, ids, priority: priority, constant: constant)
 	}
 
@@ -301,6 +310,7 @@ public extension NSView {
 
 			guard let first = views.first else { return self }
 			views.dropFirst().forEach { view in
+				view.translatesAutoresizingMaskIntoConstraints = false
 				let c = NSLayoutConstraint(
 					item: first, attribute: attribute,
 					relatedBy: .equal,

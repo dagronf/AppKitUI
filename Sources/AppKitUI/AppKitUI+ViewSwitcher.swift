@@ -34,10 +34,10 @@ public class AUIViewSwitcher: NSView {
 		super.init(frame: .zero)
 		self.translatesAutoresizingMaskIntoConstraints = false
 
-		self.childViews.forEach {
-			$0.translatesAutoresizingMaskIntoConstraints = false
-			$0.needsLayout = true
-		}
+		self.setContentHuggingPriority(.defaultLow, for: .horizontal)
+		self.setContentHuggingPriority(.defaultLow, for: .vertical)
+
+		self.childViews.translatesAutoresizingMaskIntoConstraints(false)
 
 		selectedViewIndex.register(self) { @MainActor [weak self] newSelection in
 			self?.reflectView(newSelection)

@@ -17,6 +17,7 @@
 //  OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
+import AppKit
 import Foundation
 
 extension Array {
@@ -26,5 +27,13 @@ extension Array {
 			return nil
 		}
 		return self[index]
+	}
+}
+
+public extension Array where Element == NSView {
+	/// Set all views with translatesAutoresizingMaskIntoConstraints
+	/// - Parameter value: The value
+	func translatesAutoresizingMaskIntoConstraints(_ value: Bool) {
+		self.forEach { $0.translatesAutoresizingMaskIntoConstraints = false }
 	}
 }

@@ -44,6 +44,7 @@ class Model {
 			ColorSelectorPane(),
 			ContainerPane(),
 			LevelIndicatorPane(),
+			SubscriptionExamplePane(),
 		]
 		if #available(macOS 11, *) {
 			p.append(SwitchPane())

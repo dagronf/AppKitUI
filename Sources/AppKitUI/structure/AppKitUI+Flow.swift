@@ -46,7 +46,7 @@ public class Flow: NSView {
 	func reloadData() {
 		// Rebuild the child views
 		self.childViews = self.viewsBuilder()
-		self.childViews.forEach { $0.translatesAutoresizingMaskIntoConstraints = false }
+		self.childViews.translatesAutoresizingMaskIntoConstraints(false)
 		self.flow.reloadData()
 	}
 
@@ -116,7 +116,7 @@ private extension Flow {
 
 	func setChildren(_ children: [NSView]) {
 		self.childViews = children
-		self.childViews.forEach { $0.translatesAutoresizingMaskIntoConstraints = false }
+		self.childViews.translatesAutoresizingMaskIntoConstraints(false)
 		self.flow.reloadData()
 	}
 }

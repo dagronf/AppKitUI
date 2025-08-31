@@ -42,6 +42,10 @@ import AppKit
 			rowAlignment: NSGridRow.Alignment = .inherited,
 			@NSViewsBuilder builder: () -> [NSView]
 		) {
+
+			let rowViews = builder()
+			rowViews.translatesAutoresizingMaskIntoConstraints(false)
+
 			self.rowCells = builder()
 			self.topPadding = topPadding
 			self.bottomPadding = bottomPadding

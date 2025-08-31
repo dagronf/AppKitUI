@@ -34,6 +34,7 @@ public func ZStack(
 	let view = NSView()
 	view.translatesAutoresizingMaskIntoConstraints = false
 
+	// Build the child views
 	let children = builder()
 
 	var v: NSView?
@@ -51,6 +52,8 @@ public func ZStack(
 
 			view.addConstraint(NSLayoutConstraint(item: child, attribute: .leading, relatedBy: .greaterThanOrEqual, toItem: view, attribute: .leading, multiplier: 1, constant: padding))
 			view.addConstraint(NSLayoutConstraint(item: child, attribute: .top, relatedBy: .greaterThanOrEqual, toItem: view, attribute: .top, multiplier: 1, constant: padding))
+			view.addConstraint(NSLayoutConstraint(item: child, attribute: .trailing, relatedBy: .lessThanOrEqual, toItem: view, attribute: .trailing, multiplier: 1, constant: padding))
+			view.addConstraint(NSLayoutConstraint(item: child, attribute: .bottom, relatedBy: .lessThanOrEqual, toItem: view, attribute: .bottom, multiplier: 1, constant: padding))
 
 			v = child
 		}
@@ -96,7 +99,6 @@ public func ZStack(
 		NSButton()
 			.title("Fish and chips")
 			.huggingPriority(.defaultLow, for: .horizontal)
-
 	}
 }
 

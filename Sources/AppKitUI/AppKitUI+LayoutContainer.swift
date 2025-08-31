@@ -133,6 +133,15 @@ public extension LayoutContainer {
 
 		return self
 	}
+
+	public func constraintPinInside(index: Int) -> Self {
+		guard let i1 = self.childViews.at(index) else {
+			os_log("Container: Cannot find subview at index=%d", log: logger, type: .error, index)
+			return self
+		}
+		i1.pin(inside: self)
+		return self
+	}
 }
 
 
