@@ -123,7 +123,7 @@ private extension NSSwitch {
 			NSSwitch()
 				.state(state)
 				.isEnabled(isEnabled)
-			NSButton(checkboxWithTitle: "enabled")
+			AUICheckbox(title: "enabled")
 				.state(isEnabled)
 		}
 	}

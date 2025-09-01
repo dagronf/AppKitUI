@@ -252,4 +252,85 @@ private func makeDockSizeStack__(_ dockSize: Bind<Double>) -> NSView {
 		.debugFrames()
 }
 
+@available(macOS 14, *)
+#Preview("Simple Settings") {
+
+	let sizeInPoints = Bind(12.0)
+	let imageSelection = Bind(0)
+	let clipboardSettingsSelection = Bind(1)
+	let ditherContentOfClipboard = Bind(false)
+
+	let calculateBestColorTable = Bind(false)
+	let verifyColorTableIntegrity = Bind(true)
+	let notifyOnLossOfColorInformation = Bind(false)
+	let notifyBeforeConversion = Bind(false)
+
+	NSGridView(columnSpacing: 6, rowSpacing: 12) {
+		NSGridView.Row {
+			NSTextField(label: "General Editing:")
+			VStack(alignment: .leading, spacing: 6) {
+				RadioGroup()
+					.items(["Select existing image", "Add a margin around image"])
+					.selectedIndex(imageSelection)
+				HStack {
+					NSTextField(label: "Size:")
+					NSTextField(value: sizeInPoints, formatter: NumberFormatter())
+						.width(50)
+						.isEnabled(imageSelection.oneWayTransform { $0 == 1 })
+					NSTextField(label: "points")
+				}
+				NSButton.checkbox(title: "Reposition windows after change")
+				NSButton.checkbox(title: "Remember recent items")
+			}
+		}
+
+		NSGridView.Row {
+			HDivider()
+		}
+		.mergeCells(0 ... 1)
+
+		NSGridView.Row {
+			NSTextField(label: "Clipboard Settings:")
+			VStack(alignment: .leading, spacing: 6) {
+				RadioGroup()
+					.items([
+						"Copy selection from image only",
+						"Erase selection from image"
+					])
+					.selectedIndex(clipboardSettingsSelection)
+				VStack(alignment: .leading, spacing: 4) {
+					NSButton.checkbox(title: "Dither content of clipboard")
+						.huggingPriority(.init(10), for: .horizontal)
+						.state(ditherContentOfClipboard)
+						.descriptionText("Optional description for this setting if this option is enabled.")
+				}
+			}
+			.hugging(.init(10), for: .horizontal)
+		}
+
+		NSGridView.Row {
+			HDivider()
+		}
+		.mergeCells(0 ... 1)
+
+		NSGridView.Row {
+			NSTextField(label: "Color Optimization:")
+			VStack(alignment: .leading, spacing: 6) {
+				NSButton.checkbox(title: "Calculate best color table")
+					.state(calculateBestColorTable)
+				NSButton.checkbox(title: "Verify color table integrity")
+					.state(verifyColorTableIntegrity)
+				NSButton.checkbox(title: "Notify on loss of color information")
+					.state(notifyOnLossOfColorInformation)
+				NSButton.checkbox(title: "Notify before CMYK to RGB conversion")
+					.state(notifyBeforeConversion)
+			}
+		}
+	}
+	.rowAlignment(.firstBaseline)
+	.columnAlignment(.trailing, forColumn: 0)
+	.padding()
+	.debugFrames()
+}
+
 #endif

@@ -19,34 +19,84 @@
 
 import AppKit.NSButton
 
-/// `NSButton` checkbox extensions
+// `NSButton` checkbox extensions
+
+@MainActor
+public extension NSButton {
+	/// Create a checkbox with no title
+	/// - Parameter onAction: The action to call when the checkbox state changes
+	/// - Returns: A checkbox
+	public static func checkbox(onAction: ((NSControl.StateValue) -> Void)? = nil) -> AUICheckbox {
+		AUICheckbox(onAction: onAction)
+	}
+
+	/// Create a checkbox with no title
+	/// - Parameter onAction: The action to call when the checkbox state changes
+	/// - Returns: A checkbox
+	public static func checkbox(title: String, onAction: ((NSControl.StateValue) -> Void)? = nil) -> AUICheckbox {
+		AUICheckbox(title: title, onAction: onAction)
+	}
+}
 
 // MARK: - Checkbox creation
 
 @MainActor
-public extension NSButton {
-	/// Create a checkbox button
+public class AUICheckbox: NSButton {
+	/// Create a checkbox with a title and an optional action
 	/// - Parameters:
-	///   - title: The checkbox title
-	///   - onAction: The action block to call when the action is performed on the block
-	convenience init(checkboxWithTitle title: String, onAction: ((NSControl.StateValue) -> Void)? = nil) {
-		self.init(checkboxWithTitle: title, target: nil, action: nil)
+	///   - title: The title
+	///   - onAction: The block to call when the checkbox changes state
+	public init(title: String, onAction: ((NSControl.StateValue) -> Void)? = nil) {
+		super.init(frame: .zero)
+		self.setButtonType(.switch)
+		self.title = title
 		if let onAction {
-			self.usingButtonStorage { $0.action = onAction }
+			self.onAction(onAction)
 		}
 	}
 
-	/// Create a checkbox button
-	/// - Parameters:
-	///   - title: The checkbox title
-	///   - onAction: The action block to call when the action is performed on the block
-	/// - Returns: A new checkbox button
-	static func checkbox(title: String, onAction: ((NSControl.StateValue) -> Void)? = nil) -> NSButton {
-		let button = NSButton(checkboxWithTitle: title)
-		if let onAction {
-			button.usingButtonStorage { $0.action = onAction }
+	/// Create a checkbox with no title
+	/// - Parameter onAction: The block to call when the checkbox changes state
+	public convenience init(onAction: ((NSControl.StateValue) -> Void)? = nil) {
+		self.init(title: "", onAction: onAction)
+		self.hidesTitle(true)
+	}
+
+	required init?(coder: NSCoder) {
+		fatalError("init(coder:) has not been implemented")
+	}
+
+	/// Add styled description text underneath the checkbox, leading aligned to the text of the checkbox
+	/// - Parameter msg: The message to display
+	/// - Returns: self
+	///
+	/// Note that this method returns a new view, so make sure you call any NSButton- specific
+	/// methods before calling this one
+	@discardableResult
+	public func descriptionText(_ msg: String) -> NSView {
+		let descriptionField = NSTextField(label: msg)
+			.font(.systemSmall)
+			.textColor(.secondaryLabelColor)
+			.huggingPriority(.defaultLow, for: .horizontal)
+			.compressionResistancePriority(.init(1), for: .horizontal)
+			.compressionResistancePriority(.defaultHigh, for: .vertical)
+
+		let result = VStack(alignment: .leading, spacing: 4) {
+			self
+			descriptionField
 		}
-		return button
+		.hugging(.init(10), for: .horizontal)
+
+		result.addConstraint(
+			NSLayoutConstraint(
+				item: descriptionField, attribute: .leading,
+				relatedBy: .equal,
+				toItem: self, attribute: .leading,
+				multiplier: 1, constant: 20
+			)
+		)
+
+		return result
 	}
 }
 
@@ -58,14 +108,26 @@ public extension NSButton {
 #Preview("default") {
 	let isEnabled = Bind(true)
 	VStack(alignment: .leading) {
-		NSButton(checkboxWithTitle: "This is the first checkbox")
-		NSButton(checkboxWithTitle: "This is a disabled checkbox")
+		NSButton.checkbox(title: "This is the first checkbox")
+		NSButton.checkbox(title: "This is a disabled checkbox")
 			.isEnabled(false)
 
 		HDivider()
 
+		NSButton.checkbox(title: "Automatic prominence while speaking")
+			.huggingPriority(.defaultLow, for: .horizontal)
+			.descriptionText("During Group FaceTime calls, the tile of the person speaking will automatically become larger.")
+		NSButton.checkbox(title: "FaceTime Live Photos")
+			.huggingPriority(.defaultLow, for: .horizontal)
+			.descriptionText("Allow Live Photos to be captured during video calls.")
+		NSButton.checkbox(title: "Live Captions")
+			.huggingPriority(.defaultLow, for: .horizontal)
+			.descriptionText("Your Mac will use on-device intelligence to automatically display captions in FaceTime. Accuracy of Live Captions may vary and should not be relied upon in high-risk emergency situations.")
+
+		HDivider()
+
 		HStack(spacing: 12) {
-			NSButton(checkboxWithTitle: "This title is hidden")
+			AUICheckbox(title: "This title is hidden")
 				.hidesTitle(true)
 				.onAction { _ in
 					Swift.print("Clicked the checkbox with the hidden title")
@@ -77,13 +139,14 @@ public extension NSButton {
 		HDivider()
 
 		HStack {
-			NSButton(checkboxWithTitle: "This is an optionally enabled checkbox")
+			NSButton.checkbox(title: "This is an optionally enabled checkbox")
 				.isEnabled(isEnabled)
 			AUISwitch()
 				.state(isEnabled)
 				.controlSize(.mini)
 		}
 	}
+	.debugFrames()
 }
 
 #endif

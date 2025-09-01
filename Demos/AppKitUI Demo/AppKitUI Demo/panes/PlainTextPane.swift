@@ -30,11 +30,11 @@ class PlainTextPane: Pane {
 		let _selectedRangeString = Bind("")
 		return VStack {
 			HStack {
-				NSButton(checkboxWithTitle: "Wraps")
+				NSButton.checkbox(title: "Wraps")
 					.state(_wrapText)
-				NSButton(checkboxWithTitle: "Editable")
+				NSButton.checkbox(title: "Editable")
 					.state(_isEditable)
-				NSButton(checkboxWithTitle: "Selectable")
+				NSButton.checkbox(title: "Selectable")
 					.state(_isSelectable)
 
 				VDivider()

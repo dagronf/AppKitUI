@@ -185,23 +185,23 @@ class ButtonPane: Pane {
 						StyledHeader(label: "Checkbox")
 						VStack {
 							HStack {
-								NSButton(checkboxWithTitle: "checkbox off")
+								NSButton.checkbox(title: "checkbox off")
 									.state(.off)
-								NSButton(checkboxWithTitle: "checkbox mixed")
+								NSButton.checkbox(title: "checkbox mixed")
 									.allowsMixedState(true)
 									.state(.mixed)
-								NSButton(checkboxWithTitle: "checkbox on")
+								NSButton.checkbox(title: "checkbox on")
 									.state(.on)
 							}
 							HStack {
-								NSButton(checkboxWithTitle: "checkbox off")
+								NSButton.checkbox(title: "checkbox off")
 									.state(.off)
 									.isEnabled(false)
-								NSButton(checkboxWithTitle: "checkbox mixed")
+								NSButton.checkbox(title: "checkbox mixed")
 									.allowsMixedState(true)
 									.isEnabled(false)
 									.state(.mixed)
-								NSButton(checkboxWithTitle: "checkbox on")
+								NSButton.checkbox(title: "checkbox on")
 									.isEnabled(false)
 									.state(.on)
 							}
@@ -211,10 +211,10 @@ class ButtonPane: Pane {
 					NSGridView.Row {
 						StyledHeader(label: "Checkbox Binding")
 						HStack {
-							NSButton(checkboxWithTitle: "Check 1")
+							NSButton.checkbox(title: "Check 1")
 								.allowsMixedState(true)
 								.state(checkBindingState)
-							NSButton(checkboxWithTitle: "Check 2")
+							NSButton.checkbox(title: "Check 2")
 								.allowsMixedState(true)
 								.state(checkBindingState)
 							NSTextField(label: checkBindingState.stringRepresentation())

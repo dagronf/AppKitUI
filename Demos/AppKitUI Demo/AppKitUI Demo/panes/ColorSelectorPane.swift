@@ -123,7 +123,7 @@ class ColorSelectorPane: Pane {
 									.allowsMultipleSelection(true)
 									.isEnabled(isEnabled)
 							}
-							NSButton(checkboxWithTitle: "Enable the control")
+							NSButton.checkbox(title: "Enable the control")
 								.state(isEnabled)
 						}
 						NSGridCell.emptyContentView

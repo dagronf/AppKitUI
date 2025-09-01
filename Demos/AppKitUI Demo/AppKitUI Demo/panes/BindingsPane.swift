@@ -34,7 +34,7 @@ class BindingsPane: Pane {
 							}
 					}
 
-					NSButton.checkbox(title: "This checkbox should reflect the oppsite of the switch value")
+					NSButton.checkbox(title: "This checkbox should reflect the opposite of the switch value")
 						.state(hideSomethingValue)
 				}
 				.padding(8)

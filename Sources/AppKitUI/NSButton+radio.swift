@@ -43,6 +43,7 @@ public class RadioGroup: NSStackView {
 		// resets to vertical and cannot be changed. Dunno why
 		self.alignment = (orientation == .vertical) ? .leading : .centerY
 		self.orientation = orientation
+		self.spacing = 6
 	}
 
 	required init?(coder: NSCoder) {
@@ -220,7 +221,9 @@ private extension RadioGroup {
 	}
 
 	func removeAllItems() {
-		self.arrangedSubviews.forEach { self.removeArrangedSubview($0) }
+		let view = self.arrangedSubviews
+		view.forEach { self.removeArrangedSubview($0) }
+		view.forEach { $0.removeFromSuperview() }
 	}
 }
 

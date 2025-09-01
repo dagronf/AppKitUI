@@ -326,6 +326,38 @@ public extension NSView {
 		}
 		return self
 	}
+
+	@discardableResult
+	func constraint(
+		from: AUIIdentifier,
+		attribute attr1: NSLayoutConstraint.Attribute,
+		relatedBy: NSLayoutConstraint.Relation,
+		to: AUIIdentifier,
+		attribute attr2: NSLayoutConstraint.Attribute,
+		priority: NSLayoutConstraint.Priority? = nil,
+		multipler: Double = 1,
+		constant: Double = 0
+	) -> Self {
+		guard
+			let fromView = self.firstSubview(withIdentifier: from.identifier),
+			let toView = self.firstSubview(withIdentifier: to.identifier)
+		else {
+			Swift.print("Unable to find child view(s) with tag '\(from.identifier.rawValue)':'\(to.identifier.rawValue)'")
+			return self
+		}
+
+		let c = NSLayoutConstraint(
+			item: fromView, attribute: attr1,
+			relatedBy: relatedBy,
+			toItem: toView, attribute: attr2,
+			multiplier: multipler,
+			constant: constant
+		)
+		if let priority { c.priority = priority }
+		self.addConstraint(c)
+
+		return self
+	}
 }
 
 

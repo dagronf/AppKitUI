@@ -422,7 +422,7 @@ extension NSView {
 			.mergeCells(0 ... 2)
 
 			NSGridView.Row {
-				NSButton.checkbox(title: "All cells merged")
+				AUICheckbox(title: "All cells merged")
 			}
 			.mergeCells(0 ... 2)
 		}

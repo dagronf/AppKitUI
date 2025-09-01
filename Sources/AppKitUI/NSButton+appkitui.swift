@@ -559,9 +559,9 @@ internal extension NSButton {
 			HDivider()
 
 			VStack(alignment: .leading) {
-				NSButton(checkboxWithTitle: "This is a checkbox")
+				NSButton.checkbox(title: "This is a checkbox")
 				HStack(spacing: 12) {
-					NSButton(checkboxWithTitle: "This title is hidden")
+					NSButton.checkbox(title: "This title is hidden")
 						.hidesTitle(true)
 						.onAction { _ in
 							Swift.print("Clicked the checkbox with the hidden title")
