@@ -130,10 +130,21 @@ public extension NSStackView {
 	/// - Parameter alignment: The alignment
 	/// - Returns: self
 	///
-	/// [alignment documentation](https://developer.apple.com/documentation/appkit/nsstackview/alignment)
+	/// [`alignment` documentation](https://developer.apple.com/documentation/appkit/nsstackview/alignment)
 	@discardableResult @inlinable
 	func alignment(_ alignment: NSLayoutConstraint.Attribute) -> Self {
 		self.alignment = alignment
+		return self
+	}
+
+	/// If true, the stack view removes hidden views from its view hierarchy.
+	/// - Parameter value: If true, removes hidden views
+	/// - Returns: self
+	///
+	/// [`detachesHiddenViews` documentation](https://developer.apple.com/documentation/appkit/nsstackview/detacheshiddenviews)
+	@discardableResult @inlinable
+	func detachesHiddenViews(_ value: Bool) -> Self {
+		self.detachesHiddenViews = value
 		return self
 	}
 
@@ -189,6 +200,7 @@ extension NSView {
 	/// Set the gravity area for this view (used only if its parent is a stack view)
 	/// - Parameter value: The gravity
 	/// - Returns: self
+	@discardableResult
 	public func gravityArea(_ value: NSStackView.Gravity) -> Self {
 		self.setArbitraryValue(value, forKey: __gravityIdentifier)
 		return self
@@ -293,11 +305,16 @@ private func makeDockSizeStack__(_ dockSize: Bind<Double>) -> NSView {
 			NSTextField(label: "Clipboard Settings:")
 			VStack(alignment: .leading, spacing: 6) {
 				RadioGroup()
-					.items([
-						"Copy selection from image only",
-						"Erase selection from image"
-					])
+					.item(
+						title: "Copy selection from image only",
+						description: "Make sure that the selection is an image type only"
+					)
+					.item(
+						title: "Erase selection from image",
+						description: "Remove any selection from things"
+					)
 					.selectedIndex(clipboardSettingsSelection)
+					.hugging(.init(10), for: .horizontal)
 				VStack(alignment: .leading, spacing: 4) {
 					NSButton.checkbox(title: "Dither content of clipboard")
 						.huggingPriority(.init(10), for: .horizontal)

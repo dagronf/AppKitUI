@@ -24,14 +24,8 @@ class EmptyPane: Pane {
 	override func title() -> String { "Empty" }
 	@MainActor
 	override func make(model: Model) -> NSView {
-		NSView(layoutStyle: .centered) {
-			VStack {
-				NSTextField(label: "Select an item from the list on the left")
-					.alignment(.center)
-					.compressionResistancePriority(.defaultLow, for: .horizontal)
-					.padding()
-			}
-		}
+		AUIContentUnavailableView(title: "No selection")
+			.description("Select an item from the list on the left")
 	}
 }
 
