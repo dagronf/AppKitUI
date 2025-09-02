@@ -21,7 +21,7 @@ import AppKit
 import AppKitUI
 
 class LicenseExamplePane: Pane {
-	override func title() -> String { "License Example" }
+	override func title() -> String { NSLocalizedString("License Example", comment: "") }
 	@MainActor
 	override func make(model: Model) -> NSView {
 		let licenseKey = Bind("YTMG3-N6DKC-DKB77-7M9GH-8HVX7")
@@ -39,7 +39,7 @@ class LicenseExamplePane: Pane {
 
 					VStack(spacing: 8) {
 						HStack {
-							NSTextField(label: "License Key:")
+							NSTextField(label: NSLocalizedString("License Key:", comment: ""))
 								.font(.system.weight(.medium))
 							NSTextField(content: licenseKey)
 								.roundedBezel()
@@ -58,12 +58,12 @@ class LicenseExamplePane: Pane {
 						})
 
 						HStack {
-							NSButton(title: "Deactivate")
+							NSButton(title: NSLocalizedString("Deactivate", comment: ""))
 								.identifier("deactivate")
 								.isEnabled(isLicenseKeyActivated)
 								.onAction { _ in isLicenseKeyActivated.wrappedValue = false }
 								.gravityArea(.trailing)
-							NSButton(title: "Activate")
+							NSButton(title: NSLocalizedString("Activate", comment: ""))
 								.identifier("activate")
 								.isEnabled(isLicenseKeyActivated.toggled())
 								.onAction { _ in isLicenseKeyActivated.wrappedValue = true }
@@ -74,14 +74,14 @@ class LicenseExamplePane: Pane {
 					}
 
 					HStack {
-						NSButton(title: "􀎬 Customer Portal")
+						NSButton(title: NSLocalizedString("􀎬 Customer Portal", comment: ""))
 							.isBordered(false)
 							.onAction { _ in
 								model.log("LicenseKey: Clicked 'Customer Portal'")
 							}
 							.gravityArea(.leading)
 
-						NSButton(title: "Online Store 􁽇")
+						NSButton(title: NSLocalizedString("Online Store 􁽇", comment: ""))
 							.isBordered(false)
 							.onAction { _ in
 								model.log("LicenseKey: Clicked 'Online Store'")

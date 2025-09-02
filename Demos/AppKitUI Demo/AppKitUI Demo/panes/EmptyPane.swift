@@ -24,8 +24,8 @@ class EmptyPane: Pane {
 	override func title() -> String { "Empty" }
 	@MainActor
 	override func make(model: Model) -> NSView {
-		AUIContentUnavailableView(title: "No selection")
-			.description("Select an item from the list on the left")
+		AUIContentUnavailableView(title: NSLocalizedString("No selection", comment: ""))
+			.description(NSLocalizedString("Select an item from the list on the left", comment: ""))
 	}
 }
 

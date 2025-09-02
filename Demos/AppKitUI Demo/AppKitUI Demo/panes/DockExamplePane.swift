@@ -130,7 +130,7 @@ class DockExamplePane: Pane {
 							.gravityArea(.trailing)
 					}
 				}
-				.padding(2)
+				.padding(8)
 			}
 			.formSemanticContent()
 			.titlePosition(.noTitle)

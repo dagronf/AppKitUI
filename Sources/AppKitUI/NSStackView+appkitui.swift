@@ -281,7 +281,7 @@ private func makeDockSizeStack__(_ dockSize: Bind<Double>) -> NSView {
 		NSGridView.Row {
 			NSTextField(label: "General Editing:")
 			VStack(alignment: .leading, spacing: 6) {
-				RadioGroup()
+				AUIRadioGroup()
 					.items(["Select existing image", "Add a margin around image"])
 					.selectedIndex(imageSelection)
 				HStack {
@@ -304,7 +304,7 @@ private func makeDockSizeStack__(_ dockSize: Bind<Double>) -> NSView {
 		NSGridView.Row {
 			NSTextField(label: "Clipboard Settings:")
 			VStack(alignment: .leading, spacing: 6) {
-				RadioGroup()
+				AUIRadioGroup()
 					.item(
 						title: "Copy selection from image only",
 						description: "Make sure that the selection is an image type only"

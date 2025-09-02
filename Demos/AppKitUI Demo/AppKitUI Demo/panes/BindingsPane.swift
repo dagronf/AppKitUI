@@ -9,7 +9,7 @@ import AppKit
 import AppKitUI
 
 class BindingsPane: Pane {
-	override func title() -> String { "Bindings" }
+	override func title() -> String { NSLocalizedString("Bindings", comment: "") }
 
 	override func make(model: Model) -> NSView {
 
@@ -17,16 +17,16 @@ class BindingsPane: Pane {
 		let hideSomethingValue = showSomethingValue.twoWayTransform(BindTransformers.BoolInverted())
 
 		return VStack(alignment: .leading) {
-			NSBox(title: "Basic binding tansformer testing") {
+			NSBox(title: NSLocalizedString("Basic binding tansformer testing", comment: "")) {
 				VStack(alignment: .leading, spacing: 16) {
-					NSTextField(label: "These controls should reflect the opposite of each other")
+					NSTextField(label: NSLocalizedString("These controls should reflect the opposite of each other", comment: ""))
 
 					HDivider()
 
 					HStack {
 						AUISwitch()
 							.state(showSomethingValue)
-						NSTextField(label: "This is the original value")
+						NSTextField(label: NSLocalizedString("This is the original value", comment: ""))
 							.compressionResistancePriority(.defaultHigh, for: .horizontal)
 							.onClickGesture {
 								// Make this text behave like the checkbox text
@@ -34,7 +34,7 @@ class BindingsPane: Pane {
 							}
 					}
 
-					NSButton.checkbox(title: "This checkbox should reflect the opposite of the switch value")
+					NSButton.checkbox(title: NSLocalizedString("This checkbox should reflect the opposite of the switch value", comment: ""))
 						.state(hideSomethingValue)
 				}
 				.padding(8)

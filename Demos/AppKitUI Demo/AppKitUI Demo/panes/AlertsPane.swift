@@ -9,7 +9,7 @@ import AppKit
 import AppKitUI
 
 class AlertsPane: Pane {
-	override func title() -> String { "Alerts" }
+	override func title() -> String { NSLocalizedString("Alerts", comment: "") }
 	@MainActor
 	override func make(model: Model) -> NSView {
 
@@ -24,22 +24,22 @@ class AlertsPane: Pane {
 
 		return NSView(layoutStyle: .centered) {
 			VStack {
-				NSButton(title: "Display a critical alert") { _ in
+				NSButton(title: NSLocalizedString("Display a critical alert", comment: "")) { _ in
 					asr = true
 				}
-				NSButton(title: "Display an informational alert") { _ in
+				NSButton(title: NSLocalizedString("Display an informational alert", comment: "")) { _ in
 					asr2 = true
 				}
 
 				VDivider()
 
-				NSButton(title: "Display a sheet") { _ in
+				NSButton(title: NSLocalizedString("Display a sheet", comment: "")) { _ in
 					sheet1 = true
 				}
 
 				VDivider()
 
-				NSButton(title: "Display a popover") { _ in
+				NSButton(title: NSLocalizedString("Display a popover", comment: "")) { _ in
 					popover1 = true
 				}
 				.popover(title: "Wheee!", isVisible: $popover1, preferredEdge: .maxY, behaviour: .semitransient) {
@@ -49,9 +49,9 @@ class AlertsPane: Pane {
 
 			.alert(isVisible: $asr) {
 				NSAlert(style: .critical)
-					.messageText("Delete the document?")
-					.informativeText("Are you sure you would like to delete the document?")
-					.buttons(["Delete", "Cancel"])
+					.messageText(NSLocalizedString("Delete the document?", comment: ""))
+					.informativeText(NSLocalizedString("Are you sure you would like to delete the document?", comment: ""))
+					.buttons([NSLocalizedString("Delete", comment: ""), NSLocalizedString("Cancel", comment: "")])
 					.suppressionState($suppressionState)
 			} onDismissed: { result in
 				model.log(result)

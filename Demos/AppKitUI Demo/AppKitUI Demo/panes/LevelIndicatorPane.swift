@@ -32,7 +32,7 @@ class LevelIndicatorPane: Pane {
 		return NSView(layoutStyle: .centered) {
 			NSGridView(columnSpacing: 12, rowSpacing: 12) {
 				NSGridView.Row {
-					NSTextField(label: "Rating:")
+					NSTextField(label: NSLocalizedString("Rating:", comment: ""))
 						.font(.headline)
 					VStack {
 						NSLevelIndicator(style: .rating, value: value1, range: 0 ... 5)
@@ -53,7 +53,7 @@ class LevelIndicatorPane: Pane {
 				.mergeCells(0 ... 1)
 
 				NSGridView.Row {
-					NSTextField(label: "Continuous:")
+					NSTextField(label: NSLocalizedString("Continuous:", comment: ""))
 						.font(.headline)
 					VStack {
 						NSLevelIndicator(style: .continuousCapacity, value: value2, range: 0 ... 100)
@@ -72,7 +72,7 @@ class LevelIndicatorPane: Pane {
 				.mergeCells(0 ... 1)
 
 				NSGridView.Row {
-					NSTextField(label: "Discrete:")
+					NSTextField(label: NSLocalizedString("Discrete:", comment: ""))
 						.font(.headline)
 					VStack {
 						NSLevelIndicator(style: .discreteCapacity, value: value3, range: 0 ... 10)
@@ -94,7 +94,7 @@ class LevelIndicatorPane: Pane {
 				.mergeCells(0 ... 1)
 
 				NSGridView.Row {
-					NSTextField(label: "Relevancy:")
+					NSTextField(label: NSLocalizedString("Relevancy:", comment: ""))
 						.font(.headline)
 					VStack {
 						NSLevelIndicator(style: .relevancy, value: value4, range: 0 ... 10)

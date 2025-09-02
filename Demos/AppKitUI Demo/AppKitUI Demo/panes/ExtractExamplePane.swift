@@ -21,7 +21,7 @@ import AppKit
 import AppKitUI
 
 class ExtractExamplePane: Pane {
-	override func title() -> String { "Extract DVD Example" }
+	override func title() -> String { NSLocalizedString("Extract DVD Example", comment: "") }
 	@MainActor
 	override func make(model: Model) -> NSView {
 		return NSView(layoutStyle: .centered) {
@@ -46,22 +46,22 @@ class ExtractExamplePane: Pane {
 			return VStack {
 				NSGridView(columnSpacing: 8) {
 					NSGridView.Row {
-						NSTextField(label: "Source:")
+						NSTextField(label: NSLocalizedString("Source:", comment: ""))
 							.font(.system.weight(.bold))
 						NSTextField(label: source)
 					}
 					NSGridView.Row {
-						NSTextField(label: "Source file:")
+						NSTextField(label: NSLocalizedString("Source file:", comment: ""))
 							.font(.system.weight(.bold))
 						NSTextField(label: sourceFile)
 					}
 					NSGridView.Row {
-						NSTextField(label: "Source size:")
+						NSTextField(label: NSLocalizedString("Source size:", comment: ""))
 							.font(.system.weight(.bold))
 						NSTextField(label: byteCount.byteFormatted(byteFormatter))
 					}
 					NSGridView.Row {
-						NSTextField(label: "Read rate:")
+						NSTextField(label: NSLocalizedString("Read rate:", comment: ""))
 							.font(.system.weight(.bold))
 						HStack(spacing: 0) {
 							NSTextField(label: readRate.byteFormatted(byteFormatter))
@@ -69,7 +69,7 @@ class ExtractExamplePane: Pane {
 						}
 					}
 					NSGridView.Row {
-						NSTextField(label: "Output file:")
+						NSTextField(label: NSLocalizedString("Output file:", comment: ""))
 							.font(.system.weight(.bold))
 						NSPathControl(fileURL: outputPath)
 							.pathStyle(.popUp)
@@ -77,12 +77,12 @@ class ExtractExamplePane: Pane {
 							.compressionResistancePriority(.defaultLow, for: .horizontal)
 					}
 					NSGridView.Row {
-						NSTextField(label: "Output size:")
+						NSTextField(label: NSLocalizedString("Output size:", comment: ""))
 							.font(.system.weight(.bold))
 						NSTextField(label: outputSize.byteFormatted(byteFormatter))
 					}
 					NSGridView.Row {
-						NSTextField(label: "Free space:")
+						NSTextField(label: NSLocalizedString("Free space:", comment: ""))
 							.font(.system.weight(.bold))
 						NSTextField(label: freeSpace.byteFormatted(byteFormatter))
 					}

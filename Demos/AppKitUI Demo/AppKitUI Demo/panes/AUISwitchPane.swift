@@ -9,7 +9,7 @@ import AppKit
 import AppKitUI
 
 class AUISwitchPane: Pane {
-	override func title() -> String { "NSSwitch (10.11+)" }
+	override func title() -> String { NSLocalizedString("NSSwitch (10.11+)", comment: "") }
 
 	override func make(model: Model) -> NSView {
 
@@ -17,15 +17,15 @@ class AUISwitchPane: Pane {
 		let enabled = Bind(true)
 
 		return VStack(alignment: .leading) {
-			NSTextField(label: "This is an NSSwitch equivalent that supports back to 10.11")
+			NSTextField(label: NSLocalizedString("This is an NSSwitch equivalent that supports back to 10.11", comment: ""))
 
 			HDivider()
 
 			VStack(alignment: .leading, spacing: 20) {
 				HStack {
-					NSButton.checkbox(title: "Enabled")
+					NSButton.checkbox(title: NSLocalizedString("Enabled", comment: ""))
 						.state(enabled)
-					NSButton.checkbox(title: "State")
+					NSButton.checkbox(title: NSLocalizedString("State", comment: ""))
 						.state(state)
 				}
 

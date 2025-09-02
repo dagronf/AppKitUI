@@ -71,7 +71,7 @@ private func makeLoggingOutputView(model: Model) -> NSView {
 		logging
 
 		HStack(spacing: 4) {
-			NSButton(title: "Clear Log") { _ in
+			NSButton(title: NSLocalizedString("Clear Log", comment: "")) { _ in
 				logging.clear()
 			}
 			.bezelStyle(.accessoryBarAction)
@@ -79,7 +79,7 @@ private func makeLoggingOutputView(model: Model) -> NSView {
 			.imageScaling(.scaleProportionallyDown)
 			.imagePosition(.imageLeading)
 			.controlSize(.small)
-			.toolTip("Clear log")
+			.toolTip(NSLocalizedString("Clear log", comment: ""))
 			.gravityArea(.leading)
 		}
 		.hugging(.init(10), for: .horizontal)
