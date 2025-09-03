@@ -45,6 +45,7 @@ class Model {
 			ContainerPane(),
 			LevelIndicatorPane(),
 			SubscriptionExamplePane(),
+			ContentUnavailablePane(),
 		]
 		if #available(macOS 11, *) {
 			p.append(SwitchPane())

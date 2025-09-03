@@ -25,9 +25,7 @@ class ListView: NSView {
 		NSVisualEffectView(material: .sidebar) {
 			ScrollView {
 				List(self.model.panes) { pane in
-					HStack {
-						NSTextField(label: pane.title())
-					}
+					NSTextField(label: pane.title())
 				}
 				.selection(model.selected)
 				.backgroundColor(.clear)

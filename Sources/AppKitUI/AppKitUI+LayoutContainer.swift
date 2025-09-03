@@ -53,12 +53,13 @@ public extension LayoutContainer {
 	/// Create a constraint from a subview to another subview within the LayoutContainer
 	/// - Parameters:
 	///   - fromIndex: The index of the child view for the left side of the constraint
-	///   - attr1: The attribute of the view for the left side of the constraint.
-	///   - rel: The relationship between the left side of the constraint and the right side of the constraint.
+	///   - attr1: The attribute of the view for the left side of the constraint
+	///   - rel: The relationship between the left side of the constraint and the right side of the constraint
 	///   - toIndex: The index of the child view for the right side of the constraint
-	///   - attr2: The attribute of the container view for the right side of the constraint.
-	///   - multiplier: The constant multiplied with the attribute on the right side of the constraint as part of getting the modified attribute.
-	///   - constant: The constant added to the multiplied attribute value on the right side of the constraint to yield the final modified attribute.
+	///   - attr2: The attribute of the container view for the right side of the constraint
+	///   - multiplier: The constant multiplied with the attribute on the right side of the constraint as part of getting the modified attribute
+	///   - constant: The constant added to the multiplied attribute value on the right side of the constraint to yield the final modified attribute
+	///   - priority: The priority of the created constraint
 	/// - Returns: self
 	func constraint(
 		fromIndex: Int,

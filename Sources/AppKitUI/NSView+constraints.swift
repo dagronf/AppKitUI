@@ -284,9 +284,9 @@ public extension NSView {
 		self.equalConstraint(.bottom, ids, priority: priority, constant: constant)
 	}
 
-	/// Add a constraint to make two views have the same leading position
+	/// Add constraints to views so that the attribute for each view is equal
 	/// - Parameters:
-	///   - attribute
+	///   - attribute: The layout attribute
 	///   - ids: The identifiers for the views to make equal
 	///   - priority: The constraint priority
 	///   - constant: The constraint constant value
@@ -327,6 +327,17 @@ public extension NSView {
 		return self
 	}
 
+	/// Apply a constraint between two subviews
+	/// - Parameters:
+	///   - from: The identifier for the 'from' view
+	///   - attr1: The layout attribute
+	///   - relatedBy: The relationship between the left side of the constraint and the right side of the constraint.
+	///   - to: The identifier for the 'to' view
+	///   - attr2: The attribute of the view for the right side of the constraint.
+	///   - multipler: The constant multiplied with the attribute on the right side of the constraint as part of getting the modified attribute.
+	///   - constant: The constant added to the multiplied attribute value on the right side of the constraint to yield the final modified attribute.
+	///   - priority: The priority of the constraint.
+	/// - Returns: self
 	@discardableResult
 	func constraint(
 		from: AUIIdentifier,
@@ -334,9 +345,9 @@ public extension NSView {
 		relatedBy: NSLayoutConstraint.Relation,
 		to: AUIIdentifier,
 		attribute attr2: NSLayoutConstraint.Attribute,
-		priority: NSLayoutConstraint.Priority? = nil,
 		multipler: Double = 1,
-		constant: Double = 0
+		constant: Double = 0,
+		priority: NSLayoutConstraint.Priority? = nil
 	) -> Self {
 		guard
 			let fromView = self.firstSubview(withIdentifier: from.identifier),
@@ -353,7 +364,9 @@ public extension NSView {
 			multiplier: multipler,
 			constant: constant
 		)
-		if let priority { c.priority = priority }
+		if let priority {
+			c.priority = priority
+		}
 		self.addConstraint(c)
 
 		return self

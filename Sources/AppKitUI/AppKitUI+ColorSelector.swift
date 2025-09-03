@@ -264,7 +264,7 @@ public extension AUIColorSelector {
 	}
 
 	/// Bind the control's selections (multiple selection)
-	/// - Parameter selection: The selection
+	/// - Parameter selections: The selected color items
 	/// - Returns: self
 	public func selections(_ selections: Bind<Set<Int>>) -> Self {
 		self.selections = selections

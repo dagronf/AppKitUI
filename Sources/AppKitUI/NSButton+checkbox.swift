@@ -31,7 +31,9 @@ public extension NSButton {
 	}
 
 	/// Create a checkbox with no title
-	/// - Parameter onAction: The action to call when the checkbox state changes
+	/// - Parameters:
+	///   - title: The text appearing on the checkbox
+	///   - onAction: The action to call when the checkbox state changes
 	/// - Returns: A checkbox
 	public static func checkbox(title: String, onAction: ((NSControl.StateValue) -> Void)? = nil) -> AUICheckbox {
 		AUICheckbox(title: title, onAction: onAction)
@@ -40,6 +42,8 @@ public extension NSButton {
 
 // MARK: - Checkbox creation
 
+
+/// An checkbox that supports adding a description field below the checkbox text.
 @MainActor
 public class AUICheckbox: NSButton {
 	/// Create a checkbox with a title and an optional action

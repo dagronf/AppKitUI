@@ -79,6 +79,25 @@ class VisualEffectPane: Pane {
 				HDivider()
 
 				HStack {
+					CircularAvatarView()
+						.avatarImage(imavatar)
+						.frame(width: 38, height: 38)
+					VStack(alignment: .leading, spacing: 2) {
+						NSTextField(label: "Jennifer Anyone")
+							.font(.title3.bold)
+						NSTextField(link: URL(string: "https://github.com/dagronf/AppKitUI")!, title: "@anyone")
+					}
+				}
+				.padding(8)
+				.background(
+					Rectangle(cornerRadius: 8)
+						.fill(color: .quaternaryLabelColor)
+						.stroke(.tertiaryLabelColor, lineWidth: 1)
+				)
+
+				HDivider()
+
+				HStack {
 					NSVisualEffectView() {
 						HStack(spacing: 10) {
 							CircularAvatarView()

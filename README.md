@@ -2,17 +2,49 @@
 
 An AppKit UI toolkit help you create and manage `NSView` content easily 
 
-1. Remove dependence on requiring XIBs when creating UI views
+1. Remove dependence on using XIBs when creating UI views
 2. Reduce boilerplate code when manually creating `NSView` UI content.
 3. Easily bind data between controls
+4. Easily attach actions to your controls (no more delegates or target/actions!)
+5. Use Xcode's preview pane to view your designs!!
 
-There is a demo application in the 'Demo' folder that demonstrates many of the controls and features of this package. 
+There is a demo application in the 'Demo' folder that demonstrates many of the controls and features of this package.
 
-Note that this beta level code!  Feedback and bug reports are always appreciated.
+## Why?
+
+I like AppKit. 
+
+IMHO you're better off moving to SwiftUI nowadays for your Mac app, but if you need to support back earlier than macOS 11 you're kinda stuck.
+
+## tl;dr Show me!
+
+```swift
+HStack {
+   CircularAvatarView()
+      .avatarImage(imavatar)
+      .frame(width: 38, height: 38)
+   VStack(alignment: .leading, spacing: 2) {
+      NSTextField(label: "Jennifer Anyone")
+         .font(.title3.bold)
+      NSTextField(link: URL(string: "https://github.com/dagronf/AppKitUI")!, title: "@anyone")
+   }
+}
+.padding(8)
+.background(
+   Rectangle(cornerRadius: 8)
+      .fill(color: .quaternaryLabelColor)
+      .stroke(.tertiaryLabelColor, lineWidth: 1)
+)
+```
+
+<img src="./Art/basic-1.png" width="214" />
+
+And you can [preview this view directly in Xcode](./Art/xcode-preview.jpg)
 
 ## Features
 
-* Chainable properties for most AppKit NS- UI controls.
+* Chainable properties for most AppKit NS- user interface controls.
+* Use any NSView- derived controls
 * Preview your AppKitUI user interface directly in Xcode's `#Preview` pane.
 * Remove the need to create XIBs for laying out a view.
 * Simplify building your UI, using a DSL similar to SwiftUI

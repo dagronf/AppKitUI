@@ -20,17 +20,13 @@
 import AppKit
 import os.log
 
-protocol WindowedContentProtocol {
-
-}
-
 @MainActor
 public extension NSView {
 	/// Attach an alert to this element
 	/// - Parameters:
 	///   - isVisible: A ValueBinder to indicate whether the sheet is visible or not
 	///   - alertBuilder: A block that builds the NSAlert instance when it is to be presented on screen
-	///   - builder: A builder for creating the sheet content
+	///   - onDismissed: A block that is called when the alert is dismissed, passing the modal response
 	/// - Returns: self
 	func alert(
 		isVisible: Bind<Bool>,
@@ -51,7 +47,7 @@ public extension NSView {
 	/// - Parameters:
 	///   - isVisible: A ValueBinder to indicate whether the sheet is visible or not
 	///   - alert: The alert to display
-	///   - builder: A builder for creating the sheet content
+	///   - onDismissed: A block that is called when the alert is dismissed, passing the modal response
 	/// - Returns: self
 	func alert(
 		isVisible: Bind<Bool>,

@@ -24,7 +24,7 @@ public extension NSFont {
 
 	/// Return a copy of this font with the specified size
 	func size(_ size: Double) -> NSFont {
-		NSFont(descriptor: self.fontDescriptor, size: size) ?? (self.copy() as! NSFont)
+		NSFont(descriptor: self.fontDescriptor, size: size) ?? self.makeCopy()
 	}
 
 	/// The standard system font
@@ -73,6 +73,8 @@ public extension NSFont {
 	}()
 }
 
+// MARK: - Symbolic traits
+
 @MainActor
 public extension NSFont {
 	/// A bold representation of this font
@@ -83,13 +85,8 @@ public extension NSFont {
 	var condensed: NSFont { self.withSymbolicTraits(.condensed) }
 	/// An condensed representation of this font
 	var expanded: NSFont { self.withSymbolicTraits(.expanded) }
-
-	/// Return a copy of this font with the specified symbolic traits
-	/// - Parameter traits: The traits to apply
-	/// - Returns: A new NSFont
-	func traits(_ traits: NSFontDescriptor.SymbolicTraits) -> NSFont {
-		self.withSymbolicTraits(traits)
-	}
+	/// A monospaced representation of this font
+	var monoSpaced: NSFont { self.withSymbolicTraits(.monoSpace) }
 
 	/// Returns a weight variant of this font
 	func weight(_ weight: NSFont.Weight) -> NSFont {
@@ -101,21 +98,34 @@ public extension NSFont {
 	}
 }
 
-@MainActor
-private extension NSFont {
-	private func withSymbolicTraits(_ traits: NSFontDescriptor.SymbolicTraits) -> NSFont {
-		var currentTraits = self.fontDescriptor.symbolicTraits
-		currentTraits.insert(traits)
-		let descriptor = self.fontDescriptor.withSymbolicTraits(currentTraits)
-		return NSFont(descriptor: descriptor, size: self.pointSize) ?? (self.copy() as! NSFont)
-	}
+// MARK: - Design
 
-	private func addingAttributes(_ attributes: [NSFontDescriptor.AttributeName: Any]) -> NSFont {
-		let descriptor = self.fontDescriptor.addingAttributes(attributes)
-		return NSFont(descriptor: descriptor, size: self.pointSize) ?? (self.copy() as! NSFont)
+public extension NSFont {
+	/// Return a copy of this func with a rounded design (10.15+)
+	var rounded: NSFont {
+		if #available(macOS 10.15, *),
+			let descriptor = self.fontDescriptor.withDesign(.rounded),
+			let font = NSFont(descriptor: descriptor, size: self.pointSize)
+		{
+			return font
+		}
+		return self.makeCopy()
 	}
 }
 
+private extension NSFont {
+	func withSymbolicTraits(_ traits: NSFontDescriptor.SymbolicTraits) -> NSFont {
+		var currentTraits = self.fontDescriptor.symbolicTraits
+		currentTraits.insert(traits)
+		let descriptor = self.fontDescriptor.withSymbolicTraits(currentTraits)
+		return NSFont(descriptor: descriptor, size: self.pointSize) ?? self.makeCopy()
+	}
+
+	func addingAttributes(_ attributes: [NSFontDescriptor.AttributeName: Any]) -> NSFont {
+		let descriptor = self.fontDescriptor.addingAttributes(attributes)
+		return NSFont(descriptor: descriptor, size: self.pointSize) ?? self.makeCopy()
+	}
+}
 
 // MARK: - Previews
 

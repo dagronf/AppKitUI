@@ -76,7 +76,9 @@ public struct DynamicColor: Equatable, AUIResolvableColor {
 
 public extension AUIResolvableColor where Self == DynamicColor {
 	/// Create a solid color fill
-	/// - Parameter color: The fill color
+	/// - Parameters:
+	///   - dark: The color to use in dark mode
+	///   - light: The color to use in light mode
 	/// - Returns: A new fill style
 	@inlinable
 	public static func dynamicColor(dark: NSColor, light: NSColor) -> AUIResolvableColor {

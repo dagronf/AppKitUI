@@ -23,14 +23,20 @@ import AppKit
 
 public extension AUIShapeFillable where Self == AUIFillStyle.Checkerboard {
 	/// Create a solid color fill
-	/// - Parameter color: The fill color
+	/// - Parameters:
+	///   - color1: The first fill color
+	///   - color2: The second fill color
+	///   - dimension: The width and height for each check
 	/// - Returns: A new fill style
 	public static func checkerboard(color1: NSColor = .white, color2: NSColor = .black, dimension: Double = 8) -> AUIShapeFillable {
 		AUIFillStyle.Checkerboard(color1: color1, color2: color2, dimension: dimension)
 	}
 
 	/// Create a solid color fill
-	/// - Parameter color: The fill color
+	/// - Parameters:
+	///   - color1: The first fill color
+	///   - color2: The second fill color
+	///   - dimension: The width and height for each check
 	/// - Returns: A new fill style
 	public static func checkerboard(color1: DynamicColor, color2: DynamicColor, dimension: Double = 8) -> AUIShapeFillable {
 		AUIFillStyle.Checkerboard(color1: color1, color2: color2, dimension: dimension)
@@ -40,8 +46,11 @@ public extension AUIShapeFillable where Self == AUIFillStyle.Checkerboard {
 public extension AUIFillStyle {
 	/// A solid color fill style
 	public class Checkerboard: AUIShapeFillable {
-		/// Create a solid color
-		/// - Parameter color: The color
+		/// Create a checkerboard fill style
+		/// - Parameters:
+		///   - color1: The first fill color
+		///   - color2: The second fill color
+		///   - dimension: The width and height for each check
 		public init(color1: NSColor = .white, color2: NSColor = .black, dimension: Double = 8) {
 			self.color1 = color1
 			self.color2 = color2
@@ -49,6 +58,11 @@ public extension AUIFillStyle {
 			self.appearanceDidChange()
 		}
 
+		/// Create a checkerboard fill style
+		/// - Parameters:
+		///   - color1: The first fill color
+		///   - color2: The second fill color
+		///   - dimension: The width and height for each check
 		public init(color1: DynamicColor, color2: DynamicColor, dimension: Double = 8) {
 			self.color1 = color1
 			self.color2 = color2

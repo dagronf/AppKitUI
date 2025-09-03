@@ -67,7 +67,7 @@ public extension NSStackView {
 	///   - alignment: The stack alignment
 	///   - spacing: The spacing between elements in a stack
 	///   - gravity: The gravity to apply to ALL elements in the stack
-	///   - views: The builder for the child views
+	///   - builder: The stack element builder
 	convenience init(
 		orientation: NSUserInterfaceLayoutOrientation,
 		alignment: NSLayoutConstraint.Attribute? = nil,
@@ -148,9 +148,7 @@ public extension NSStackView {
 		return self
 	}
 
-	/// Returns the first subview that matches the given identifier
-	/// - Parameter identifier: The NSUserInterfaceItemIdentifier to search for
-	/// - Returns: The matching NSView, or nil if no match is found
+	/// All subviews
 	override func allSubviews() -> [NSView] {
 		var items: [NSView] = [self]
 		for subview in self.arrangedSubviews {
@@ -262,6 +260,28 @@ private func makeDockSizeStack__(_ dockSize: Bind<Double>) -> NSView {
 	makeDockSizeStack__(dockSize)
 		.width(250)
 		.debugFrames()
+}
+
+@available(macOS 14, *)
+#Preview("Doco") {
+	let usernameImage = NSImage(named: NSImage.userName)!
+		.isTemplate(true)
+	HStack {
+		NSImageView(image: usernameImage)
+			.frame(width: 38, height: 38)
+		VStack(alignment: .leading, spacing: 2) {
+			NSTextField(label: "Jennifer Anyone")
+				.font(.title3.bold)
+			NSTextField(link: URL(string: "https://github.com/dagronf/AppKitUI")!, title: "@anyone")
+		}
+	}
+	.padding(8)
+	.background(
+		Rectangle(cornerRadius: 8)
+			.fill(color: .quaternaryLabelColor)
+			.stroke(.tertiaryLabelColor, lineWidth: 1)
+	)
+	.debugFrames()
 }
 
 @available(macOS 14, *)

@@ -287,8 +287,8 @@ public extension NSSegmentedControl {
 		return self
 	}
 
-	/// Bind the selected indexes for the control
-	/// - Parameter value: The selection binding
+	/// Bind the selected indexes for the segmented control
+	/// - Parameter values: The selection binding
 	/// - Returns: self
 	func selectedIndexes(_ values: Bind<Set<Int>>) -> Self {
 		values.register(self) { @MainActor [weak self] selection in

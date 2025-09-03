@@ -135,7 +135,7 @@ public extension Flow {
 	}
 
 	/// Add padding around this view
-	/// - Parameter padding: The padding value
+	/// - Parameter value: The padding value
 	/// - Returns: self
 	@discardableResult
 	override func padding(_ value: Double = 20) -> Self {

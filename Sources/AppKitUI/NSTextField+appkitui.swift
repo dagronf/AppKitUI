@@ -393,8 +393,8 @@ public extension NSTextField {
 		return self
 	}
 
-	/// Bind the editable state
-	/// - Parameter isEditable: The state binding
+	/// Bind the selectable state for the text field
+	/// - Parameter isSelectable: The state binding
 	/// - Returns: self
 	@discardableResult
 	func isSelectable(_ isSelectable: Bind<Bool>) -> Self {

@@ -50,7 +50,7 @@ public extension NSView {
 
 	/// Create a view specifying the child subviews
 	/// - Parameters:
-	///   - builder: The block to call to retrieve the content
+	///   - subViewsBuilder: The block to call to retrieve the content
 	convenience init(@NSViewsBuilder subViewsBuilder: () -> [NSView]) {
 		self.init()
 		self.translatesAutoresizingMaskIntoConstraints = false
@@ -107,10 +107,10 @@ public extension NSView {
 @MainActor
 public extension NSView {
 	/// Overlay a view on top this view
-	/// - Parameter block: The view
+	/// - Parameter overlayView: The view to overlay on top of this view
 	/// - Returns: self
 	///
-	/// On order for an overlay to work, we have to insert the overlay into a new view
+	/// On order for an overlay to work, we have to add the overlay view as a subview for this view
 	@discardableResult
 	func overlay(_ overlayView: NSView) -> Self {
 		self.translatesAutoresizingMaskIntoConstraints = false
@@ -122,6 +122,8 @@ public extension NSView {
 	/// Overlay a view on this view
 	/// - Parameter block: The view generator block
 	/// - Returns: self
+	///
+	/// On order for an overlay to work, we have to add the overlay view as a subview for this view
 	@discardableResult @inlinable
 	func overlay(_ block: () -> NSView) -> Self {
 		self.overlay(block())
@@ -131,7 +133,7 @@ public extension NSView {
 	/// - Parameter backgroundView: The view to use as the background for this view
 	/// - Returns: The background view
 	///
-	/// Note: This function returns the **background view** in order for the heirarchy to be maintained
+	/// Note: This function returns the **background view** in order for the z-order heirarchy to be maintained
 	@discardableResult @inlinable
 	func background<T: NSView>(_ backgroundView: T) -> T {
 		backgroundView.overlay(self)
@@ -141,7 +143,7 @@ public extension NSView {
 	/// - Parameter block: The block that builds the background view
 	/// - Returns: The background view
 	///
-	/// Note: This function returns the **background view** in order for the heirarchy to be maintained
+	/// Note: This function returns the **background view** in order for the z-order heirarchy to be maintained
 	@discardableResult @inlinable
 	func background<T: NSView>(_ block: () -> T) -> T {
 		self.background(block())
@@ -179,13 +181,28 @@ public extension NSView {
 		self.content(layoutStyle: layoutStyle, padding: padding, content: builder())
 	}
 
-	/// Set the content for the view by attaching a child view to the edges of this view
-	/// - Parameter content: The view's content
+	/// Set the content for the view by attaching a child view as a subview to the edges of this view
+	/// - Parameters:
+	///   - content: The view's content
+	///   - padding: The padding to apply between the subview and this view
 	/// - Returns: self
 	///
-	/// Check - self.canDrawSubviewsIntoLayer = true
+	/// NOTE: This call removes all existing subviews from this view!
 	@discardableResult
 	func content(fill content: NSView, padding: Double = 0) -> Self {
+		self.content(fill: content, top: padding, left: padding, bottom: -padding, right: -padding)
+	}
+
+	/// Set the content for the view by attaching a child view as a subview to the edges of this view
+	/// - Parameters:
+	///   - content: The view's content
+	///   - top: top padding
+	///   - left: left (leading) padding
+	///   - bottom: bottom padding
+	///   - right: right (trailing) padding
+	/// - Returns: self
+	@discardableResult
+	func content(fill content: NSView, top: Double = 0, left: Double = 0, bottom: Double = 0, right: Double = 0) -> Self {
 		// Remove the existing content first
 		self.subviews.forEach { $0.removeFromSuperview() }
 
@@ -194,17 +211,21 @@ public extension NSView {
 
 		self.addSubview(content)
 
-		self.addConstraint(NSLayoutConstraint(item: content, attribute: .leading, relatedBy: .equal, toItem: self, attribute: .leading, multiplier: 1, constant: padding))
-		self.addConstraint(NSLayoutConstraint(item: content, attribute: .trailing, relatedBy: .equal, toItem: self, attribute: .trailing, multiplier: 1, constant: -padding))
-		self.addConstraint(NSLayoutConstraint(item: content, attribute: .top, relatedBy: .equal, toItem: self, attribute: .top, multiplier: 1, constant: padding))
-		self.addConstraint(NSLayoutConstraint(item: content, attribute: .bottom, relatedBy: .equal, toItem: self, attribute: .bottom, multiplier: 1, constant: -padding))
+		self.addConstraint(NSLayoutConstraint(item: content, attribute: .leading, relatedBy: .equal, toItem: self, attribute: .leading, multiplier: 1, constant: left))
+		self.addConstraint(NSLayoutConstraint(item: content, attribute: .trailing, relatedBy: .equal, toItem: self, attribute: .trailing, multiplier: 1, constant: right))
+		self.addConstraint(NSLayoutConstraint(item: content, attribute: .top, relatedBy: .equal, toItem: self, attribute: .top, multiplier: 1, constant: top))
+		self.addConstraint(NSLayoutConstraint(item: content, attribute: .bottom, relatedBy: .equal, toItem: self, attribute: .bottom, multiplier: 1, constant: bottom))
 
 		return self
 	}
 
 	/// Set the content for the view by centering the child content within this view
-	/// - Parameter content: The view's content
+	/// - Parameters:
+	///   - content: The view's content
+	///   - padding: The padding to apply between the subview and this view
 	/// - Returns: self
+	///
+	/// NOTE: This call removes all existing subviews from this view!
 	@discardableResult
 	func content(center content: NSView, padding: Double = 0) -> Self {
 		// Remove the existing content first
@@ -321,7 +342,7 @@ public extension NSView {
 	}
 
 	/// Set the identifier for the ui item
-	/// - Parameter str: The identifier as a string
+	/// - Parameter id: The view's identifier
 	/// - Returns: self
 	@discardableResult @inlinable
 	func identifier(_ id: AUIIdentifier) -> Self {
@@ -607,11 +628,11 @@ public extension NSView {
 	}
 }
 
-/// MARK: - Observing appearance changes
+// MARK: - Observing appearance changes
 
 @MainActor
 public extension NSView {
-	/// Call a block when the application's appearance changes
+	/// Call a block when the **application's** appearance changes
 	/// - Parameter block: The block to call
 	@discardableResult
 	func onAppearanceChange(_ block: @escaping () -> Void) -> Self {
@@ -657,6 +678,9 @@ private class AppearanceObservation {
 }
 
 // MARK: - Storage
+
+/// Windowed content associated with a view (eg. alerts, sheets etc)
+protocol WindowedContentProtocol { }
 
 @MainActor
 extension NSView {

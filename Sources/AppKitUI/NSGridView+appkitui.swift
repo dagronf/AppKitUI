@@ -119,7 +119,7 @@ public extension NSGridView {
 @MainActor
 public extension NSGridView {
 	/// The column spacing
-	/// - Parameter width: The spacing between columns
+	/// - Parameter spacing: The spacing between columns
 	/// - Returns: self
 	@discardableResult @inlinable
 	func columnSpacing(_ spacing: Double) -> Self {
@@ -313,7 +313,9 @@ private let __gridViewCellRowAlignmentIdentifier = "AppKitUI.NSGridView.Cell.Row
 @MainActor
 extension NSView {
 	/// Set the gravity area for this view (used only if its parent is a grid view)
-	/// - Parameter value: The gravity
+	/// - Parameters:
+	///   - xp: The x placement for the content in the cell
+	///   - yp: The y placement for the content in the cell
 	/// - Returns: self
 	public func gridCell(xPlacement xp: NSGridCell.Placement? = nil, yPlacement yp: NSGridCell.Placement? = nil) -> Self {
 		let value = GridCellPlacement(xPlacement: xp, yPlacement: yp)
@@ -321,17 +323,20 @@ extension NSView {
 		return self
 	}
 
+	/// Set the row alignment for a grid cell
+	/// - Parameter rowAlignment: The row alignment
+	/// - Returns: self
 	public func gridCell(rowAlignment: NSGridRow.Alignment) -> Self {
 		self.setArbitraryValue(rowAlignment, forKey: __gridViewCellRowAlignmentIdentifier)
 		return self
 	}
 
-	/// Get the gravity for this view if it has been set
+	/// Get the grid cell placement for this view (if it has been set)
 	func gridCellPlacement() -> NSView.GridCellPlacement? {
 		self.getArbitraryValue(forKey: __gridViewCellPlacementIdentifier)
 	}
 
-	/// Get the gravity for this view if it has been set
+	/// Get the grid cell row alignment for this view (if it has been set)
 	func gridCellRowAlignment() -> NSGridRow.Alignment? {
 		self.getArbitraryValue(forKey: __gridViewCellRowAlignmentIdentifier)
 	}
