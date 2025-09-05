@@ -99,16 +99,9 @@ private extension AUIColorSelector {
 	func updateContent() {
 
 		// Clean
-
-		self.stack.arrangedSubviews.forEach {
-			self.stack.removeArrangedSubview($0)
-
-			// NOTE: If we don't call `removeFromSuperview` here, the object doesn't get cleaned up.
-			$0.removeFromSuperview()
-		}
+		self.stack.removeAllArrangedSubviews()
 
 		// Build
-
 		self.colors.enumerated().map {
 			let c = ColorButton($0.element)
 				.isEnabled(self.isEnabledBinding)

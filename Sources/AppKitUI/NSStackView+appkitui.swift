@@ -79,6 +79,22 @@ public extension NSStackView {
 	}
 }
 
+// MARK: - Conveniences
+
+@MainActor
+public extension NSStackView {
+	/// Remove all the arranged subviews and disconnect each of them from the stack view
+	func removeAllArrangedSubviews() {
+		self.arrangedSubviews.forEach {
+			self.removeArrangedSubview($0)
+
+			// NOTE: If we don't call `removeFromSuperview` here, the subview doesn't get removed from the parent
+			// and as such ends up floating within the stack view.
+			$0.removeFromSuperview()
+		}
+	}
+}
+
 // MARK: - Modifiers
 
 @MainActor
