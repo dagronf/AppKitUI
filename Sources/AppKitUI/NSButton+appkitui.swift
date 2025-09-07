@@ -426,7 +426,7 @@ public extension NSButton {
 	/// NOTE: This action is _not_ called if the state is changed programatically
 	@discardableResult
 	func onAction(target: AnyObject, action: Selector) -> Self {
-		let action = ControlAction(target: target, action: action, from: self)
+		let action = AUITargetAction(target: target, action: action, from: self)
 		self.usingButtonStorage { $0.actionSelector = action }
 		return self
 	}
@@ -441,7 +441,7 @@ internal extension NSButton {
 		var onOffState: Bind<Bool>?
 		var state: Bind<NSControl.StateValue>?
 		var action: ((NSControl.StateValue) -> Void)?
-		var actionSelector: ControlAction?
+		var actionSelector: AUITargetAction?
 		var menu: NSMenu?
 
 		init(_ parent: NSButton) {

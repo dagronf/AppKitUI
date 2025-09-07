@@ -20,7 +20,7 @@
 import AppKit
 
 /// A selector/target pair
-class ControlAction {
+class AUITargetAction {
 	init(target: AnyObject? = nil, action: Selector, from: AnyObject? = nil) {
 		self.target = target
 		self.action = action
@@ -28,9 +28,7 @@ class ControlAction {
 	}
 
 	func perform() {
-		if let target = self.target {
-			NSApp.sendAction(self.action, to: target, from: self.from)
-		}
+		NSApp.sendAction(self.action, to: self.target, from: self.from)
 	}
 
 	private weak var target: AnyObject?  // Held weakly so we don't get a self-referential loop

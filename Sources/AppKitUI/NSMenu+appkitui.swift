@@ -47,7 +47,12 @@ public extension NSMenu {
 	convenience init(title: String, @NSMenuItemsBuilder builder: () -> [NSMenuItem] ) {
 		self.init(title: title, items: builder())
 	}
+}
 
+// MARK: - Modifiers
+
+@MainActor
+public extension NSMenu {
 	/// Set autoenables menu items
 	/// - Parameter autoenablesItems:
 	/// - Returns: self
@@ -56,7 +61,18 @@ public extension NSMenu {
 		self.autoenablesItems = autoenablesItems
 		return self
 	}
+	
+	/// The font of the menu and its submenus.
+	/// - Parameter font: The font
+	/// - Returns: self
+	@discardableResult @inlinable
+	func menuFont(_ font: NSFont) -> Self {
+		self.font = font
+		return self
+	}
 }
+
+// MARK: - Actions
 
 @MainActor
 public extension NSMenu {
