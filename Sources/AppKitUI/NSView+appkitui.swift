@@ -500,16 +500,17 @@ public extension NSView {
 
 @MainActor
 public extension NSView {
-	/// Supply a block to be called when a Bonded value changes
+	/// Supply a block to be called when a binding value changes
 	/// - Parameters:
-	///   - item: The bonded value
+	///   - item: The bind value
 	///   - block: The block to call with the new value
 	/// - Returns: self
 	///
-	/// There is no guarantee that the callback block will be called on any particular thread.
+	/// The callback block will be called on the main actor
 	@discardableResult
 	func onChange<T>(_ item: Bind<T>, _ block: @escaping (T) -> Void) -> Self {
-		item.register(self) { newValue in
+		item.register(self) { @MainActor newValue in
+			assert(Thread.isMainThread)
 			block(newValue)
 		}
 		return self

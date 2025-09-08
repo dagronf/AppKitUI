@@ -5,8 +5,7 @@ import PackageDescription
 let package = Package(
 	name: "AppKitUI",
 	platforms: [
-		.macOS(.v10_13),
-		//.macOS(.v14)
+		.macOS(.v10_13)
 	],
 	products: [
 		.library(
