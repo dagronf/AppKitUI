@@ -2,6 +2,13 @@
 
 An AppKit UI toolkit help you create and manage `NSView` content easily 
 
+<img src="https://img.shields.io/github/v/tag/dagronf/AppKitUI" />
+<img src="https://img.shields.io/badge/macOS-10.13+-red" />
+<img src="https://img.shields.io/badge/Swift-5.9-blueviolet" />
+<img src="https://img.shields.io/badge/License-MIT-lightgrey" />
+
+## Benefits
+
 1. Remove dependence on using XIBs when creating UI views
 2. Reduce boilerplate code when manually creating `NSView` UI content.
 3. Easily bind data between controls
@@ -12,11 +19,14 @@ There is a demo application in the 'Demo' folder that demonstrates many of the c
 
 ## Why?
 
-I like AppKit. 
+1. I like AppKit.
+2. I like Interface Builder a lot but I dislike XIBs and Storyboard files (especially when merging)
+3. I like SwiftUI and how you build your views, but there's still a lot of mac apps built without SwiftUI support. 
+4. I like SwiftUI's @Binding/@State mechanism for passing data around.
 
 IMHO you're better off moving to SwiftUI nowadays for your Mac app, but if you need to support back earlier than macOS 11 you're kinda stuck.
 
-## tl;dr Show me!
+## tl;dr Show me something!
 
 ```swift
 HStack {
@@ -39,7 +49,7 @@ HStack {
 
 <img src="./Art/basic-1.png" width="214" />
 
-And you can [preview this view directly in Xcode](./Art/xcode-preview.jpg)
+And you can [preview this view directly in Xcode](./Art/xcode-preview.jpg) as you're building it!
 
 ## Features
 
@@ -179,9 +189,9 @@ func makeDockSizeStack__(_ dockSize: Bind<Double>) -> NSView {
 
 @available(macOS 14, *)
 #Preview("Simple slider") {
-	let dockSize = Bind(0.1)
-	makeDockSizeStack__(dockSize)
-		.width(250)
+   let dockSize = Bind(0.1)
+   makeDockSizeStack__(dockSize)
+      .width(250)
 }
 
 #endif
