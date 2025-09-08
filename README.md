@@ -2,10 +2,12 @@
 
 An AppKit UI toolkit help you create and manage `NSView` content easily 
 
-<img src="https://img.shields.io/github/v/tag/dagronf/AppKitUI" />
-<img src="https://img.shields.io/badge/macOS-10.13+-red" />
-<img src="https://img.shields.io/badge/Swift-5.9-blueviolet" />
-<img src="https://img.shields.io/badge/License-MIT-lightgrey" />
+<p align="center">
+	<img src="https://img.shields.io/github/v/tag/dagronf/AppKitUI" />
+	<img src="https://img.shields.io/badge/macOS-10.13+-red" />
+	<img src="https://img.shields.io/badge/Swift-5.9-blueviolet" />
+	<img src="https://img.shields.io/badge/License-MIT-lightgrey" />
+</p>
 
 ## Benefits
 
