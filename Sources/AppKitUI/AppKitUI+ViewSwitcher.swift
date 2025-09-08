@@ -74,8 +74,6 @@ public class AUIViewSwitcher: NSView {
 
 #if DEBUG
 
-import SwiftUI
-
 @available(macOS 14, *)
 #Preview("default") {
 	let items = Bind(["Internet", "Phone", "Email"])

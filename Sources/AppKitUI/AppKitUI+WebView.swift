@@ -308,8 +308,6 @@ extension AUIWebView: WKNavigationDelegate {
 
 #if DEBUG
 
-import SwiftUI
-
 @available(macOS 14, *)
 #Preview("default") {
 	let estimated = Bind(0.0) { newValue in
