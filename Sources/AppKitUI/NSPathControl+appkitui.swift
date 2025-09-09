@@ -32,7 +32,7 @@ public extension NSPathControl {
 
 	/// Create a path control
 	/// - Parameter url: The url
-	convenience init(fileURL url: Bind<URL>) {
+	convenience init(fileURL url: Bind<URL?>) {
 		self.init()
 		self.fileURL(url)
 	}
@@ -93,8 +93,7 @@ public extension NSPathControl {
 	/// - Parameter url: The url binding
 	/// - Returns: self
 	@discardableResult
-	func fileURL(_ url: Bind<URL>) -> Self {
-		assert(url.wrappedValue.isFileURL)
+	func fileURL(_ url: Bind<URL?>) -> Self {
 		url.register(self) { @MainActor [weak self] newURL in
 			if self?.url != newURL {
 				self?.url = newURL
@@ -112,7 +111,7 @@ public extension NSPathControl {
 private extension NSPathControl {
 	@MainActor
 	class Storage: NSObject, NSPathControlDelegate, @unchecked Sendable {
-		var url: Bind<URL>?
+		var url: Bind<URL?>?
 		var onAction: ((URL?) -> Void)?
 		var onPathItemAction: ((NSPathControlItem?) -> Void)?
 		weak var parent: NSPathControl?
@@ -151,7 +150,7 @@ private extension NSPathControl {
 @available(macOS 14, *)
 #Preview("default") {
 	let path1 = FileManager.default.temporaryDirectory
-	let path2 = Bind(FileManager.default.temporaryDirectory)
+	let path2 = Bind<URL?>(FileManager.default.temporaryDirectory)
 
 	NSGridView {
 		NSGridView.Row(rowAlignment: .firstBaseline) {

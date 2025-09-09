@@ -38,7 +38,7 @@ class ExtractExamplePane: Pane {
 
 			let readRate = Bind<Int64>(5600000)
 
-			let outputPath = Bind(FileManager.default.temporaryDirectory)
+			let outputPath = Bind<URL?>(FileManager.default.temporaryDirectory)
 			let outputSize = Bind<Int64>(5600000)
 
 			let freeSpace = Bind<Int64>(200000000)
