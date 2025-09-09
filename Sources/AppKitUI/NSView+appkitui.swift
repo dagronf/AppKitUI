@@ -649,8 +649,10 @@ private class AppearanceObservation {
 	fileprivate init() {
 		if #available(macOS 10.14, *) {
 			// Start observing straight away
-			self.observer = NSApp.observe(\.effectiveAppearance, options: [.new, .initial]) { @MainActor [weak self] app, change in
-				self?.reflectObservers()
+			self.observer = NSApp.observe(\.effectiveAppearance, options: [.new, .initial]) { [weak self] app, change in
+				DispatchQueue.main.async {
+					self?.reflectObservers()
+				}
 			}
 		}
 	}

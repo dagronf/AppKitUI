@@ -99,8 +99,7 @@ private extension AUIWebView {
 		assert(Thread.isMainThread)
 		if let url {
 			let request = URLRequest(url: url)
-			let aa = self.webView.load(request)
-			Swift.print(aa)
+			self.webView.load(request)
 		}
 		else {
 			self.showBlankPage()
@@ -214,7 +213,7 @@ public extension AUIWebView {
 	@discardableResult
 	func isLoading(_ isLoading: Bind<Bool>) -> Self {
 		self.isLoading = isLoading
-		self.webView.addObserver(self, forKeyPath: #keyPath(WKWebView.loading), options: .new, context: nil)
+		self.webView.addObserver(self, forKeyPath: #keyPath(WKWebView.isLoading), options: .new, context: nil)
 		return self
 	}
 
@@ -231,16 +230,12 @@ public extension AUIWebView {
 	/// Binds to the loading progress state
 	/// - Parameter progress: The estimated loading state (0.0 ... 1.0)
 	/// - Returns: self
+	@discardableResult
 	func estimatedProgress(_ progress: Bind<Double>) -> Self {
 		self.estimatedProgress = progress
 		self.webView.addObserver(self, forKeyPath: #keyPath(WKWebView.estimatedProgress), options: .new, context: nil)
 		return self
 	}
-}
-
-@MainActor
-extension AUIWebView {
-
 }
 
 @MainActor

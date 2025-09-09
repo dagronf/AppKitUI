@@ -21,6 +21,7 @@ import AppKit
 import os.log
 import PDFKit
 
+/// A PDF viewer component
 @MainActor
 public class AUIPDFView: NSView {
 
@@ -49,8 +50,6 @@ public class AUIPDFView: NSView {
 	public required init?(coder: NSCoder) {
 		super.init(coder: coder)
 		self.setup()
-
-		self.pdfView.scaleFactor
 	}
 
 	deinit {
@@ -64,9 +63,10 @@ public class AUIPDFView: NSView {
 }
 
 @MainActor
-extension AUIPDFView: PDFViewDelegate {
+extension AUIPDFView: @preconcurrency PDFViewDelegate {
 	func setup() {
 		self.wantsLayer = true
+		self.translatesAutoresizingMaskIntoConstraints = false
 		self.pdfView.delegate = self
 		self.content(fill: self.pdfView)
 	}
@@ -176,7 +176,7 @@ public extension AUIPDFView {
 		AUIPDFView(pdfData: makeDummyPDF())
 			.scaleFactor(scale, range: 0.25 ... 4)
 	}
-	.padding(40)
+	.padding(top: 40, left: 20, bottom: 20, right: 20)
 }
 
 private func makeDummyPDF() -> Data {

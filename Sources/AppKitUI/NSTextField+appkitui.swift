@@ -283,6 +283,7 @@ public extension NSTextField {
 		return self
 	}
 
+	@discardableResult
 	func updateOnEndEditingOnly(_ value: Bool) -> Self {
 		self.usingTextFieldStorage { $0.updateOnEndEditingOnly = value }
 		return self

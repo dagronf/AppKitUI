@@ -102,7 +102,7 @@ private extension AUIColorSelector {
 		self.stack.removeAllArrangedSubviews()
 
 		// Build
-		self.colors.enumerated().map {
+		self.colors.enumerated().forEach {
 			let c = ColorButton($0.element)
 				.isEnabled(self.isEnabledBinding)
 				.tag($0.offset)
