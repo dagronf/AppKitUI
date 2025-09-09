@@ -245,7 +245,7 @@ private class OpenPanelInstance: WindowedContentProtocol {
 				isVisible: showOpenPanel2,
 				allowedContentTypes: [.image],
 				allowsMultiple: true,
-				message: "Select multiple images",
+				message: "Select multiple images"
 			) { selected in
 				selectedFiles.wrappedValue = selected
 			}
