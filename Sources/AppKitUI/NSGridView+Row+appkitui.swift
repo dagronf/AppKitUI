@@ -48,7 +48,7 @@ public extension NSGridView {
 			let rowViews = builder()
 			rowViews.translatesAutoresizingMaskIntoConstraints(false)
 
-			self.rowCells = builder()
+			self.rowCells = rowViews
 			self.topPadding = topPadding
 			self.bottomPadding = bottomPadding
 			self.rowAlignment = rowAlignment
