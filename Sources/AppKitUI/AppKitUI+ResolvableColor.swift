@@ -39,7 +39,7 @@ extension NSColor: AUIResolvableColor {
 
 public extension AUIResolvableColor where Self == NSColor {
 	@inlinable
-	public static func color(_ color: NSColor?) -> AUIResolvableColor {
+	static func color(_ color: NSColor?) -> AUIResolvableColor {
 		return color ?? NSColor.clear
 	}
 }
@@ -81,7 +81,7 @@ public extension AUIResolvableColor where Self == DynamicColor {
 	///   - light: The color to use in light mode
 	/// - Returns: A new fill style
 	@inlinable
-	public static func dynamicColor(dark: NSColor, light: NSColor) -> AUIResolvableColor {
+	static func dynamicColor(dark: NSColor, light: NSColor) -> AUIResolvableColor {
 		return DynamicColor(dark: dark, light: light)
 	}
 }

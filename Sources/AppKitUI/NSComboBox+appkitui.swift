@@ -157,20 +157,21 @@ private extension NSComboBox {
 				queue: .main
 			) { [weak self, weak control] _ in
 				guard let `control` = control else { return }
-				self?.performChange(control)
+				DispatchQueue.main.async { [weak self] in
+					self?.performChange(control)
+				}
 			}
 			self.notifications.append(didChange)
 		}
 
-		func performChange(_ which: NSComboBox) {
-			DispatchQueue.main.async { [weak self, weak which] in
-				guard let `self` = self, let which else { return }
-				let selected = (which.indexOfSelectedItem == -1) ? nil : which.indexOfSelectedItem
-				self.selection?.wrappedValue = selected
-				self.onChangeSelection?(selected)
+		@MainActor
+		private func performChange(_ which: NSComboBox) {
+			assert(Thread.isMainThread)
+			let selected = (which.indexOfSelectedItem == -1) ? nil : which.indexOfSelectedItem
+			self.selection?.wrappedValue = selected
+			self.onChangeSelection?(selected)
 
-				which.reflect()
-			}
+			which.reflect()
 		}
 	}
 }
@@ -184,29 +185,23 @@ private extension NSComboBox {
 	let selectedItem: Bind<Int?> = Bind(2)
 	let selectedString: Bind<String> = Bind("two")
 
-	ScrollView {
-		VStack {
-			NSBox(title: "Basic") {
-				VStack {
-					NSComboBox()
-						.autocompletes(true)
-						.content(selectedString)
-						.menuItems(["zero", "one", "two", "three", "four", "five"])
-						.selectedItem(selectedItem)
-						.onSelectionChange { which in
-							Swift.print(which ?? -1)
-						}
-
-					NSTextField()
-						.content(selectedString)
-				}
+	HStack {
+		NSComboBox()
+			.identifier("1")
+			.autocompletes(true)
+			.content(selectedString)
+			.menuItems(["zero", "one", "two", "three", "four", "five"])
+			.selectedItem(selectedItem)
+			.onSelectionChange { which in
+				Swift.print(which ?? -1)
 			}
-			.huggingPriority(.init(10), for: .horizontal)
 
-		}
-		.debugFrames()
+		NSTextField()
+			.identifier("2")
+			.content(selectedString)
 	}
+	.equalWidths(["1", "2"])
 	.padding(top: 30, left: 20, bottom: 20, right: 20)
-
+	.debugFrames()
 }
 #endif

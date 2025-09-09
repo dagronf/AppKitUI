@@ -61,6 +61,7 @@ public extension LayoutContainer {
 	///   - constant: The constant added to the multiplied attribute value on the right side of the constraint to yield the final modified attribute
 	///   - priority: The priority of the created constraint
 	/// - Returns: self
+	@discardableResult
 	func constraint(
 		fromIndex: Int,
 		attribute attr1: NSLayoutConstraint.Attribute,
@@ -108,7 +109,8 @@ public extension LayoutContainer {
 	///   - multiplier: The constant multiplied with the attribute on the right side of the constraint as part of getting the modified attribute.
 	///   - constant: The constant added to the multiplied attribute value on the right side of the constraint to yield the final modified attribute.
 	/// - Returns: self
-	public func constraint(
+	@discardableResult
+	func constraint(
 		fromIndex: Int,
 		attribute attr1: NSLayoutConstraint.Attribute,
 		relatedBy rel: NSLayoutConstraint.Relation,
@@ -135,7 +137,8 @@ public extension LayoutContainer {
 		return self
 	}
 
-	public func constraintPinInside(index: Int) -> Self {
+	@discardableResult
+	func constraintPinInside(index: Int) -> Self {
 		guard let i1 = self.childViews.at(index) else {
 			os_log("Container: Cannot find subview at index=%d", log: logger, type: .error, index)
 			return self

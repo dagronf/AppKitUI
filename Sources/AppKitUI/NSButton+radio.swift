@@ -24,7 +24,7 @@ import AppKit
 @MainActor
 public extension NSButton {
 	/// A single radio element within a Radio Group
-	public class RadioElement {
+	class RadioElement {
 		/// The element title
 		let title: String
 		/// An optional description
@@ -73,11 +73,36 @@ public class AUIRadioGroup: NSStackView {
 		fatalError("init(coder:) has not been implemented")
 	}
 
+	/// All of the nested buttons definitions
+	private var allButtons: [NSButton.RadioElement] = []
+	private var indexBinding: Bind<Int>?
+	private var selectionChanged: ((Int) -> Void)?
+	private var radioSize: NSControl.ControlSize = .regular {
+		didSet {
+			self.allButtons.forEach { $0.button?.controlSize = radioSize }
+		}
+	}
+	private var imagePosition: NSControl.ImagePosition = .imageLeading {
+		didSet {
+			self.allButtons.forEach { $0.button?.imagePosition = imagePosition }
+		}
+	}
+	private var isEnabled: Bool = true {
+		didSet {
+			self.allButtons.forEach { $0.button?.isEnabled = isEnabled }
+		}
+	}
+}
+
+// MARK: - Modifiers
+
+@MainActor
+public extension AUIRadioGroup {
 	/// Set the radio button items from an sequence of strings
 	/// - Parameter items: The titles for the radio buttons
 	/// - Returns: self
 	@discardableResult
-	public func items(_ items: Sequence<String>) -> Self {
+	func items(_ items: any Sequence<String>) -> Self {
 		items.forEach { title in
 			self.item(title: title)
 		}
@@ -88,7 +113,7 @@ public class AUIRadioGroup: NSStackView {
 	/// - Parameter size: The control size
 	/// - Returns: self
 	@discardableResult
-	public func controlSize(_ size: NSControl.ControlSize) -> Self {
+	func controlSize(_ size: NSControl.ControlSize) -> Self {
 		self.radioSize = size
 		return self
 	}
@@ -97,7 +122,7 @@ public class AUIRadioGroup: NSStackView {
 	/// - Parameter pos: The position
 	/// - Returns: self
 	@discardableResult
-	public func position(_ pos: NSControl.ImagePosition) -> Self {
+	func position(_ pos: NSControl.ImagePosition) -> Self {
 		self.imagePosition = pos
 		return self
 	}
@@ -106,7 +131,7 @@ public class AUIRadioGroup: NSStackView {
 	/// - Parameter value: The priority
 	/// - Returns: self
 	@discardableResult
-	public func huggingResistance(_ value: NSLayoutConstraint.Priority) -> Self {
+	func huggingResistance(_ value: NSLayoutConstraint.Priority) -> Self {
 		self.allButtons.forEach { $0.button?.setContentHuggingPriority(value, for: .horizontal) }
 		self.needsLayout = true
 		return self
@@ -116,7 +141,7 @@ public class AUIRadioGroup: NSStackView {
 	/// - Parameter value: The priority
 	/// - Returns: self
 	@discardableResult
-	public func compressionResistance(_ value: NSLayoutConstraint.Priority) -> Self {
+	func compressionResistance(_ value: NSLayoutConstraint.Priority) -> Self {
 		self.allButtons.forEach { $0.button?.setContentCompressionResistancePriority(value, for: .horizontal) }
 		self.needsLayout = true
 		return self
@@ -127,7 +152,8 @@ public class AUIRadioGroup: NSStackView {
 	///   - title: The element's title
 	///   - description: The element's description
 	/// - Returns: self
-	public func item(title: String, description: String? = nil) -> Self {
+	@discardableResult
+	func item(title: String, description: String? = nil) -> Self {
 		let rdef = NSButton.RadioElement(title: title, description: description)
 		return self.item(rdef)
 	}
@@ -136,7 +162,8 @@ public class AUIRadioGroup: NSStackView {
 	/// - Parameters:
 	///   - element: The radio element
 	/// - Returns: self
-	public func item(_ element: NSButton.RadioElement) -> Self {
+	@discardableResult
+	func item(_ element: NSButton.RadioElement) -> Self {
 		let btn = NSButton(radioButtonWithTitle: element.title, target: self, action: #selector(selectionDidChange(_:)))
 		btn.translatesAutoresizingMaskIntoConstraints = false
 		btn.tag = self.allButtons.count
@@ -179,26 +206,6 @@ public class AUIRadioGroup: NSStackView {
 		self.allButtons.append(element)
 
 		return self
-	}
-
-	/// All of the nested buttons definitions
-	private var allButtons: [NSButton.RadioElement] = []
-	private var indexBinding: Bind<Int>?
-	private var selectionChanged: ((Int) -> Void)?
-	private var radioSize: NSControl.ControlSize = .regular {
-		didSet {
-			self.allButtons.forEach { $0.button?.controlSize = radioSize }
-		}
-	}
-	private var imagePosition: NSControl.ImagePosition = .imageLeading {
-		didSet {
-			self.allButtons.forEach { $0.button?.imagePosition = imagePosition }
-		}
-	}
-	private var isEnabled: Bool = true {
-		didSet {
-			self.allButtons.forEach { $0.button?.isEnabled = isEnabled }
-		}
 	}
 }
 

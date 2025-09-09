@@ -24,12 +24,14 @@ import AppKit
 /// AppKit throws an internal exception when you try to manually create an NSGridRow instance via the init().
 /// The exception states that NSGridRow should never be created and should only be accessed via NSGridView.
 ///
-/// Hence, the birth of a new wrapper class!
+/// Hence, the birth of a new wrapper class `NSGridView.Row`!
 
 @available(macOS 10.12, *)
-@MainActor public extension NSGridView {
+@MainActor
+public extension NSGridView {
 	/// An NSGridView row definition
-	@MainActor class Row {
+	@MainActor
+	class Row {
 		/// Create a grid row
 		/// - Parameters:
 		///   - topPadding: The padding to apply to the top of the row
@@ -69,7 +71,7 @@ public extension NSGridView.Row {
 	/// - Parameter padding: The padding value
 	/// - Returns: self
 	@discardableResult
-	public func topPadding(_ padding: Double) -> Self {
+	func topPadding(_ padding: Double) -> Self {
 		self.topPadding = padding
 		return self
 	}
@@ -78,7 +80,7 @@ public extension NSGridView.Row {
 	/// - Parameter padding: The padding value
 	/// - Returns: self
 	@discardableResult
-	public func bottomPadding(_ padding: Double) -> Self {
+	func bottomPadding(_ padding: Double) -> Self {
 		self.bottomPadding = padding
 		return self
 	}
@@ -87,7 +89,7 @@ public extension NSGridView.Row {
 	/// - Parameter alignment: The alignment
 	/// - Returns: self
 	@discardableResult
-	public func rowAlignment(_ alignment: NSGridRow.Alignment) -> Self {
+	func rowAlignment(_ alignment: NSGridRow.Alignment) -> Self {
 		self.rowAlignment = alignment
 		return self
 	}
@@ -100,7 +102,8 @@ public extension NSGridView.Row {
 	/// Merge the cell indexes for this row
 	/// - Parameter indexes: The indexes to merge
 	/// - Returns: self
-	public func mergeCells(_ indexes: ClosedRange<Int>) -> Self {
+	@discardableResult
+	func mergeCells(_ indexes: ClosedRange<Int>) -> Self {
 		self.mergedCells.append(indexes)
 		return self
 	}
@@ -108,7 +111,8 @@ public extension NSGridView.Row {
 	/// Merge the cell indexes for this row
 	/// - Parameter indexes: The indexes to merge
 	/// - Returns: self
-	public func mergeCells(_ indexes: [ClosedRange<Int>]) -> Self {
+	@discardableResult
+	func mergeCells(_ indexes: [ClosedRange<Int>]) -> Self {
 		self.mergedCells.append(contentsOf: indexes)
 		return self
 	}

@@ -63,6 +63,8 @@ class NVivoLicenseExamplePane: Pane {
 			])
 			let industrySelection = Bind(-1)
 
+			let items = Bind(["Internet", "Phone", "Email"])
+			let selectedItem = Bind(0)
 
 			return VStack(alignment: .leading, spacing: 8) {
 
@@ -71,16 +73,29 @@ class NVivoLicenseExamplePane: Pane {
 
 				HDivider()
 
-				HStack(spacing: 12) {
-					NSTextField(label: "Active via:")
+				HStack {
+					NSTextField(label: "Activate via:")
 					NSPopUpButton()
-						.menu(NSMenu(title: "popup") {
-							NSMenuItem(title: "Internet") { _ in }
-							NSMenuItem(title: "Phone") { _ in }
-						})
-						.isEnabled(false)
-					NSTextField(label: "To automatically activate this app via the Internet, enter your details below and click 'Activate'.")
-						.compressionResistancePriority(.defaultLow, for: .horizontal)
+						.menuItems(items)
+						.selectedIndex(selectedItem)
+						.huggingPriority(.defaultHigh, for: .horizontal)
+
+					AUIViewSwitcher(selectedViewIndex: selectedItem) {
+						NSTextField(label: "To automatically activate NVivo via the Internet, enter your details below and click 'Activate'")
+							.huggingPriority(.init(10), for: .horizontal)
+							.compressionResistancePriority(.init(10), for: .horizontal)
+						NSTextField(label: "Call 03-5555-5555 and speak with a friendly operator")
+							.huggingPriority(.init(10), for: .horizontal)
+							.compressionResistancePriority(.init(10), for: .horizontal)
+						HStack {
+							NSTextField(label: "Automatically format an email to send to email@email.com")
+								.huggingPriority(.init(10), for: .horizontal)
+								.compressionResistancePriority(.init(10), for: .horizontal)
+							NSButton(title: "Generate Email")
+								.bezelStyle(.badge)
+						}
+					}
+					.huggingPriority(.defaultLow, for: .horizontal)
 				}
 
 				HDivider()

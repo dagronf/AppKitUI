@@ -213,6 +213,7 @@ public extension AUIColorSelector {
 	/// Bind the enabled state for the control
 	/// - Parameter value: If true, enables the control
 	/// - Returns: self
+	@discardableResult
 	func isEnabled(_ value: Bind<Bool>) -> Self {
 		value.register(self) { @MainActor [weak self] newValue in
 			self?.isEnabledBinding.wrappedValue = newValue
@@ -224,6 +225,7 @@ public extension AUIColorSelector {
 	/// Set the colors to be displayed in the control
 	/// - Parameter colors: The colors
 	/// - Returns: self
+	@discardableResult
 	func colors(_ colors: Bind<[NSColor]>) -> Self {
 		colors.register(self) { @MainActor [weak self] newValue in
 			self?.colors = newValue
@@ -238,7 +240,8 @@ public extension AUIColorSelector {
 	/// Bind the control's selection (single selection)
 	/// - Parameter selection: The single selection (radio style)
 	/// - Returns: self
-	public func selection(_ selection: Bind<Int?>) -> Self {
+	@discardableResult
+	func selection(_ selection: Bind<Int?>) -> Self {
 		self.selection = selection
 		selection.register(self) { @MainActor [weak self] newValue in
 			if newValue != self?.selectionsCore.first {
@@ -259,7 +262,8 @@ public extension AUIColorSelector {
 	/// Bind the control's selections (multiple selection)
 	/// - Parameter selections: The selected color items
 	/// - Returns: self
-	public func selections(_ selections: Bind<Set<Int>>) -> Self {
+	@discardableResult
+	func selections(_ selections: Bind<Set<Int>>) -> Self {
 		self.selections = selections
 		selections.register(self) { @MainActor [weak self] newValue in
 			if newValue != self?.selectionsCore {

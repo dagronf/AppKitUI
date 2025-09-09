@@ -32,7 +32,7 @@ public extension AUIShapeFillable where Self == AUIFillStyle.Image {
 
 public extension AUIFillStyle {
 	/// An image fill style
-	public class Image: AUIShapeFillable {
+	class Image: AUIShapeFillable {
 		/// An image fill style
 		/// - Parameters:
 		///   - image: The image

@@ -20,22 +20,25 @@
 import AppKit
 
 public extension AUIShapeFillable where Self == AUIFillStyle.Gradient {
-	public static func gradient(color: NSColor) -> AUIShapeFillable {
+	/// Create a gradient with a slightly shaded single color
+	static func gradient(color: NSColor) -> AUIShapeFillable {
 		AUIFillStyle.Gradient(color: color)
 	}
 
-	public static func gradient(colors: [NSColor], startPoint: CGPoint, endPoint: CGPoint) -> AUIShapeFillable {
+	/// Create a gradient evenly spaced between the colors
+	static func gradient(colors: [NSColor], startPoint: CGPoint, endPoint: CGPoint) -> AUIShapeFillable {
 		AUIFillStyle.Gradient(colors: colors, startPoint: startPoint, endPoint: endPoint)
 	}
 
-	public static func gradient(stops: [AUIFillStyle.Gradient.Stop], startPoint: CGPoint, endPoint: CGPoint) -> AUIShapeFillable {
+	/// Create a gradient
+	static func gradient(stops: [AUIFillStyle.Gradient.Stop], startPoint: CGPoint, endPoint: CGPoint) -> AUIShapeFillable {
 		AUIFillStyle.Gradient(stops: stops, startPoint: startPoint, endPoint: endPoint)
 	}
 }
 
 public extension AUIFillStyle {
 	/// A fill gradient
-	public class Gradient: AUIShapeFillable {
+	class Gradient: AUIShapeFillable {
 		/// A stop in a gradient
 		public struct Stop {
 			public let color: NSColor

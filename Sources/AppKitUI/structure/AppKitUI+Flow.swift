@@ -154,7 +154,7 @@ public extension Flow {
 	///   - right: Right padding
 	/// - Returns: A new NSView containging this view as a child view with the specified padding
 	@discardableResult
-	public override func padding(top: Double = 0, left: Double = 0, bottom: Double = 0, right: Double = 0) -> NSView {
+	override func padding(top: Double = 0, left: Double = 0, bottom: Double = 0, right: Double = 0) -> NSView {
 		if let layout = self.flow.collectionViewLayout as? CollectionViewLeftAlignedFlowLayout {
 			layout.sectionInset = NSEdgeInsets(top: top, left: left, bottom: bottom, right: right)
 		}

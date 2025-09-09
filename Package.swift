@@ -10,11 +10,12 @@ let package = Package(
 	products: [
 		.library(
 			name: "AppKitUI",
-			targets: ["AppKitUI"]),
+			targets: ["AppKitUI"]
+		)
 	],
 	targets: [
 		.target(
-			name: "AppKitUI",
+			name: "AppKitUI"
 		),
 		.testTarget(
 			name: "AppKitUITests",

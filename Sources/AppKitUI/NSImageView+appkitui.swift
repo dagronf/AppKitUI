@@ -168,15 +168,22 @@ private extension NSImageView {
 		init(_ imageView: NSImageView) {
 
 			// Observe any changes in the image stored in the imageview
-			self.imageObserver = imageView.observe(\.image, options: [.old, .new]) { @MainActor [weak self] view, change in
+			// Note we cannot use @MainActor in the observe callback without generating errors in Xcode 16.3 and earlier
+			self.imageObserver = imageView.observe(\.image, options: [.old, .new]) { [weak self] view, change in
 				guard let newValue = change.newValue else { return }
+				DispatchQueue.main.async { [weak self] in
+					self?.imageDidUpdate(newValue)
+				}
+			}
+		}
 
-				if newValue !== self?.imageBond?.wrappedValue {
-					// Only reflect the change if the image is NOT the same as our bonded one!
-					let w = ImageWrapper(image: newValue)
-					DispatchQueue.main.async { [weak self] in
-						self?.imageDidChange(w)
-					}
+		@MainActor
+		private func imageDidUpdate(_ image: NSImage?) {
+			if image !== self.imageBond?.wrappedValue {
+				// Only reflect the change if the image is NOT the same as our bonded one!
+				let w = ImageWrapper(image: image)
+				DispatchQueue.main.async { [weak self] in
+					self?.imageDidChange(w)
 				}
 			}
 		}

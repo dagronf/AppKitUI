@@ -37,7 +37,7 @@ public extension BindTransformers {
 
 	// MARK: String to Int and back
 
-	public struct StringToInt: BindTransformer {
+	struct StringToInt: BindTransformer {
 		public init(formatter: NumberFormatter) {
 			self.formatter = formatter
 		}
@@ -50,7 +50,7 @@ public extension BindTransformers {
 		private let formatter: NumberFormatter
 	}
 
-	public struct IntToString: BindTransformer {
+	struct IntToString: BindTransformer {
 		public init(formatter: NumberFormatter) {
 			self.formatter = formatter
 		}
@@ -65,13 +65,13 @@ public extension BindTransformers {
 
 	// MARK: String to Bool and back
 
-	public struct StringToBool: BindTransformer {
+	struct StringToBool: BindTransformer {
 		public init() { }
 		public func encode(_ value: String) -> Bool { NSString(string: value).boolValue }
 		public func decode(_ value: Bool) -> String { value ? "true" : "false" }
 	}
 
-	public struct BoolToString: BindTransformer {
+	struct BoolToString: BindTransformer {
 		public init() { }
 		public func encode(_ value: Bool) -> String { value ? "true" : "false" }
 		public func decode(_ value: String) -> Bool { NSString(string: value).boolValue }
@@ -79,13 +79,13 @@ public extension BindTransformers {
 
 	// MARK: Bool to NSControl.StateValue and back
 
-	public struct BoolToState: BindTransformer {
+	struct BoolToState: BindTransformer {
 		public init() { }
 		public func encode(_ value: Bool) -> NSControl.StateValue { value ? .on : .off }
 		public func decode(_ value: NSControl.StateValue) -> Bool { value != .off }
 	}
 
-	public struct StateToBool: BindTransformer {
+	struct StateToBool: BindTransformer {
 		public init() { }
 		public func encode(_ value: NSControl.StateValue) -> Bool { value != .off }
 		public func decode(_ value: Bool) -> NSControl.StateValue { value ? .on : .off }
@@ -94,7 +94,7 @@ public extension BindTransformers {
 	// MARK: Invert a bool binding
 
 	/// A binding transformer for converting a bool value to the inverse of that value
-	public struct BoolInverted: BindTransformer {
+	struct BoolInverted: BindTransformer {
 		public init() { }
 		public func encode(_ value: Bool) -> Bool { !value }
 		public func decode(_ value: Bool) -> Bool { !value }

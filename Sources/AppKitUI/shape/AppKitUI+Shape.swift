@@ -91,6 +91,19 @@ public class AUIShape: NSView {
 
 	// Private
 
+	public override var wantsUpdateLayer: Bool { true }
+
+	public override func updateLayer() {
+		super.updateLayer()
+		self.rebuild()
+	}
+
+	// Make sure we reflect changes to the size of the view
+	public override func setFrameSize(_ newSize: NSSize) {
+		super.setFrameSize(newSize)
+		self.rebuild()
+	}
+
 	private let shapeLayer = CAShapeLayer()
 	private var backgroundLayer: CALayer?
 	private var borderLayer: CAShapeLayer?
@@ -105,7 +118,7 @@ public class AUIShape: NSView {
 public extension AUIShape {
 	/// Set the fill style
 	@discardableResult @inlinable
-	public func fill(_ fillStyle: AUIShapeFillable?) -> Self {
+	func fill(_ fillStyle: AUIShapeFillable?) -> Self {
 		self.fillStyle = fillStyle
 		return self
 	}
@@ -114,21 +127,21 @@ public extension AUIShape {
 	///
 	/// Setting to nil removed any background fill style
 	@discardableResult
-	public func fill(color: NSColor?) -> Self {
+	func fill(color: NSColor?) -> Self {
 		self.fillStyle = AUIFillStyle.Color(color: color)
 		return self
 	}
 
 	/// Set the fill color
 	@discardableResult
-	public func fill(color: DynamicColor) -> Self {
+	func fill(color: DynamicColor) -> Self {
 		self.fillStyle = AUIFillStyle.Color(color: color)
 		return self
 	}
 
 	/// Bind the fill color
 	@discardableResult
-	public func fill(color: Bind<NSColor>) -> Self {
+	func fill(color: Bind<NSColor>) -> Self {
 		color.register(self) { @MainActor [weak self] newColor in
 			self?.fillStyle = AUIFillStyle.Color(color: newColor)
 		}
@@ -138,7 +151,7 @@ public extension AUIShape {
 
 	/// Bind the fill color
 	@discardableResult
-	public func fill(color: Bind<DynamicColor>) -> Self {
+	func fill(color: Bind<DynamicColor>) -> Self {
 		color.register(self) { @MainActor [weak self] newColor in
 			self?.fillStyle = AUIFillStyle.Color(color: newColor)
 		}
@@ -147,8 +160,8 @@ public extension AUIShape {
 	}
 
 	/// Set the image fill
-	/// @discardableResult
-	public func fill(image: NSImage?, contentsGravity: CALayerContentsGravity? = nil) -> Self {
+	@discardableResult
+	func fill(image: NSImage?, contentsGravity: CALayerContentsGravity? = nil) -> Self {
 		self.fillStyle = AUIFillStyle.Image(image: image, contentsGravity: contentsGravity)
 		return self
 	}
@@ -160,28 +173,28 @@ public extension AUIShape {
 public extension AUIShape {
 	/// Set the stroke color
 	@discardableResult @inlinable
-	public func strokeColor(_ color: NSColor?) -> Self {
+	func strokeColor(_ color: NSColor?) -> Self {
 		self.strokeColor = color
 		return self
 	}
 
 	/// Set the stroke color
 	@discardableResult @inlinable
-	public func strokeColor(_ color: DynamicColor) -> Self {
+	func strokeColor(_ color: DynamicColor) -> Self {
 		self.strokeColor = color
 		return self
 	}
 
 	/// Set the stroke line width
 	@discardableResult @inlinable
-	public func strokeLineWidth(_ lineWidth: Double) -> Self {
+	func strokeLineWidth(_ lineWidth: Double) -> Self {
 		self.strokeLineWidth = max(0, lineWidth)
 		return self
 	}
 
 	/// Set the stroke for the rectangle
 	@discardableResult @inlinable
-	public func stroke(_ color: NSColor, lineWidth: Double) -> Self {
+	func stroke(_ color: NSColor, lineWidth: Double) -> Self {
 		self
 			.strokeColor(color)
 			.strokeLineWidth(lineWidth)
@@ -189,35 +202,22 @@ public extension AUIShape {
 
 	/// Set the stroke for the rectangle
 	@discardableResult @inlinable
-	public func stroke(_ color: DynamicColor, lineWidth: Double) -> Self {
+	func stroke(_ color: DynamicColor, lineWidth: Double) -> Self {
 		self
 			.strokeColor(color)
 			.strokeLineWidth(lineWidth)
 	}
 
 	@discardableResult @inlinable
-	public func strokeLineDashPattern(_ pattern: [Double]) -> Self {
+	func strokeLineDashPattern(_ pattern: [Double]) -> Self {
 		self.strokeLineDashPattern = pattern
 		return self
 	}
 
 	@discardableResult @inlinable
-	public func strokeLineDashPhase(_ phase: Double = 0) -> Self {
+	func strokeLineDashPhase(_ phase: Double = 0) -> Self {
 		self.strokeLineDashPhase = max(phase, 0)
 		return self
-	}
-
-
-	public override var wantsUpdateLayer: Bool { true }
-	public override func updateLayer() {
-		super.updateLayer()
-		self.rebuild()
-	}
-
-	// Make sure we reflect changes to the size of the view
-	public override func setFrameSize(_ newSize: NSSize) {
-		super.setFrameSize(newSize)
-		self.rebuild()
 	}
 }
 
@@ -225,6 +225,7 @@ public extension AUIShape {
 
 @MainActor
 public extension AUIShape {
+	@discardableResult
 	func marchingAnts(_ isVisible: Bind<Bool>) -> Self {
 		self.showMarchingAnts = isVisible
 		isVisible.register(self) { @MainActor [weak self] state in

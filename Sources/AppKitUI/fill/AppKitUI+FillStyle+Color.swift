@@ -23,7 +23,7 @@ public extension AUIShapeFillable where Self == AUIFillStyle.Color {
 	/// Create a solid color fill
 	/// - Parameter color: The fill color
 	/// - Returns: A new fill style
-	public static func color(_ color: NSColor?) -> AUIShapeFillable {
+	static func color(_ color: NSColor?) -> AUIShapeFillable {
 		if let color {
 			return AUIFillStyle.Color(color: color)
 		}
@@ -33,7 +33,7 @@ public extension AUIShapeFillable where Self == AUIFillStyle.Color {
 	/// Create a solid color fill
 	/// - Parameter color: The fill color
 	/// - Returns: A new fill style
-	public static func color(_ color: DynamicColor) -> AUIShapeFillable {
+	static func color(_ color: DynamicColor) -> AUIShapeFillable {
 		AUIFillStyle.Color(color: color)
 	}
 
@@ -42,7 +42,7 @@ public extension AUIShapeFillable where Self == AUIFillStyle.Color {
 	///   - darkColor: The fill color for dark mode
 	///   - lightColor: The fill color for light mode
 	/// - Returns: A new fill style
-	public static func color(darkColor: NSColor, lightColor: NSColor) -> AUIShapeFillable {
+	static func color(darkColor: NSColor, lightColor: NSColor) -> AUIShapeFillable {
 		AUIFillStyle.Color(darkColor: darkColor, lightColor: lightColor)
 	}
 }
@@ -50,7 +50,7 @@ public extension AUIShapeFillable where Self == AUIFillStyle.Color {
 
 public extension AUIFillStyle {
 	/// A solid color fill style
-	public class Color: AUIShapeFillable {
+	class Color: AUIShapeFillable {
 		/// Create a solid color
 		/// - Parameter color: The color
 		public init(color: AUIResolvableColor?) {

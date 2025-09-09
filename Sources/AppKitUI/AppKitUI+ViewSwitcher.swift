@@ -78,7 +78,6 @@ public class AUIViewSwitcher: NSView {
 #Preview("default") {
 	let items = Bind(["Internet", "Phone", "Email"])
 	let selectedItem = Bind(0)
-	let content = Bind("Text content")
 
 	VStack(spacing: 20) {
 		NSGridView {

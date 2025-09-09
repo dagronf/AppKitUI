@@ -30,7 +30,7 @@ public extension Bind {
 	///
 	/// A two-way transformer uses a transformer to map between two value types (eg. an Int and a String)
 	/// The two-way transformer is expected to be idempotent
-	func twoWayTransform<NEWBINDERTYPE>(_ transformer: BindTransformer<Wrapped, NEWBINDERTYPE>) -> Bind<NEWBINDERTYPE> {
+	func twoWayTransform<NEWBINDERTYPE>(_ transformer: any BindTransformer<Wrapped, NEWBINDERTYPE>) -> Bind<NEWBINDERTYPE> {
 		// Grab out the current value of this binder, and encoding to the the transformed value
 		let initialValue = transformer.encode(self.wrappedValue)
 

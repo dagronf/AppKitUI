@@ -24,24 +24,28 @@ import AppKit.NSView
 @MainActor
 public extension NSView {
 	/// Sets the priority with which a view resists being made larger than its intrinsic size.
-	@inlinable @inline(__always) func huggingPriority(_ p: NSLayoutConstraint.Priority, for orientation: NSLayoutConstraint.Orientation) -> Self {
+	@discardableResult @inlinable
+	func huggingPriority(_ p: NSLayoutConstraint.Priority, for orientation: NSLayoutConstraint.Orientation) -> Self {
 		self.setContentHuggingPriority(p, for: orientation)
 		return self
 	}
 
 	/// Sets the priority with which a view resists being made larger than its intrinsic size.
-	@inlinable @inline(__always) func huggingPriority(_ p: Float, for orientation: NSLayoutConstraint.Orientation) -> Self {
+	@discardableResult @inlinable
+	func huggingPriority(_ p: Float, for orientation: NSLayoutConstraint.Orientation) -> Self {
 		self.huggingPriority(NSLayoutConstraint.Priority(rawValue: p), for: orientation)
 	}
 
 	/// Sets the priority with which a view resists being made smaller than its intrinsic size.
-	@inlinable @inline(__always) func compressionResistancePriority(_ p: NSLayoutConstraint.Priority, for orientation: NSLayoutConstraint.Orientation) -> Self {
+	@discardableResult @inlinable
+	func compressionResistancePriority(_ p: NSLayoutConstraint.Priority, for orientation: NSLayoutConstraint.Orientation) -> Self {
 		self.setContentCompressionResistancePriority(p, for: orientation)
 		return self
 	}
 
 	/// Sets the priority with which a view resists being made smaller than its intrinsic size.
-	@inlinable @inline(__always) func compressionResistancePriority(_ p: Float, for orientation: NSLayoutConstraint.Orientation) -> Self {
+	@discardableResult @inlinable
+	func compressionResistancePriority(_ p: Float, for orientation: NSLayoutConstraint.Orientation) -> Self {
 		self.compressionResistancePriority(NSLayoutConstraint.Priority(rawValue: p), for: orientation)
 	}
 }
@@ -72,7 +76,7 @@ public extension NSView {
 	///   - width: The width
 	///   - priority: The constraint priority
 	/// - Returns: self
-	@discardableResult @inlinable
+	@discardableResult
 	func width(_ width: Double?, priority: NSLayoutConstraint.Priority? = nil) -> Self {
 		guard let width = width else { return self }
 		self.translatesAutoresizingMaskIntoConstraints = false
@@ -87,7 +91,7 @@ public extension NSView {
 	///   - minWidth: The minimum width value
 	///   - priority: The constraint priority
 	/// - Returns: self
-	@discardableResult @inlinable @inline(__always)
+	@discardableResult
 	func minWidth(_ minWidth: Double, priority: NSLayoutConstraint.Priority? = nil) -> Self {
 		self.translatesAutoresizingMaskIntoConstraints = false
 		let c = NSLayoutConstraint(
@@ -106,7 +110,7 @@ public extension NSView {
 	///   - maxWidth: The maximum width value
 	///   - priority: The constraint priority
 	/// - Returns: self
-	@discardableResult @inlinable @inline(__always)
+	@discardableResult
 	func maxWidth(_ maxWidth: Double, priority: NSLayoutConstraint.Priority? = nil) -> Self {
 		self.translatesAutoresizingMaskIntoConstraints = false
 		let c = NSLayoutConstraint(
@@ -125,7 +129,7 @@ public extension NSView {
 	///   - height: The view's height
 	///   - priority: The constraint priority
 	/// - Returns: self
-	@discardableResult @inlinable @inline(__always)
+	@discardableResult
 	func height(_ height: Double?, priority: NSLayoutConstraint.Priority? = nil) -> Self {
 		guard let height = height else { return self }
 		self.translatesAutoresizingMaskIntoConstraints = false
@@ -140,7 +144,7 @@ public extension NSView {
 	///   - minHeight: The minimum height value
 	///   - priority: The constraint priority
 	/// - Returns: self
-	@discardableResult @inlinable
+	@discardableResult
 	func minHeight(_ minHeight: Double, priority: NSLayoutConstraint.Priority? = nil) -> Self {
 		self.translatesAutoresizingMaskIntoConstraints = false
 		let c = NSLayoutConstraint(
@@ -159,7 +163,7 @@ public extension NSView {
 	///   - maxHeight: The maximum height value
 	///   - priority: The constraint priority
 	/// - Returns: self
-	@discardableResult @inlinable
+	@discardableResult
 	func maxHeight(_ maxHeight: Double, priority: NSLayoutConstraint.Priority? = nil) -> Self {
 		self.translatesAutoresizingMaskIntoConstraints = false
 		let c = NSLayoutConstraint(
@@ -179,7 +183,7 @@ public extension NSView {
 	///   - height: The height
 	///   - priority: The constraint priority
 	/// - Returns: self
-	@discardableResult @inlinable @inline(__always)
+	@discardableResult
 	func frame(width: Double? = nil, height: Double? = nil, priority: NSLayoutConstraint.Priority? = nil) -> Self {
 		self.translatesAutoresizingMaskIntoConstraints = false
 		if let width { self.width(width, priority: priority) }

@@ -237,7 +237,7 @@ public extension NSButton {
 
 	/// If true, the checkbox is shown as the check only, no title
 	@discardableResult @inlinable
-	public func hidesTitle(_ hide: Bool) -> Self {
+	func hidesTitle(_ hide: Bool) -> Self {
 		self.imagePosition = hide ? .imageOnly : .imageLeading
 		return self
 	}

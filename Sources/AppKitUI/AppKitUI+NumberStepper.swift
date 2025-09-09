@@ -82,7 +82,7 @@ public extension NumberStepperView {
 	/// - Parameter exposureBlock: The block, passing a reference to the text field
 	/// - Returns: self
 	@discardableResult
-	public func withEmbeddedTextControl(_ exposureBlock: (NSTextField) -> Void) -> Self {
+	func withEmbeddedTextControl(_ exposureBlock: (NSTextField) -> Void) -> Self {
 		exposureBlock(self.textField)
 		return self
 	}
@@ -90,7 +90,7 @@ public extension NumberStepperView {
 	/// The text field’s bezel style, square or rounded.
 	/// - Returns: self
 	@discardableResult @inlinable
-	public func bezelStyle(_ value: NSTextField.BezelStyle) -> Self {
+	func bezelStyle(_ value: NSTextField.BezelStyle) -> Self {
 		self.bezelStyle = value
 		return self
 	}
@@ -112,7 +112,7 @@ public extension NumberStepperView {
 	/// A Boolean value that indicates whether the receiver reacts to mouse events.
 	/// - Returns: self
 	@discardableResult @inlinable
-	public func isEnabled(_ value: Bind<Bool>) -> Self {
+	func isEnabled(_ value: Bind<Bool>) -> Self {
 		value.register(self) { @MainActor [weak self] newValue in
 			self?.isEnabled = newValue
 		}
@@ -205,7 +205,7 @@ extension NumberStepperView: NSTextFieldDelegate {
 		$0.maximum = 100
 	}
 	let value = Bind(20.0) { newValue in
-		Swift.print("value is now '\(nf.string(for: newValue))'")
+		Swift.print("value is now '\(nf.string(for: newValue) ?? "<nil>")'")
 	}
 
 	let nf2 = NumberFormatter {
@@ -215,7 +215,7 @@ extension NumberStepperView: NSTextFieldDelegate {
 		$0.maximumFractionDigits = 4
 	}
 	let nf2Value = Bind(0.5) { newValue in
-		Swift.print("nf2Value is now '\(nf2.string(for: newValue))'")
+		Swift.print("nf2Value is now '\(nf2.string(for: newValue) ?? "<nil>")'")
 	}
 
 	let nf3 = NumberFormatter {
@@ -225,7 +225,7 @@ extension NumberStepperView: NSTextFieldDelegate {
 		$0.maximumFractionDigits = 3
 	}
 	let nf3Value = Bind(0.0) { newValue in
-		Swift.print("nf3Value is now '\(nf3.string(for: newValue))'")
+		Swift.print("nf3Value is now '\(nf3.string(for: newValue) ?? "<nil>")'")
 	}
 
 	VStack {

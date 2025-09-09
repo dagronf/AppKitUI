@@ -98,7 +98,7 @@ public extension AUIContentUnavailableView {
 	/// - Parameter text: The text
 	/// - Returns: self
 	@discardableResult
-	public func description(_ text: String) -> Self {
+	func description(_ text: String) -> Self {
 		self.descriptionField?.stringValue = text
 		self.descriptionField?.isHidden = false
 		return self
@@ -108,14 +108,15 @@ public extension AUIContentUnavailableView {
 	/// - Parameter image: The image
 	/// - Returns: self
 	@discardableResult
-	public func image(_ image: NSImage) -> Self {
+	func image(_ image: NSImage) -> Self {
 		self.imageView?.image = image
 		self.imageView?.isHidden = false
 		return self
 	}
 
 	/// Set the title font
-	public func titleFont(_ font: NSFont) -> Self {
+	@discardableResult
+	func titleFont(_ font: NSFont) -> Self {
 		self.textField?.font = font
 		return self
 	}
@@ -124,14 +125,13 @@ public extension AUIContentUnavailableView {
 	/// - Parameter button: The button
 	/// - Returns: self
 	@discardableResult
-	public func addButton(_ button: NSButton) -> Self {
+	func addButton(_ button: NSButton) -> Self {
 		button.translatesAutoresizingMaskIntoConstraints = false
 		self.buttons?.isHidden = false
 		self.buttons?.addArrangedSubview(button)
 		return self
 	}
 }
-
 
 // MARK: - Previews
 
