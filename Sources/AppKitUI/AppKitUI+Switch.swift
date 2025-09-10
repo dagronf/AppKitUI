@@ -63,7 +63,8 @@ public class AUISwitch: NSControl {
 			return NSSize(width: 32, height: 18)
 		case .mini:
 			return NSSize(width: 26, height: 15)
-		@unknown default:
+		default:
+			// Unsupported control size?
 			return NSSize(width: 38, height: 22)
 		}
 	}
