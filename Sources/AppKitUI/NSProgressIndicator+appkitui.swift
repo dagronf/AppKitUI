@@ -39,6 +39,15 @@ public extension NSProgressIndicator {
 		return self
 	}
 
+	/// Set the control size for the progress
+	/// - Parameter value: The control size
+	/// - Returns: self
+	@discardableResult @inlinable
+	func controlSize(_ value: NSControl.ControlSize) -> Self {
+		self.controlSize = value
+		return self
+	}
+
 	/// The minimum and maximum values the progress indicator can send to its target.
 	@discardableResult @inlinable
 	func range(_ range: ClosedRange<Double>) -> Self {
@@ -60,8 +69,14 @@ public extension NSProgressIndicator {
 		self.usesThreadedAnimation = value
 		return self
 	}
-}
 
+	/// Set if progress indicator hides itself when it isn’t animating.
+	@discardableResult @inlinable
+	func isDisplayedWhenStopped(_ value: Bool) -> Self {
+		self.isDisplayedWhenStopped = value
+		return self
+	}
+}
 
 // MARK: - Bindings
 
@@ -113,8 +128,21 @@ public extension NSProgressIndicator {
 #Preview("default") {
 	let animating = Bind<Bool>(false)
 	let value = Bind(66.0)
-	VStack {
-		HStack {
+
+	NSGridView(xPlacement: .center, yPlacement: .center, columnSpacing: 8) {
+		NSGridView.Row {
+			NSGridCell.emptyContentView
+			NSTextField(label: ".regular")
+				.font(.footnote.monoSpaced)
+			NSTextField(label: ".small")
+				.font(.footnote.monoSpaced)
+			NSTextField(label: ".mini")
+				.font(.footnote.monoSpaced)
+			NSTextField(label: "hides?")
+				.font(.footnote)
+			NSGridCell.emptyContentView
+		}
+		NSGridView.Row {
 			NSProgressIndicator()
 				.range(0 ... 100)
 				.value(value)
@@ -125,20 +153,45 @@ public extension NSProgressIndicator {
 				.isIndeterminite(false)
 				.range(0 ... 100)
 				.value(value)
-			NSButton()
+			NSProgressIndicator()
+				.style(.spinning)
+				.controlSize(.small)
+				.isIndeterminite(false)
+				.range(0 ... 100)
+				.value(value)
+			NSProgressIndicator()
+				.style(.spinning)
+				.controlSize(.mini)
+				.isIndeterminite(false)
+				.range(0 ... 100)
+				.value(value)
+			NSTextField(label: "-")
+			NSButton(title: "Random")
 				.onAction { _ in
 					value.wrappedValue = Double.random(in: 0 ... 100)
 				}
 		}
 
-		HStack {
+		NSGridView.Row {
 			NSProgressIndicator()
 				.isAnimating(animating)
 				.width(150)
 			NSProgressIndicator()
 				.style(.spinning)
 				.isAnimating(animating)
-			NSButton()
+			NSProgressIndicator()
+				.controlSize(.small)
+				.style(.spinning)
+				.isAnimating(animating)
+			NSProgressIndicator()
+				.controlSize(.mini)
+				.style(.spinning)
+				.isAnimating(animating)
+			NSProgressIndicator()
+				.style(.spinning)
+				.isAnimating(animating)
+				.isDisplayedWhenStopped(false)
+			NSButton(title: "Toggle")
 				.onAction { _ in
 					animating.toggle()
 				}
