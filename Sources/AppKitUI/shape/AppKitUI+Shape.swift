@@ -262,8 +262,10 @@ extension AUIShape {
 		self.compressionResistancePriority(.defaultHigh, for: .vertical)
 
 		if #available(macOS 10.14, *) {
-			self.observer = NSApp.observe(\.effectiveAppearance, options: [.new, .initial]) { @MainActor [weak self] app, change in
-				self?.rebuild()
+			self.observer = NSApp.observe(\.effectiveAppearance, options: [.new, .initial]) { [weak self] app, change in
+				DispatchQueue.main.async {
+					self?.rebuild()
+				}
 			}
 		}
 
@@ -271,6 +273,9 @@ extension AUIShape {
 	}
 
 	func rebuild() {
+		// Should always run on the main thread
+		assert(Thread.isMainThread)
+
 		self.backgroundLayer?.removeFromSuperlayer()
 		self.borderLayer?.removeFromSuperlayer()
 
