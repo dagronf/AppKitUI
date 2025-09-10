@@ -56,9 +56,9 @@ class DelayingCall {
 		switch self.type {
 		case .none:
 			action()
-		case .debounce(let _):
+		case .debounce(_):
 			self.debounce!.debounce(action: action)
-		case .throttle(let _):
+		case .throttle(_):
 			self.throttle!.throttle(action: action)
 		}
 	}
