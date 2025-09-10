@@ -44,6 +44,7 @@ public extension NSView {
 	/// - Returns: self
 	///
 	/// Useful when you want a click on a control that doesn't support an action (eg. an NSView)
+	@discardableResult
 	func onClickGesture(
 		numberOfClicksRequired: Int = 1,
 		buttonMask: NSGestureRecognizer.ButtonMask = .primary,

@@ -29,6 +29,16 @@ class PDFPane: Pane {
 		let scaleFactor = Bind(1.0)
 		let showFileSelector = Bind(false)
 
+		let minusImage = NSImage(named: "minus.magnifyingglass")!
+			.isTemplate(true)
+			.size(width: 22, height: 22)
+		let oneImage = NSImage(named: "1.magnifyingglass")!
+			.isTemplate(true)
+			.size(width: 22, height: 22)
+		let plusImage = NSImage(named: "plus.magnifyingglass")!
+			.isTemplate(true)
+			.size(width: 22, height: 22)
+
 		return VStack(alignment: .leading) {
 			HStack {
 				NSButton(title: "Select a file") { _ in
@@ -43,6 +53,13 @@ class PDFPane: Pane {
 						.isHidden(fileURL.oneWayTransform { $0 != nil })
 						.huggingPriority(.defaultLow, for: .horizontal)
 				}
+
+				NSView.Spacer()
+
+				NSButton(title: "Clear") { _ in
+					fileURL.wrappedValue = nil
+				}
+				.isEnabled(fileURL.oneWayTransform { $0 != nil })
 			}
 			AUIPDFView()
 				.fileURL(fileURL)
@@ -53,23 +70,30 @@ class PDFPane: Pane {
 					HStack {
 						NSSlider(scaleFactor, range: 0.25 ... 4)
 							.controlSize(.small)
-						NSButton(title: "-") { _ in
+							.isEnabled(fileURL != nil)
+						
+						NSButton.image(minusImage) { _ in
 							let sc = max(0.25, min(4.0, scaleFactor.wrappedValue - 0.25))
 							scaleFactor.wrappedValue = sc
 						}
-						.isEnabled(scaleFactor.oneWayTransform { $0 > 0.25 })
-						NSButton(title: "●") { _ in
+						.isEnabled(scaleFactor > 0.25)
+						.isEnabled(fileURL != nil)
+
+						NSButton.image(oneImage) { _ in
 							scaleFactor.wrappedValue = 1.0
 						}
-						.isEnabled(scaleFactor.oneWayTransform { $0 != 1.0 } )
-						NSButton(title: "+") { _ in
+						.isEnabled(scaleFactor != 1.0)
+						.isEnabled(fileURL != nil)
+
+						NSButton.image(plusImage) { _ in
 							let sc = max(0.25, min(4.0, scaleFactor.wrappedValue + 0.25))
 							scaleFactor.wrappedValue = sc
 						}
-						.isEnabled(scaleFactor.oneWayTransform { $0 < 4 })
+						.isEnabled(scaleFactor < 4.0)
+						.isEnabled(fileURL != nil)
 					}
 				}
-				.rowAlignment(.firstBaseline)
+				.rowAlignment(.lastBaseline)
 			}
 		}
 		.hugging(.init(1), for: .horizontal)

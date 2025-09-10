@@ -27,7 +27,8 @@ class SubscriptionExamplePane: Pane {
 		let selected = Bind(0)
 		return NSView(layoutStyle: .centered) {
 			VStack {
-				build(
+				SubscriptionEntry(
+					model: model,
 					index: 0,
 					selected: selected,
 					content:
@@ -44,7 +45,8 @@ class SubscriptionExamplePane: Pane {
 						}
 				)
 
-				build(
+				SubscriptionEntry(
+					model: model,
 					index: 1,
 					selected: selected,
 					content:
@@ -61,7 +63,8 @@ class SubscriptionExamplePane: Pane {
 						}
 				)
 
-				build(
+				SubscriptionEntry(
+					model: model,
 					index: 2,
 					selected: selected,
 					content:
@@ -98,9 +101,8 @@ class SubscriptionExamplePane: Pane {
 }
 
 @MainActor
-func build(index: Int, selected: Bind<Int>, content: NSView) -> NSView {
-
-	let isButtonSelected = selected.oneWayTransform { $0 == index }
+func SubscriptionEntry(model: Model, index: Int, selected: Bind<Int>, content: NSView) -> NSView {
+	let isButtonSelected = (selected == index)
 
 	return NSView {
 		Rectangle(cornerRadius: 8)
@@ -122,13 +124,12 @@ func build(index: Int, selected: Bind<Int>, content: NSView) -> NSView {
 			}
 			.onAction { _ in
 				selected.wrappedValue = index
-				Swift.print("asdfasfd")
+				model.log("Sebscription index is now \(index)")
 			}
 	}
 	.frame(width: 350, height: 100)
+
 }
-
-
 
 #if DEBUG
 @available(macOS 14, *)

@@ -84,15 +84,40 @@ public extension NSControl {
 
 // MARK: Binding
 
+private let enabledByAllTitle__ = "__aui_multiple_isEnabled_binding"
+
 @MainActor
 public extension NSControl {
 	/// Bind the enabled state for the control
+	///
+	/// This can be called multiple times for the same control, the control is only enabled if
+	/// ALL nested bindings are true
 	@discardableResult
 	func isEnabled(_ isEnabled: Bind<Bool>) -> Self {
-		isEnabled.register(self) { @MainActor [weak self] newValue in
+
+		if let helper: BindAggregatorAllTrue = self.getAssociatedValue(key: enabledByAllTitle__) {
+			// Add this enabled flag to the aggregation
+			helper.add(isEnabled)
+			return self
+		}
+
+		// Create the bool aggregator first
+		let helper = BindAggregatorAllTrue(isEnabled.wrappedValue)
+
+		// Listen for changes to the aggregation, and reflect that in the control
+		helper.register(self) { @MainActor [weak self] newValue in
 			self?.isEnabled = newValue
 		}
+
+		// Set the helper into the control
+		self.setAssociatedValue(key: enabledByAllTitle__, value: helper)
+
+		// Add the binding to the aggregation
+		helper.add(isEnabled)
+
+		// Make sure we set the initial state for the control
 		self.isEnabled = isEnabled.wrappedValue
+
 		return self
 	}
 }

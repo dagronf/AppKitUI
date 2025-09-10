@@ -100,3 +100,43 @@ public extension Bind where Wrapped == [String] {
 		self.oneWayTransform { $0.joined(separator: ", ") }
 	}
 }
+
+// MARK: - Equality one-way transforms
+
+@MainActor
+public extension Bind where Wrapped: Equatable {
+	@inlinable
+	static func == (left: Bind, right: Wrapped) -> Bind<Bool> {
+		left.oneWayTransform { $0 == right }
+	}
+
+	@inlinable
+	static func != (left: Bind, right: Wrapped) -> Bind<Bool> {
+		left.oneWayTransform { $0 != right }
+	}
+}
+
+// MARK: - Comparison one-way transforms
+
+@MainActor
+public extension Bind where Wrapped: Comparable {
+	@inlinable
+	static func < (left: Bind, right: Wrapped) -> Bind<Bool> {
+		left.oneWayTransform { $0 < right }
+	}
+
+	@inlinable
+	static func > (left: Bind, right: Wrapped) -> Bind<Bool> {
+		left.oneWayTransform { $0 > right }
+	}
+
+	@inlinable
+	static func <= (left: Bind, right: Wrapped) -> Bind<Bool> {
+		left.oneWayTransform { $0 <= right }
+	}
+
+	@inlinable
+	static func >= (left: Bind, right: Wrapped) -> Bind<Bool> {
+		left.oneWayTransform { $0 >= right }
+	}
+}
