@@ -116,8 +116,13 @@ private extension NSSearchField {
 @available(macOS 14, *)
 #Preview("default") {
 	let searchText = Bind("")
+	let searchTextResult = Bind("")
+
 	let searchText2 = Bind("Original text")
+	let searchTextResult2 = Bind(searchText2.wrappedValue)
+
 	weak var searchControl: NSSearchField?
+
 	VStack {
 		NSSearchField()
 			.store(in: &searchControl)
@@ -125,15 +130,30 @@ private extension NSSearchField {
 			.sendsSearchStringImmediately(false)
 			.placeholder("Start typing")
 			.onSearch {
-				Swift.print("Performing search -> \($0)...")
+				searchTextResult.wrappedValue = $0
+				//Swift.print("Performing search -> \($0)...")
 			}
+
+		HStack {
+			NSTextField(label: "Search ->")
+			NSTextField(content: searchTextResult)
+		}
+
+		HDivider()
 
 		NSSearchField()
 			.content(searchText2)
+			.sendsSearchStringImmediately(true)
 			.showRecents(autosaveName: "second")
 			.onSearch { searchText in
-				Swift.print("Search submitted -> \(searchText)...")
+				searchTextResult2.wrappedValue = searchText
+				//Swift.print("Search submitted -> \(searchText)...")
 			}
+
+		HStack {
+			NSTextField(label: "Search ->")
+			NSTextField(content: searchTextResult2)
+		}
 	}
 	.padding()
 }
