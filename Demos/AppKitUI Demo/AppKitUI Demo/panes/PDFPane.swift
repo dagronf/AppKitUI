@@ -20,6 +20,13 @@
 import AppKit
 import AppKitUI
 
+private let percentFormatter: NumberFormatter = {
+	let f = NumberFormatter()
+	f.numberStyle = .percent
+	f.maximumFractionDigits = 0
+	return f
+}()
+
 class PDFPane: Pane {
 	override func title() -> String { "PDF" }
 	@MainActor
@@ -27,17 +34,19 @@ class PDFPane: Pane {
 
 		let fileURL = Bind<URL?>(nil)
 		let scaleFactor = Bind(1.0)
+		let scaleTitle = scaleFactor.oneWayTransform { percentFormatter.string(for: $0) ?? "" }
+
 		let showFileSelector = Bind(false)
 
 		let minusImage = NSImage(named: "minus.magnifyingglass")!
 			.isTemplate(true)
-			.size(width: 22, height: 22)
+			.size(width: 18, height: 18)
 		let oneImage = NSImage(named: "1.magnifyingglass")!
 			.isTemplate(true)
-			.size(width: 22, height: 22)
+			.size(width: 18, height: 18)
 		let plusImage = NSImage(named: "plus.magnifyingglass")!
 			.isTemplate(true)
-			.size(width: 22, height: 22)
+			.size(width: 18, height: 18)
 
 		return VStack(alignment: .leading) {
 			HStack {
@@ -66,7 +75,24 @@ class PDFPane: Pane {
 				.scaleFactor(scaleFactor, range: 0.25 ... 4)
 			NSGridView {
 				NSGridView.Row {
-					NSTextField(label: "scale:")
+					NSPopUpButton()
+						.style(.pullsDown)
+						.bezelStyle(.accessoryBarAction)
+						.menu {
+							NSMenuItem(title: "_placeholder")
+							NSMenuItem(title: "25%", onActionBlock: { _ in scaleFactor.wrappedValue = 0.25 })
+							NSMenuItem(title: "50%", onActionBlock: { _ in scaleFactor.wrappedValue = 0.50 })
+							NSMenuItem(title: "75%", onActionBlock: { _ in scaleFactor.wrappedValue = 0.75 })
+							NSMenuItem(title: "100%", onActionBlock: { _ in scaleFactor.wrappedValue = 1.00 })
+							NSMenuItem(title: "125%", onActionBlock: { _ in scaleFactor.wrappedValue = 1.25 })
+							NSMenuItem(title: "150%", onActionBlock: { _ in scaleFactor.wrappedValue = 1.50 })
+							NSMenuItem(title: "200%", onActionBlock: { _ in scaleFactor.wrappedValue = 2.00 })
+							NSMenuItem(title: "300%", onActionBlock: { _ in scaleFactor.wrappedValue = 3.00 })
+							NSMenuItem(title: "400%", onActionBlock: { _ in scaleFactor.wrappedValue = 4.00 })
+						}
+						.title(scaleTitle)
+						.isEnabled(fileURL != nil)
+						.width(60)
 					HStack {
 						NSSlider(scaleFactor, range: 0.25 ... 4)
 							.controlSize(.small)

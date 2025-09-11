@@ -642,42 +642,17 @@ public extension NSView {
 		}
 		return self
 	}
-}
 
-@MainActor
-private class AppearanceObservation {
-	fileprivate init() {
-		if #available(macOS 10.14, *) {
-			// Start observing straight away
-			self.observer = NSApp.observe(\.effectiveAppearance, options: [.new, .initial]) { [weak self] app, change in
-				DispatchQueue.main.async {
-					self?.reflectObservers()
-				}
-			}
+	/// Call a block when the frame of a view changes
+	/// - Parameter block: The block to call, passing the view's frame
+	/// - Returns: self
+	@discardableResult
+	func onFrameChange(_ block: @escaping (NSRect) -> Void) -> Self {
+		self.usingViewStorage {
+			$0.registerFrameChangeHandler(self, block)
 		}
+		return self
 	}
-
-	deinit {
-		os_log("deinit: AppearanceObservation", log: logger, type: .debug)
-	}
-
-	/// Add a block to call when the appearance for the application changes
-	/// - Parameter block: The block to call
-	func registerAppearanceHandler(_ block: @escaping () -> Void) {
-		assert(Thread.isMainThread)
-		self.observations.append(block)
-	}
-
-	/// Called when the app's effective appearance has changed
-	private func reflectObservers() {
-		assert(Thread.isMainThread)
-		self.observations.forEach { block in
-			block()
-		}
-	}
-
-	var observer: NSKeyValueObservation? = nil
-	var observations: [() -> Void] = []
 }
 
 // MARK: - Storage
@@ -697,19 +672,41 @@ extension NSView {
 			self.windowedContent.append(content)
 		}
 
+		// Set up the application aooearance change handler
 		func registerAppearanceHandler(_ block: @escaping () -> Void) {
 			guard #available(macOS 10.14, *) else { return }
 			self.appearanceObserver.registerAppearanceHandler(block)
 		}
 
+		// Set up the frame change handler
+		func registerFrameChangeHandler(_ parent: NSView, _ block: @escaping (NSRect) -> Void) {
+			guard self.frameChangeBlock == nil else { return }
+			parent.postsFrameChangedNotifications = true
+			self.frameChangeBlock = block
+			self.frameObservation = NotificationCenter.default.addObserver(
+				forName: NSView.frameDidChangeNotification,
+				object: parent,
+				queue: .main
+			) { [weak self, weak parent] notification in
+				DispatchQueue.main.async {
+					guard let `self` = self, let parent else { return }
+					self.frameChangeBlock?(parent.frame)
+				}
+			}
+		}
+
 		deinit {
 			os_log("deinit: NSView.Storage", log: logger, type: .debug)
 			self.windowedContent = []
+			self.frameObservation = nil
+			self.frameChangeBlock = nil
 		}
 
 		/// Only create the appearance observer if we need it
 		private lazy var appearanceObserver = AppearanceObservation()
 		private var windowedContent: [WindowedContentProtocol] = []
+		private var frameChangeBlock: ((NSRect) -> Void)?
+		private var frameObservation: NSObjectProtocol?
 	}
 }
 
