@@ -28,6 +28,9 @@ public enum DelayingCallType {
 	case debounce(TimeInterval)
 	/// Throttle a call
 	case throttle(TimeInterval)
+
+	/// Make a delaying call with this type
+	func make() -> DelayingCall { DelayingCall(self) }
 }
 
 // MARK: - Delaying call

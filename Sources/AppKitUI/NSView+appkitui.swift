@@ -644,12 +644,14 @@ public extension NSView {
 	}
 
 	/// Call a block when the frame of a view changes
-	/// - Parameter block: The block to call, passing the view's frame
+	/// - Parameters:
+	///   - delayType: The delay to apply to the callback
+	///   - block: The block to call, passing the view's frame
 	/// - Returns: self
 	@discardableResult
-	func onFrameChange(_ block: @escaping (NSRect) -> Void) -> Self {
+	func onFrameChange(delayType: DelayingCallType = .none, _ block: @escaping (NSRect) -> Void) -> Self {
 		self.usingViewStorage {
-			$0.registerFrameChangeHandler(self, block)
+			$0.registerFrameChangeHandler(parent: self, delayType: delayType, block)
 		}
 		return self
 	}
@@ -679,18 +681,28 @@ extension NSView {
 		}
 
 		// Set up the frame change handler
-		func registerFrameChangeHandler(_ parent: NSView, _ block: @escaping (NSRect) -> Void) {
+		func registerFrameChangeHandler(
+			parent: NSView,
+			delayType: DelayingCallType,
+			_ block: @escaping (NSRect) -> Void
+		) {
 			guard self.frameChangeBlock == nil else { return }
 			parent.postsFrameChangedNotifications = true
 			self.frameChangeBlock = block
+
+			let delay = delayType.make()
+
 			self.frameObservation = NotificationCenter.default.addObserver(
 				forName: NSView.frameDidChangeNotification,
 				object: parent,
 				queue: .main
 			) { [weak self, weak parent] notification in
 				DispatchQueue.main.async {
-					guard let `self` = self, let parent else { return }
-					self.frameChangeBlock?(parent.frame)
+					guard let `self` = self, let parent, let call = self.frameChangeBlock else { return }
+					let frame = parent.frame
+					delay.perform {
+						call(frame)
+					}
 				}
 			}
 		}
