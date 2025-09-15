@@ -25,6 +25,8 @@ import AppKit
 private let darkMode__ = NSAppearance(named: .darkAqua)!
 private let lightMode__ = NSAppearance(named: .aqua)!
 
+// MARK: - Modifiers
+
 @MainActor
 public extension NSView {
 	/// Set the dark mode state for the view
@@ -41,7 +43,12 @@ public extension NSView {
 		}
 		return self
 	}
+}
 
+// MARK: - Bindings
+
+@MainActor
+public extension NSView {
 	/// Set the dark mode state for the view
 	/// - Parameter value: The dark mode binding for the view
 	/// - Returns: self
@@ -54,11 +61,30 @@ public extension NSView {
 		self.isDarkMode(value.wrappedValue)
 		return self
 	}
+}
 
+// MARK: - Actions
+
+@MainActor
+public extension NSView {
 	/// Call a block when the **application's** appearance changes
 	/// - Parameter block: The block to call
-	@discardableResult
+	/// - Returns: self
 	func onAppearanceChange(_ block: @escaping () -> Void) -> Self {
+		self.usingViewStorage {
+			$0.registerApplicationAppearanceHandler(block)
+		}
+		return self
+	}
+
+	/// Call a block when this **view's** appearance changes
+	/// - Parameter block: The block to call
+	/// - Returns: self
+	///
+	/// If all you need is to detect the application's appearance changing
+	/// then it's more performant to use `onAppearanceChange` instead
+	@discardableResult
+	func onViewAppearanceChange(_ block: @escaping () -> Void) -> Self {
 		self.usingViewStorage {
 			$0.registerAppearanceHandler(block)
 		}

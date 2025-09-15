@@ -480,7 +480,7 @@ public extension NSView {
 	func backgroundFill(_ fillColor: NSColor) -> Self {
 		self.wantsLayer = true
 		self.rootLayer.backgroundColor = self.effectiveCGColor(color: fillColor)
-		self.onAppearanceChange { @MainActor [weak self] in
+		self.onViewAppearanceChange { @MainActor [weak self] in
 			self?.rootLayer.backgroundColor = self?.effectiveCGColor(color: fillColor)
 		}
 		return self
@@ -493,7 +493,7 @@ public extension NSView {
 	func backgroundFill(_ fillColor: DynamicColor) -> Self {
 		self.wantsLayer = true
 		self.rootLayer.backgroundColor = fillColor.effectiveCGColor(for: self)
-		self.onAppearanceChange { @MainActor [weak self] in
+		self.onViewAppearanceChange { @MainActor [weak self] in
 			self?.rootLayer.backgroundColor = fillColor.effectiveCGColor(for: self)
 		}
 		return self
@@ -511,7 +511,7 @@ public extension NSView {
 		self.wantsLayer = true
 		self.rootLayer.borderColor = borderColor.cgColor
 		self.rootLayer.borderWidth = lineWidth
-		self.onAppearanceChange { @MainActor [weak self] in
+		self.onViewAppearanceChange { @MainActor [weak self] in
 			self?.rootLayer.borderColor = borderColor.effectiveCGColor(for: self)
 		}
 		return self
@@ -527,7 +527,7 @@ public extension NSView {
 		self.wantsLayer = true
 		self.rootLayer.borderColor = borderColor.effectiveCGColor(for: self)
 		self.rootLayer.borderWidth = lineWidth
-		self.onAppearanceChange { @MainActor [weak self] in
+		self.onViewAppearanceChange { @MainActor [weak self] in
 			self?.rootLayer.borderColor = borderColor.effectiveCGColor(for: self)
 		}
 		return self
@@ -662,6 +662,12 @@ extension NSView {
 			self.appearanceObserver?.registerAppearanceHandler(block)
 		}
 
+		// Set up the application aooearance change handler
+		func registerApplicationAppearanceHandler(_ block: @escaping () -> Void) {
+			guard #available(macOS 10.14, *) else { return }
+			self.applicationAppearanceObserver?.registerAppearanceHandler(block)
+		}
+
 		// Set up the frame change handler
 		func registerFrameChangeHandler(
 			parent: NSView,
@@ -701,6 +707,12 @@ extension NSView {
 			guard let parent = self.parent else { return nil }
 			return ViewAppearanceObservation(view: parent)
 		}()
+
+		/// Only create the appearance observer if we need it
+		private lazy var applicationAppearanceObserver: AppearanceObservation? = {
+			return AppearanceObservation()
+		}()
+
 		private var windowedContent: [WindowedContentProtocol] = []
 		private var frameChangeBlock: ((NSRect) -> Void)?
 		private var frameObservation: NSObjectProtocol?
