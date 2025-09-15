@@ -254,6 +254,7 @@ class ButtonPane: Pane {
 								}
 								.image(NSImage(named: NSImage.userGroupName)!.isTemplate(true))
 								.imagePosition(.imageAbove)
+								.linkColor(.systemYellow)
 								.contentTintColor(.systemYellow)
 							}
 						}
