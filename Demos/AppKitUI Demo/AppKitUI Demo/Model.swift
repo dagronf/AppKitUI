@@ -48,7 +48,8 @@ class Model {
 			ContentUnavailablePane(),
 			WebViewPane(),
 			PDFPane(),
-			AppearancePane()
+			AppearancePane(),
+			BasicViewSizingPane()
 		]
 		if #available(macOS 11, *) {
 			p.append(SwitchPane())
