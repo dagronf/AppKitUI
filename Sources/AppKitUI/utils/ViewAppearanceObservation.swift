@@ -20,7 +20,43 @@
 import AppKit
 import os.log
 
-// A simple application appearance observer
+// A simple observer for detecting changes in a view's appearance
+
+@MainActor
+class ViewAppearanceObservation {
+	init(view: NSView) {
+		if #available(macOS 10.14, *) {
+			// Start observing straight away
+			self.observer = view.observe(\.effectiveAppearance, options: [.new, .initial]) { [weak self] app, change in
+				DispatchQueue.main.async {
+					self?.reflectObservers()
+				}
+			}
+		}
+	}
+
+	deinit {
+		os_log("deinit: ViewAppearanceObservation", log: logger, type: .debug)
+	}
+
+	/// Add a block to call when the appearance for the application changes
+	/// - Parameter block: The block to call
+	func registerAppearanceHandler(_ block: @escaping () -> Void) {
+		assert(Thread.isMainThread)
+		self.observations.append(block)
+	}
+
+	/// Called when the app's effective appearance has changed
+	private func reflectObservers() {
+		assert(Thread.isMainThread)
+		self.observations.forEach { block in
+			block()
+		}
+	}
+
+	private var observer: NSKeyValueObservation? = nil
+	private var observations: [() -> Void] = []
+}
 
 @MainActor
 class AppearanceObservation {

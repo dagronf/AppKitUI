@@ -24,7 +24,7 @@ public protocol AUIShapeFillable {
 	/// Return the layer that represents the fill style
 	func backgroundLayer() -> CALayer
 	/// Called when the system appearance changes
-	func appearanceDidChange()
+	func appearanceDidChange(for view: NSView?)
 }
 
 /// A Fill Style

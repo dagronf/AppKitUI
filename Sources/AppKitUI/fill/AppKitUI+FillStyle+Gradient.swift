@@ -54,7 +54,7 @@ public extension AUIFillStyle {
 			self.colors = colors
 			self.startPoint = startPoint
 			self.endPoint = endPoint
-			self.appearanceDidChange()
+			self.appearanceDidChange(for: nil)
 		}
 
 		/// Create a gradient
@@ -67,7 +67,7 @@ public extension AUIFillStyle {
 			self.locations = stops.map { $0.location }
 			self.startPoint = startPoint
 			self.endPoint = endPoint
-			self.appearanceDidChange()
+			self.appearanceDidChange(for: nil)
 		}
 
 		/// Create a gradient from a single color
@@ -81,34 +81,34 @@ public extension AUIFillStyle {
 			self.colors = [darker, lighter]
 			self.startPoint = startPoint
 			self.endPoint = endPoint
-			self.appearanceDidChange()
+			self.appearanceDidChange(for: nil)
 		}
 
 		/// The gradient stop colors
 		public var colors: [NSColor] = [.black, .white] {
 			didSet {
-				self.appearanceDidChange()
+				self.appearanceDidChange(for: nil)
 			}
 		}
 
 		/// The gradient stop location colors
 		public var locations: [Double]? = nil {
 			didSet {
-				self.appearanceDidChange()
+				self.appearanceDidChange(for: nil)
 			}
 		}
 
 		/// The start point of the gradient when drawn in the layer’s coordinate space
 		public var startPoint: CGPoint = .init(x: 0, y: 0) {
 			didSet {
-				self.appearanceDidChange()
+				self.appearanceDidChange(for: nil)
 			}
 		}
 
 		/// The end point of the gradient when drawn in the layer’s coordinate space
 		public var endPoint: CGPoint = .init(x: 1, y: 0) {
 			didSet {
-				self.appearanceDidChange()
+				self.appearanceDidChange(for: nil)
 			}
 		}
 
@@ -117,7 +117,7 @@ public extension AUIFillStyle {
 			self.gradientLayer
 		}
 
-		public func appearanceDidChange() {
+		public func appearanceDidChange(for view: NSView?) {
 			self.gradientLayer.colors = self.colors.map { $0.cgColor }
 			self.gradientLayer.locations = self.locations?.map { NSNumber(value: $0) }
 			self.gradientLayer.startPoint = self.startPoint

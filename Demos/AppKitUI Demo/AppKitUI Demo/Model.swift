@@ -47,7 +47,8 @@ class Model {
 			SubscriptionExamplePane(),
 			ContentUnavailablePane(),
 			WebViewPane(),
-			PDFPane()
+			PDFPane(),
+			AppearancePane()
 		]
 		if #available(macOS 11, *) {
 			p.append(SwitchPane())

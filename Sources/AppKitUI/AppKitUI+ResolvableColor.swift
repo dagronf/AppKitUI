@@ -19,22 +19,35 @@
 
 import AppKit
 
+// MARK: - Resolvable color
+
 /// A color that can be resolved for the current appearance
 public protocol AUIResolvableColor {
-	/// The resolved color
-	var effectiveColor: NSColor { get }
+	/// The resolved color for the given UI item (eg. NSButton, NSView etc)
+	func effectiveColor(for appearance: NSAppearanceCustomization?) -> NSColor
 }
 
 public extension AUIResolvableColor {
 	/// Return the effective CGColor for this color based on the application's appearance
-	var effectiveCGColor: CGColor { self.effectiveColor.effectiveCGColor }
+	func effectiveCGColor(for appearance: NSAppearanceCustomization?) -> CGColor {
+		let c = self.effectiveColor(for: appearance)
+		if let appearance {
+			// Use the appearance from the view
+			return appearance.performWithEffectiveAppearanceAsDrawingAppearance { c.cgColor }
+		}
+		else {
+			// Use the application's appearance
+			return NSApp.performWithEffectiveAppearanceAsDrawingAppearance { c.cgColor }
+		}
+	}
 }
 
 // MARK: - NSColor
 
 extension NSColor: AUIResolvableColor {
 	/// The resolved color
-	public var effectiveColor: NSColor { self }
+	@inlinable
+	public func effectiveColor(for appearance: NSAppearanceCustomization?) -> NSColor { self }
 }
 
 public extension AUIResolvableColor where Self == NSColor {
@@ -58,19 +71,15 @@ public struct DynamicColor: Equatable, AUIResolvableColor {
 		self.light = light.copy() as! NSColor
 	}
 
-	/// The effective color, based on the application's current appearance setting
-	public var effectiveColor: NSColor {
+	/// Get the effective color for the given appearance
+	public func effectiveColor(for appearance: NSAppearanceCustomization?) -> NSColor {
 		if #available(macOS 10.14, *) {
-			if NSApp.effectiveAppearance.bestMatch(from: [.darkAqua, .aqua]) == .darkAqua {
+			let which = appearance?.effectiveAppearance ?? NSApp.effectiveAppearance
+			if which.bestMatch(from: [.darkAqua, .aqua]) == .darkAqua {
 				return self.dark
 			}
 		}
 		return self.light
-	}
-
-	/// The effective CGColor for the current appearance
-	public var effectiveCGColor: CGColor {
-		self.effectiveColor.effectiveCGColor
 	}
 }
 

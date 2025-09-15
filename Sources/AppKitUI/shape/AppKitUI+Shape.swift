@@ -262,7 +262,7 @@ extension AUIShape {
 		self.compressionResistancePriority(.defaultHigh, for: .vertical)
 
 		if #available(macOS 10.14, *) {
-			self.observer = NSApp.observe(\.effectiveAppearance, options: [.new, .initial]) { [weak self] app, change in
+			self.observer = self.observe(\.effectiveAppearance, options: [.new, .initial]) { [weak self] app, change in
 				DispatchQueue.main.async {
 					self?.rebuild()
 				}
@@ -276,6 +276,9 @@ extension AUIShape {
 		// Should always run on the main thread
 		assert(Thread.isMainThread)
 
+		// Don't animate
+		CATransaction.setDisableActions(true)
+
 		self.backgroundLayer?.removeFromSuperlayer()
 		self.borderLayer?.removeFromSuperlayer()
 
@@ -284,7 +287,7 @@ extension AUIShape {
 		self.shapeLayer.fillColor = .black
 
 		// Update the colors to match the appearance
-		self.fillStyle?.appearanceDidChange()
+		self.fillStyle?.appearanceDidChange(for: self)
 
 		self.backgroundLayer = self.fillStyle?.backgroundLayer()
 		if let background = self.backgroundLayer {
@@ -300,7 +303,7 @@ extension AUIShape {
 			border.frame = self.bounds
 			border.path = self.shapeLayer.path
 			border.fillColor = .clear
-			border.strokeColor = strokeColor.effectiveColor.cgColor
+			border.strokeColor = strokeColor.effectiveCGColor(for: self)
 			border.lineWidth = self.strokeLineWidth
 
 			border.lineDashPattern = self.strokeLineDashPattern?.map { NSNumber(value: $0) }

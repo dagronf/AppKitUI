@@ -190,6 +190,18 @@ public extension NSView {
 		if let height { self.height(height, priority: priority) }
 		return self
 	}
+
+	/// Set the views dimension (same width and height) for the view
+	/// - Parameters:
+	///   - dimension: The dimension
+	///   - priority: The priority for the created constraints
+	/// - Returns: self
+	@discardableResult
+	func frame(dimension: Double, priority: NSLayoutConstraint.Priority? = nil) -> Self {
+		self
+			.width(dimension, priority: priority)
+			.height(dimension, priority: priority)
+	}
 }
 
 // MARK: - Constraints between two views

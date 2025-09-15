@@ -55,7 +55,7 @@ public extension AUIFillStyle {
 			self.color1 = color1
 			self.color2 = color2
 			self.dimension = dimension
-			self.appearanceDidChange()
+			self.appearanceDidChange(for: nil)
 		}
 
 		/// Create a checkerboard fill style
@@ -67,18 +67,18 @@ public extension AUIFillStyle {
 			self.color1 = color1
 			self.color2 = color2
 			self.dimension = dimension
-			self.appearanceDidChange()
+			self.appearanceDidChange(for: nil)
 		}
 
 		/// Returns a layer that contains the fill color
 		public func backgroundLayer() -> CALayer { self.layer }
 
 		/// Called when the colors need updating
-		public func appearanceDidChange() {
+		public func appearanceDidChange(for view: NSView?) {
 			let width = NSNumber(value: Float(dimension))
 			let center = CIVector(cgPoint: CGPoint(x: 0, y: 0))
-			let darkColor = CIColor(cgColor: color1.effectiveColor.cgColor)
-			let lightColor = CIColor(cgColor: color2.effectiveColor.cgColor)
+			let darkColor = CIColor(cgColor: color1.effectiveCGColor(for: view))
+			let lightColor = CIColor(cgColor: color2.effectiveCGColor(for: view))
 			let sharpness = NSNumber(value: 1.0)
 
 			self.filter.setDefaults()

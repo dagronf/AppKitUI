@@ -331,6 +331,10 @@ public extension NSView {
 
 // MARK: - Modifiers
 
+@available(macOS 10.14, *)
+private let darkMode__ = NSAppearance(named: .darkAqua)!
+private let lightMode__ = NSAppearance(named: .aqua)!
+
 @MainActor
 public extension NSView {
 	/// A Boolean value indicating whether the view’s autoresizing mask is translated into constraints for the
@@ -374,10 +378,11 @@ public extension NSView {
 	@discardableResult
 	func isDarkMode(_ value: Bool) -> Self {
 		if #available(macOS 10.14, *) {
-			self.appearance = value ? NSAppearance(named: .darkAqua)! : NSAppearance(named: .aqua)!
+			CATransaction.setDisableActions(true)
+			self.appearance = value ? darkMode__ : lightMode__
 		}
 		else {
-			self.appearance = NSAppearance(named: .aqua)!
+			self.appearance = lightMode__
 		}
 		return self
 	}
@@ -494,6 +499,20 @@ public extension NSView {
 		self.isHidden = isHidden.wrappedValue
 		return self
 	}
+
+
+	/// Set the dark mode state for the view
+	/// - Parameter value: If true, mark the view appearance as dark mode
+	/// - Returns: self
+	@discardableResult
+	func isDarkMode(_ value: Bind<Bool>) -> Self {
+		guard #available(macOS 10.14, *) else { return self }
+		value.register(self) { @MainActor [weak self] newState in
+			self?.isDarkMode(newState)
+		}
+		self.isDarkMode(value.wrappedValue)
+		return self
+	}
 }
 
 // MARK: - onChange handlers
@@ -574,9 +593,9 @@ public extension NSView {
 	@discardableResult
 	func backgroundFill(_ fillColor: NSColor) -> Self {
 		self.wantsLayer = true
-		self.rootLayer.backgroundColor = fillColor.cgColor
+		self.rootLayer.backgroundColor = self.effectiveCGColor(color: fillColor)
 		self.onAppearanceChange { @MainActor [weak self] in
-			self?.rootLayer.backgroundColor = fillColor.effectiveCGColor
+			self?.rootLayer.backgroundColor = self?.effectiveCGColor(color: fillColor)
 		}
 		return self
 	}
@@ -587,9 +606,9 @@ public extension NSView {
 	@discardableResult
 	func backgroundFill(_ fillColor: DynamicColor) -> Self {
 		self.wantsLayer = true
-		self.rootLayer.backgroundColor = fillColor.effectiveCGColor
+		self.rootLayer.backgroundColor = fillColor.effectiveCGColor(for: self)
 		self.onAppearanceChange { @MainActor [weak self] in
-			self?.rootLayer.backgroundColor = fillColor.effectiveCGColor
+			self?.rootLayer.backgroundColor = fillColor.effectiveCGColor(for: self)
 		}
 		return self
 	}
@@ -607,7 +626,7 @@ public extension NSView {
 		self.rootLayer.borderColor = borderColor.cgColor
 		self.rootLayer.borderWidth = lineWidth
 		self.onAppearanceChange { @MainActor [weak self] in
-			self?.rootLayer.borderColor = borderColor.effectiveCGColor
+			self?.rootLayer.borderColor = borderColor.effectiveCGColor(for: self)
 		}
 		return self
 	}
@@ -620,10 +639,10 @@ public extension NSView {
 	@discardableResult
 	func backgroundBorder(_ borderColor: DynamicColor, lineWidth: Double) -> Self {
 		self.wantsLayer = true
-		self.rootLayer.borderColor = borderColor.effectiveColor.effectiveCGColor
+		self.rootLayer.borderColor = borderColor.effectiveCGColor(for: self)
 		self.rootLayer.borderWidth = lineWidth
 		self.onAppearanceChange { @MainActor [weak self] in
-			self?.rootLayer.borderColor = borderColor.effectiveColor.effectiveCGColor
+			self?.rootLayer.borderColor = borderColor.effectiveCGColor(for: self)
 		}
 		return self
 	}
@@ -665,11 +684,17 @@ protocol WindowedContentProtocol { }
 @MainActor
 extension NSView {
 	func usingViewStorage(_ block: @escaping (Storage) -> Void) {
-		self.usingAssociatedValue(key: "__nsview_bond", initialValue: { Storage() }, block)
+		self.usingAssociatedValue(key: "__nsview_bond", initialValue: { Storage(parent: self) }, block)
 	}
 
 	@MainActor
 	class Storage {
+		private weak var parent: NSView?
+
+		init(parent: NSView) {
+			self.parent = parent
+		}
+
 		func addWindowedContent(_ content: WindowedContentProtocol) {
 			self.windowedContent.append(content)
 		}
@@ -677,7 +702,7 @@ extension NSView {
 		// Set up the application aooearance change handler
 		func registerAppearanceHandler(_ block: @escaping () -> Void) {
 			guard #available(macOS 10.14, *) else { return }
-			self.appearanceObserver.registerAppearanceHandler(block)
+			self.appearanceObserver?.registerAppearanceHandler(block)
 		}
 
 		// Set up the frame change handler
@@ -715,7 +740,10 @@ extension NSView {
 		}
 
 		/// Only create the appearance observer if we need it
-		private lazy var appearanceObserver = AppearanceObservation()
+		private lazy var appearanceObserver: ViewAppearanceObservation? = {
+			guard let parent = self.parent else { return nil }
+			return ViewAppearanceObservation(view: parent)
+		}()
 		private var windowedContent: [WindowedContentProtocol] = []
 		private var frameChangeBlock: ((NSRect) -> Void)?
 		private var frameObservation: NSObjectProtocol?

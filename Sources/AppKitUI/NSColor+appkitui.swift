@@ -65,6 +65,19 @@ extension NSAppearanceCustomization {
 			return block()
 		}
 	}
+
+	/// Return the CGColor for this color that matches the effective appearance for this item
+	/// - Parameter color: The color
+	/// - Returns: self
+	func effectiveCGColor(color: NSColor) -> CGColor {
+		if #available(macOS 10.14, *) {
+			return self.performWithEffectiveAppearanceAsDrawingAppearance { color.cgColor }
+		}
+		else {
+			return color.cgColor
+		}
+	}
+
 }
 
 extension NSColor {
@@ -72,9 +85,9 @@ extension NSColor {
 	/// If you need per-view accurate appearance, prefer this instead:
 	///
 	///     let cgColor = aView.performWithEffectiveAppearanceAsDrawingAppearance { aColor.cgColor }
-	var effectiveCGColor: CGColor {
+	func effectiveCGColor(for view: NSView) -> CGColor {
 		if #available(macOS 10.14, *) {
-			return NSApp.performWithEffectiveAppearanceAsDrawingAppearance { self.cgColor }
+			return view.performWithEffectiveAppearanceAsDrawingAppearance { self.cgColor }
 		}
 		else {
 			return self.cgColor

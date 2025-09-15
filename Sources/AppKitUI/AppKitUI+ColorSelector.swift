@@ -346,16 +346,19 @@ private class ColorButton: NSButton {
 
 		let ihc = self.isHighContrast
 
+		//
 		// The color circle
+		//
 		let c = self.circleMaskLayer
 		c.frame = self.bounds
 		c.path = CGPath(ellipseIn: destination, transform: nil)
 
 		let g = self.gradientLayer
 		g.frame = self.bounds
+		
 		g.colors = [
-			self.color.lighter(withLevel: 0.3).effectiveCGColor,
-			self.color.darker(withLevel: 0.3).effectiveCGColor
+			self.color.lighter(withLevel: 0.25).effectiveCGColor(for: self),
+			self.color.darker(withLevel: 0.25).effectiveCGColor(for: self)
 		]
 		g.startPoint = .init(x: 0, y: 0)
 		g.endPoint = .init(x: 0, y: 1)

@@ -60,7 +60,7 @@ public extension AUIFillStyle {
 			else {
 				self.color = NSColor.clear
 			}
-			self.appearanceDidChange()
+			self.appearanceDidChange(for: nil)
 		}
 
 		/// Create a solid color
@@ -74,7 +74,7 @@ public extension AUIFillStyle {
 		/// Set the color
 		public var color: AUIResolvableColor = NSColor.white {
 			didSet {
-				self.appearanceDidChange()
+				self.appearanceDidChange(for: nil)
 			}
 		}
 
@@ -82,8 +82,8 @@ public extension AUIFillStyle {
 		public func backgroundLayer() -> CALayer { self.layer }
 
 		/// Called when the colors need updating
-		public func appearanceDidChange() {
-			self.layer.backgroundColor = self.color.effectiveColor.cgColor
+		public func appearanceDidChange(for view: NSView?) {
+			self.layer.backgroundColor = self.color.effectiveCGColor(for: view)
 		}
 
 		// MARK: - Private

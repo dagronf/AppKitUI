@@ -59,7 +59,7 @@ public extension AUIFillStyle {
 
 		public func backgroundLayer() -> CALayer { self.imageLayer }
 
-		public func appearanceDidChange() { }
+		public func appearanceDidChange(for view: NSView?) { }
 
 		private func update() {
 			self.imageLayer.contents = self.image
