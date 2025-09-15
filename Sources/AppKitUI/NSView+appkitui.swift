@@ -331,10 +331,6 @@ public extension NSView {
 
 // MARK: - Modifiers
 
-@available(macOS 10.14, *)
-private let darkMode__ = NSAppearance(named: .darkAqua)!
-private let lightMode__ = NSAppearance(named: .aqua)!
-
 @MainActor
 public extension NSView {
 	/// A Boolean value indicating whether the view’s autoresizing mask is translated into constraints for the
@@ -369,21 +365,6 @@ public extension NSView {
 	@discardableResult @inlinable
 	func isHidden(_ value: Bool) -> Self {
 		self.isHidden = value
-		return self
-	}
-
-	/// Set the dark mode state for the view
-	/// - Parameter value: If true, mark the view appearance as dark mode
-	/// - Returns: self
-	@discardableResult
-	func isDarkMode(_ value: Bool) -> Self {
-		if #available(macOS 10.14, *) {
-			CATransaction.setDisableActions(true)
-			self.appearance = value ? darkMode__ : lightMode__
-		}
-		else {
-			self.appearance = lightMode__
-		}
 		return self
 	}
 
@@ -440,52 +421,6 @@ public extension NSView {
 	}
 }
 
-// MARK: - Debug frames
-
-@MainActor
-public extension NSView {
-	/// Draw a debugging border for this view
-	/// - Parameter color: The drawing color
-	/// - Returns: self
-	@discardableResult
-	func debugFrame(_ color: CGColor? = nil) -> Self {
-		let color = color ?? CGColor(red: 1, green: 0, blue: 0, alpha: 0.4)
-		self.wantsLayer = true
-		self.layer.usingUnwrappedValue {
-			$0.borderColor = color
-			$0.borderWidth = 0.5
-			$0.backgroundColor = color.copy(alpha: 0.02)
-		}
-		return self
-	}
-
-	/// Draw a debugging border for this view
-	/// - Parameter color: The drawing color
-	/// - Returns: self
-	@discardableResult @inlinable
-	func debugFrame(_ color: NSColor) -> Self {
-		self.debugFrame(color.cgColor)
-	}
-
-	/// Draw a debugging border for this view and all of its subviews
-	/// - Parameter color: The drawing color
-	/// - Returns: self
-	@discardableResult
-	func debugFrames(_ color: CGColor? = nil) -> Self {
-		self.allSubviews().forEach { $0.debugFrame(color) }
-		return self
-	}
-
-	/// Draw a debugging border for this view and all of its subviews
-	/// - Parameter color: The drawing color
-	/// - Returns: self
-	@discardableResult
-	func debugFrames(_ color: NSColor) -> Self {
-		self.allSubviews().forEach { $0.debugFrame(color) }
-		return self
-	}
-}
-
 // MARK: Binding
 
 @MainActor
@@ -497,20 +432,6 @@ public extension NSView {
 			self?.isHidden = newValue
 		}
 		self.isHidden = isHidden.wrappedValue
-		return self
-	}
-
-
-	/// Set the dark mode state for the view
-	/// - Parameter value: If true, mark the view appearance as dark mode
-	/// - Returns: self
-	@discardableResult
-	func isDarkMode(_ value: Bind<Bool>) -> Self {
-		guard #available(macOS 10.14, *) else { return self }
-		value.register(self) { @MainActor [weak self] newState in
-			self?.isDarkMode(newState)
-		}
-		self.isDarkMode(value.wrappedValue)
 		return self
 	}
 }
@@ -533,41 +454,6 @@ public extension NSView {
 			block(newValue)
 		}
 		return self
-	}
-}
-
-// MARK: - View builders
-
-@resultBuilder
-public enum NSViewsBuilder {
-	static func buildBlock() -> [NSView] { [] }
-}
-
-public extension NSViewsBuilder {
-	static func buildBlock(_ settings: NSView...) -> [NSView] {
-		settings
-	}
-
-	static func buildBlock(_ settings: [NSView]) -> [NSView] {
-		settings
-	}
-
-	static func buildOptional(_ component: [NSView]?) -> [NSView] {
-		component ?? []
-	}
-
-	/// Add support for if statements.
-	static func buildEither(first components: [NSView]) -> [NSView] {
-		components
-	}
-
-	static func buildEither(second components: [NSView]) -> [NSView] {
-		components
-	}
-
-	/// Add support for loops.
-	static func buildArray(_ components: [[NSView]]) -> [NSView] {
-		components.flatMap { $0 }
 	}
 }
 
@@ -648,20 +534,91 @@ public extension NSView {
 	}
 }
 
-// MARK: - Observing appearance changes
+// MARK: - View builders
+
+@resultBuilder
+public enum NSViewsBuilder {
+	static func buildBlock() -> [NSView] { [] }
+}
+
+public extension NSViewsBuilder {
+	static func buildBlock(_ settings: NSView...) -> [NSView] {
+		settings
+	}
+
+	static func buildBlock(_ settings: [NSView]) -> [NSView] {
+		settings
+	}
+
+	static func buildOptional(_ component: [NSView]?) -> [NSView] {
+		component ?? []
+	}
+
+	/// Add support for if statements.
+	static func buildEither(first components: [NSView]) -> [NSView] {
+		components
+	}
+
+	static func buildEither(second components: [NSView]) -> [NSView] {
+		components
+	}
+
+	/// Add support for loops.
+	static func buildArray(_ components: [[NSView]]) -> [NSView] {
+		components.flatMap { $0 }
+	}
+}
+
+// MARK: - Debug frames
 
 @MainActor
 public extension NSView {
-	/// Call a block when the **application's** appearance changes
-	/// - Parameter block: The block to call
+	/// Draw a debugging border for this view
+	/// - Parameter color: The drawing color
+	/// - Returns: self
 	@discardableResult
-	func onAppearanceChange(_ block: @escaping () -> Void) -> Self {
-		self.usingViewStorage {
-			$0.registerAppearanceHandler(block)
+	func debugFrame(_ color: CGColor? = nil) -> Self {
+		let color = color ?? CGColor(red: 1, green: 0, blue: 0, alpha: 0.4)
+		self.wantsLayer = true
+		self.layer.usingUnwrappedValue {
+			$0.borderColor = color
+			$0.borderWidth = 0.5
+			$0.backgroundColor = color.copy(alpha: 0.02)
 		}
 		return self
 	}
 
+	/// Draw a debugging border for this view
+	/// - Parameter color: The drawing color
+	/// - Returns: self
+	@discardableResult @inlinable
+	func debugFrame(_ color: NSColor) -> Self {
+		self.debugFrame(color.cgColor)
+	}
+
+	/// Draw a debugging border for this view and all of its subviews
+	/// - Parameter color: The drawing color
+	/// - Returns: self
+	@discardableResult
+	func debugFrames(_ color: CGColor? = nil) -> Self {
+		self.allSubviews().forEach { $0.debugFrame(color) }
+		return self
+	}
+
+	/// Draw a debugging border for this view and all of its subviews
+	/// - Parameter color: The drawing color
+	/// - Returns: self
+	@discardableResult
+	func debugFrames(_ color: NSColor) -> Self {
+		self.allSubviews().forEach { $0.debugFrame(color) }
+		return self
+	}
+}
+
+// MARK: - Observing frame changes
+
+@MainActor
+public extension NSView {
 	/// Call a block when the frame of a view changes
 	/// - Parameters:
 	///   - delayType: The delay to apply to the callback
