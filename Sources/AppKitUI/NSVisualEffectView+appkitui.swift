@@ -34,11 +34,11 @@ public extension NSVisualEffectView {
 		NSVisualEffectView(isDarkMode: false, layoutStyle: layoutStyle, content: content)
 	}
 
-	/// Create a visual effect view set to light mode (.aqua) (macOS 10.14+)
+	/// Create a visual effect view set to dark mode (.aqua) (macOS 10.14+)
 	/// - Parameters:
 	///   - layoutStyle: The layout for the view builder
 	///   - content: block content builder
-	/// - Returns: A visual effect view set to light mode (.aqua)
+	/// - Returns: A visual effect view set to dark mode (.darkAqua)
 	@discardableResult @inlinable
 	static func darkMode(layoutStyle: LayoutStyle = .fill, content: () -> NSView) -> NSVisualEffectView {
 		NSVisualEffectView(isDarkMode: true, layoutStyle: layoutStyle, content: content)

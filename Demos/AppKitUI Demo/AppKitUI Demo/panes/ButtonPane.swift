@@ -137,7 +137,7 @@ class ButtonPane: Pane {
 								.imagePosition(.imageLeft)
 								.contentTintColor(.systemGreen)
 								.onAction { state in model.log("Clicked green button (state='\(state.stateString)')") }
-							NSButton(title: "is green button!")
+							NSButton(title: "is blue button!")
 								.isBordered(false)
 								.image(NSImage(named: NSImage.quickLookTemplateName)!.isTemplate(true))
 								.imagePosition(.imageOnly)
@@ -267,6 +267,33 @@ class ButtonPane: Pane {
 								.items(["one", "two", "three"])
 							NSButton.radioGroup(orientation: .horizontal)
 								.items(["eight", "nine", "ten"])
+						}
+					}
+
+					NSGridView.Row {
+						let v1 = Bind(false)
+						let v2 = Bind(false)
+						let v3 = Bind(false)
+
+						StyledHeader(label: "Check multiple enables")
+						HStack {
+							AUISwitch()
+								.state(v1)
+							AUISwitch()
+								.state(v2)
+							AUISwitch()
+								.state(v3)
+							VDivider()
+							NSButton(title: "Multiple enable")
+								.isEnabled(v1)
+								.isEnabled(v2)
+								.isEnabled(v3)
+								.toolTip("This control is enabled only when all the toggles are on")
+							NSTextField(string: "Multi enable")
+								.width(100)
+								.isEnabled(v1)
+								.isEnabled(v2)
+								.isEnabled(v3)
 						}
 					}
 				}
