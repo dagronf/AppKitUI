@@ -49,7 +49,8 @@ class Model {
 			WebViewPane(),
 			PDFPane(),
 			AppearancePane(),
-			BasicViewSizingPane()
+			BasicViewSizingPane(),
+			SimpleDropPane()
 		]
 		if #available(macOS 11, *) {
 			p.append(SwitchPane())
