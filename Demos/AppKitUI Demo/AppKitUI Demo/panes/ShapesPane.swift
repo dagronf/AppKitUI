@@ -344,12 +344,44 @@ class ShapesPane: Pane {
 						.color(color)
 				}
 
-				Rectangle(cornerRadius: 16)
-					.huggingPriority(.defaultLow, for: .horizontal)
-					.compressionResistancePriority(.init(10), for: .horizontal)
-					.fill(.checkerboard(color1: .red.alpha(0.2), color2: .blue.alpha(0.2), dimension: 16))
-					.stroke(.secondaryLabelColor, lineWidth: 1)
-					.height(50)
+				HStack {
+					Rectangle(cornerRadius: 16)
+						.identifier("1")
+						.huggingPriority(.defaultLow, for: .horizontal)
+						.compressionResistancePriority(.init(10), for: .horizontal)
+						.fill(.checkerboard(color1: .red.alpha(0.2), color2: .blue.alpha(0.2), dimension: 16))
+						.stroke(.textColor, lineWidth: 1)
+						.height(50)
+						.overlay(
+							NSView(layoutStyle: .centered) {
+								NSTextField(label: "checkerboard")
+									.font(.title2.bold)
+									.alignment(.center)
+							}
+						)
+					Rectangle(cornerRadius: 16)
+						.identifier("2")
+						.huggingPriority(.defaultLow, for: .horizontal)
+						.compressionResistancePriority(.init(10), for: .horizontal)
+						.fill(.stripes(color1: .textColor.alpha(0.1), color2: .textColor.alpha(0.05), width: 16))
+						.stroke(.textColor, lineWidth: 1)
+						.height(50)
+						.overlay(
+							NSView(layoutStyle: .centered) {
+								NSTextField(label: "stripes")
+									.font(.title2.bold)
+									.alignment(.center)
+							}
+						)
+				}
+				.equalWidths(["1", "2"])
+				.background(
+					NSView(layoutStyle: .centered) {
+						Rectangle()
+							.fill(color: .systemPink)
+							.frame(width: 250, height: 80)
+					}
+				)
 			}
 			.padding()
 		}

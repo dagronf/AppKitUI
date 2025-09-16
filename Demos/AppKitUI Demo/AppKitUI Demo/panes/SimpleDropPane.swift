@@ -32,25 +32,26 @@ class SimpleDropPane: Pane {
 
 					NSTextField(label: "Drop a file:")
 						.font(.headline)
-					Rectangle(cornerRadius: 8)
-						.fill(color: droppableColor)
-						.frame(dimension: 64)
 
+					AUIDropView()
+						.isDroppable(droppable)
+						.registeredTypes([.fileURL])
+						.onDragEntered { sender in
+							guard let file = sender.file() else { return [] }
+							return .link
+						}
+						.onDragPrepareForDragOperation { sender in
+							return true
+						}
+						.onDragPerformOperation { sender in
+							let furl = sender.files()
+							model.log("drag operation -> \(furl)")
+							return true
+						}
 						.overlay(
-							AUIDropView()
-								.isDroppable(droppable)
-								.registeredTypes([.fileURL])
-								.onDragEntered { sender in
-									return .link
-								}
-								.onDragPrepareForDragOperation { sender in
-									return true
-								}
-								.onDragPerformOperation { sender in
-									let furl = sender.files()
-									Swift.print("drag operation -> \(furl)")
-									return true
-								}
+							Rectangle(cornerRadius: 8)
+								.fill(color: droppableColor)
+								.frame(dimension: 64)
 						)
 				}
 			}
