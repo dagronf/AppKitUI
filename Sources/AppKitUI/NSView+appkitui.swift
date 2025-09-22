@@ -408,14 +408,19 @@ public extension NSView {
 		return self
 	}
 
-	/// Set the user interface layout direction
-	/// - Parameter value: The direction
+	/// Set the user interface layout direction for this view
+	/// - Parameters:
+	///   - value: The user interface direction for the view
+	///   - includeChildren: If true, applies the same user interface layout direction for *all* child views of this view
 	/// - Returns: self
 	@discardableResult
-	func userInterfaceLayoutDirection(_ value: NSUserInterfaceLayoutDirection) -> Self {
-		for subview in self.allSubviews() {
-			subview.userInterfaceLayoutDirection = value
-			subview.needsLayout = true
+	func userInterfaceLayoutDirection(_ value: NSUserInterfaceLayoutDirection, includeChildren: Bool = false) -> Self {
+		self.userInterfaceLayoutDirection = value
+		if includeChildren {
+			for subview in self.allSubviews() {
+				subview.userInterfaceLayoutDirection = value
+				subview.needsLayout = true
+			}
 		}
 		return self
 	}

@@ -206,6 +206,47 @@ You'll need to add the `DesignTime+PreviewBackport.swift` to your project for it
 
 Almost every source file for extending NS- controls has a preview (look in the `NS...+appkitui.swift` files in this package)
 
+## NSViewController support
+
+If you like using `NSViewController`-derived classes to contain your views and view logic, you can derive your
+classes from `AUIViewController` for easy AppKitUI support. And you can use Interface Builder to present your view
+controllers right within your Storyboard.
+
+Just override `body` in your derived view controller class and you're ready to go!
+
+Note: Because you can use `#Preview` with a view controller you can preview your content directly in Xcode! 
+
+### Example
+
+```swift
+class PreviewViewController: AUIViewController {
+   let text = Bind("Exciting text field content!")
+   override var body: NSView {
+      VStack {
+         HStack {
+            NSTextField(content: text)
+               .huggingPriority(.init(10), for: .horizontal)
+            NSButton(title: "Reset")
+               .onAction { [weak self] _ in
+                  self?.text.wrappedValue = "I've been reset 😤"
+               }
+         }
+         NSTextField(label: text)
+            .huggingPriority(.init(10), for: .horizontal)
+            .padding(left: 4)
+      }
+      .width(250)
+   }
+}
+
+#if DEBUG
+@available(macOS 14, *)
+#Preview("default") {
+   PreviewViewController()
+}
+#endif
+```
+
 ## NSFont conveniences
 
 This set of extensions adds a collection of convenience properties and methods to NSFont, making it easier to work with common font styles, symbolic traits (such as bold or italic), and semantic text roles similar to those found in iOS (UIFont.TextStyle).
