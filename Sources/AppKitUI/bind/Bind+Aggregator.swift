@@ -58,7 +58,7 @@ class BindAggregatorSomeTrue: Bind<Bool> {
 	}
 
 	private func reflect() {
-		self.wrappedValue = self.states.contains(where: { $0.wrappedValue == true } )
+		self.wrappedValue = self.states.someSatisfy { $0.wrappedValue == true }
 	}
 
 	deinit {

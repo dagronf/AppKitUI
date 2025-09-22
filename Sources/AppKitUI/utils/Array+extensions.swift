@@ -22,18 +22,30 @@ import Foundation
 
 extension Array {
 	/// Return the item at the specified array index, or nil if the index is invalid
+	@inlinable
 	func at(_ index: Int) -> Element? {
-		if index < 0 || index >= self.count {
-			return nil
-		}
-		return self[index]
+		(index < 0 || index >= self.count) ? nil : self[index]
 	}
 }
 
-public extension Array where Element == NSView {
+extension Array where Element == NSView {
 	/// Set all views with translatesAutoresizingMaskIntoConstraints
 	/// - Parameter value: The value
 	func translatesAutoresizingMaskIntoConstraints(_ value: Bool) {
 		self.forEach { $0.translatesAutoresizingMaskIntoConstraints = false }
+	}
+}
+
+extension Array {
+	/// Returns true if at least ONE element of the array satisfies the predicate
+	@inlinable
+	func someSatisfy(_ predicate: (Element) throws -> Bool) rethrows -> Bool {
+		try self.contains { try predicate($0) }
+	}
+
+	/// Returns true if NONE of the elements satisfy the predicate
+	@inlinable
+	func noneSatisfy(_ predicate: (Element) throws -> Bool) rethrows -> Bool {
+		try self.someSatisfy(predicate) == false
 	}
 }
