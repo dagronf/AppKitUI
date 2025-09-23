@@ -93,12 +93,12 @@ private extension AUIImage {
 	static private let cautionImage__ = NSImage(named: NSImage.cautionName)!
 	private func build(_ image: NSImage?) {
 		guard let image = image?.makeCopy() else {
-			self.layer!.contents = nil
+			self.rootLayer.contents = nil
 			return
 		}
 
 		image.resizingMode = .stretch
-		self.layer!.contents = image
+		self.rootLayer.contents = image
 	}
 }
 
@@ -116,46 +116,65 @@ private extension AUIImage {
 	let image = Bind<NSImage?>(image1)
 
 	VStack {
-		HStack {
-			AUIImage(named: NSImage.colorPanelName)
-				.frame(dimension: 160)
-			AUIImage(named: NSImage.colorPanelName)
-				.frame(dimension: 80)
-			AUIImage(named: NSImage.colorPanelName)
-				.frame(dimension: 40)
-			AUIImage(named: NSImage.colorPanelName)
-				.frame(dimension: 20)
-				.toolTip("This is the smallest image")
+		NSBox(title: "scaling") {
+			HStack {
+				AUIImage(named: NSImage.colorPanelName)
+					.frame(dimension: 120)
+				AUIImage(named: NSImage.colorPanelName)
+					.frame(dimension: 80)
+				AUIImage(named: NSImage.colorPanelName)
+					.frame(dimension: 40)
+				AUIImage(named: NSImage.colorPanelName)
+					.frame(dimension: 20)
+					.toolTip("This is the smallest image")
+
+				HDivider()
+
+				AUIImage(named: NSImage.colorPanelName)
+					.frame(width: 80, height: 30)
+				AUIImage(named: NSImage.colorPanelName)
+					.frame(width: 30, height: 80)
+			}
 		}
+		.huggingPriority(.init(10), for: .horizontal)
 
-		HDivider()
+		NSBox(title: "invalid named image") {
+			HStack {
+				AUIImage(named: "fish")
+					.frame(dimension: 60)
+			}
+			.hugging(.init(10), for: .horizontal)
+		}
+		.huggingPriority(.init(10), for: .horizontal)
 
-		AUIImage(named: "fish")
-			.frame(dimension: 60)
+		NSBox(title: "image bind") {
 
-		HDivider()
-
-		HStack {
-			AUIImage(image: image)
-				.frame(dimension: 48)
-			NSSegmentedControl()
-				.segments(["none", "bonjour", "computer"])
-				.selectedIndex(selected)
-				.onSelectionChange { newSelection in
-					switch newSelection {
-					case 0:
-						image.wrappedValue = nil
-					case 1:
-						image.wrappedValue = image1
-					case 2:
-						image.wrappedValue = image2
-					default:
-						fatalError()
+			HStack {
+				AUIImage(image: image)
+					.frame(dimension: 48)
+					.padding(8)
+					.debugFrame()
+				NSSegmentedControl()
+					.segments(["none", "bonjour", "computer"])
+					.selectedIndex(selected)
+					.onSelectionChange { newSelection in
+						switch newSelection {
+						case 0:
+							image.wrappedValue = nil
+						case 1:
+							image.wrappedValue = image1
+						case 2:
+							image.wrappedValue = image2
+						default:
+							fatalError()
+						}
 					}
-				}
+			}
+			.hugging(.init(10), for: .horizontal)
 		}
+		.huggingPriority(.init(10), for: .horizontal)
 	}
-	.debugFrames()
+	//.debugFrames()
 }
 
 #endif

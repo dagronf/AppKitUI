@@ -50,7 +50,8 @@ class Model {
 			PDFPane(),
 			AppearancePane(),
 			BasicViewSizingPane(),
-			SimpleDropPane()
+			SimpleDropPane(),
+			ImageViewBasicPane()
 		]
 		if #available(macOS 11, *) {
 			p.append(SwitchPane())

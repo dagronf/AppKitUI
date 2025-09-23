@@ -52,7 +52,6 @@ public extension NSView {
 		self.backgroundFilters([filter])
 	}
 
-
 	/// Set an array of Core Image filters to apply to the contents of the layer and its sublayers
 	/// - Parameter filters: The filters to apply
 	@discardableResult
@@ -123,8 +122,6 @@ internal extension NSView {
 
 #if DEBUG
 
-import SwiftUI
-
 private let mono = CIFilter(name: "CIPhotoEffectMono", parameters: [:])!
 private let sepia = CIFilter(name: "CISepiaTone", parameters: [:])!
 private let boxBlur = CIFilter(name: "CIBoxBlur", parameters: [:])!
@@ -166,7 +163,6 @@ private func makeSepiaFilter(_ intensity: Double) -> CIFilter {
 			NSSlider(amount, range: 0.0 ... 1.0)
 				.width(300)
 		}
-
 	}
 }
 

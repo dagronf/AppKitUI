@@ -27,8 +27,16 @@ public extension NSView {
 	/// Used for detecting empty views within (eg.) a stackview
 	static let empty = NSView()
 
+	/// The root layer for the view.
+	///
+	/// Generates an error if the view is not layer backed
 	@inlinable
-	var rootLayer: CALayer { self.layer! }
+	internal var rootLayer: CALayer {
+		guard let layer = self.layer else {
+			fatalError("Expecting layer-backed view")
+		}
+		return layer
+	}
 
 	/// The layout style when building a view with a content builder
 	enum LayoutStyle {
