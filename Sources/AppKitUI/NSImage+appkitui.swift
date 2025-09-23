@@ -17,6 +17,8 @@
 //  OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
+// To display a basic image (without all the overhead of NSImageView you can use AUIImage)
+
 import AppKit.NSImage
 
 public extension NSImage {

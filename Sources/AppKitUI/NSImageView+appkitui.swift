@@ -20,7 +20,7 @@
 import AppKit.NSImageView
 import os.log
 
-private let cautionImage = NSImage(named: NSImage.cautionName)!
+private let cautionImage__ = NSImage(named: NSImage.cautionName)!
 
 @MainActor
 public extension NSImageView {
@@ -29,7 +29,7 @@ public extension NSImageView {
 	///
 	/// If the image cannot be found, displays a placeholder caution image instead
 	convenience init(imageNamed name: String) {
-		let image = NSImage(named: name) ?? cautionImage
+		let image = NSImage(named: name) ?? cautionImage__
 		self.init(image: image)
 	}
 
@@ -46,7 +46,7 @@ public extension NSImageView {
 	/// If the symbol cannot be found, displays a placeholder caution image instead
 	@available(macOS 11.0, *)
 	convenience init(systemSymbolName: String) {
-		let image = NSImage(systemSymbolName: systemSymbolName, accessibilityDescription: nil) ?? cautionImage
+		let image = NSImage(systemSymbolName: systemSymbolName, accessibilityDescription: nil) ?? cautionImage__
 		self.init(image: image)
 	}
 }

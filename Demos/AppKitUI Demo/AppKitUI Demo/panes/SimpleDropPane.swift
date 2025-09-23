@@ -37,7 +37,7 @@ class SimpleDropPane: Pane {
 						.isDroppable(droppable)
 						.registeredTypes([.fileURL])
 						.onDragEntered { sender in
-							guard let file = sender.file() else { return [] }
+							guard let _ = sender.file() else { return [] }
 							return .link
 						}
 						.onDragPrepareForDragOperation { sender in
