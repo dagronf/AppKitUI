@@ -204,6 +204,51 @@ public extension NSView {
 	}
 }
 
+// MARK: Bindings
+
+@MainActor
+public extension NSView {
+	/// Set the width for the view
+	/// - Parameters:
+	///   - width: The width binding
+	///   - priority: The priority
+	/// - Returns: self
+	@discardableResult
+	func width(_ width: Bind<Double>, priority: NSLayoutConstraint.Priority? = nil) -> Self {
+		self.translatesAutoresizingMaskIntoConstraints = false
+		let c = NSLayoutConstraint(item: self, attribute: .width, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: width.wrappedValue)
+		if let priority {
+			c.priority = priority
+		}
+		self.addConstraint(c)
+		width.register(self) { [weak c] newValue in
+			c?.constant = newValue
+		}
+
+		return self
+	}
+
+	/// Set the height for the view
+	/// - Parameters:
+	///   - width: The height binding
+	///   - priority: The priority
+	/// - Returns: self
+	@discardableResult
+	func height(_ height: Bind<Double>, priority: NSLayoutConstraint.Priority? = nil) -> Self {
+		self.translatesAutoresizingMaskIntoConstraints = false
+		let c = NSLayoutConstraint(item: self, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: height.wrappedValue)
+		if let priority {
+			c.priority = priority
+		}
+		self.addConstraint(c)
+		height.register(self) { [weak c] newValue in
+			c?.constant = newValue
+		}
+
+		return self
+	}
+}
+
 // MARK: - Constraints between two views
 
 @MainActor
@@ -473,6 +518,38 @@ extension NSView {
 		.equalHeights(["button1", "button2"], priority: .defaultLow)
 	}
 	.debugFrames()
+}
+
+@available(macOS 14, *)
+#Preview("dynamic width/height") {
+	let width = Bind(30.0)
+	let height = Bind(180.0)
+	HStack {
+		NSBox(title: "width") {
+			VStack {
+				Rectangle(cornerRadius: 8)
+					.fill(.color(.systemPurple))
+					.width(width)
+					.height(50)
+				NSSlider(width, range: 1 ... 300)
+					.width(300)
+			}
+			.padding(8)
+		}
+		NSBox(title: "height") {
+			HStack {
+				Rectangle(cornerRadius: 8)
+					.fill(.color(.systemOrange))
+					.height(height)
+					.width(50)
+				NSSlider(height, range: 1 ... 300)
+					.isVertical(true)
+					.height(300)
+			}
+			.padding(8)
+		}
+	}
+	//.debugFrames()
 }
 
 #endif
