@@ -20,14 +20,14 @@
 import AppKit
 
 /// A protocol defining user interface identifiers
-public protocol AUIIdentifier {
+public protocol AUIUserInterfaceIdentifier {
 	var identifier: NSUserInterfaceItemIdentifier { get }
 }
 
-extension String: AUIIdentifier {
+extension String: AUIUserInterfaceIdentifier {
 	public var identifier: NSUserInterfaceItemIdentifier { NSUserInterfaceItemIdentifier(self) }
 }
 
-extension NSUserInterfaceItemIdentifier: AUIIdentifier {
+extension NSUserInterfaceItemIdentifier: AUIUserInterfaceIdentifier {
 	public var identifier: NSUserInterfaceItemIdentifier { self }
 }

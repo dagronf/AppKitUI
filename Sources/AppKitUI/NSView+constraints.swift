@@ -261,7 +261,7 @@ public extension NSView {
 	/// - Returns: self
 	@discardableResult @inlinable
 	func equalWidths(
-		_ ids: [AUIIdentifier],
+		_ ids: [AUIUserInterfaceIdentifier],
 		priority: NSLayoutConstraint.Priority? = nil,
 		constant: Double = 0
 	) -> Self {
@@ -276,7 +276,7 @@ public extension NSView {
 	/// - Returns: self
 	@discardableResult @inlinable
 	func equalHeights(
-		_ ids: [AUIIdentifier],
+		_ ids: [AUIUserInterfaceIdentifier],
 		priority: NSLayoutConstraint.Priority? = nil,
 		constant: Double = 0
 	) -> Self {
@@ -291,7 +291,7 @@ public extension NSView {
 	/// - Returns: self
 	@discardableResult @inlinable
 	func equalSizes(
-		_ ids: [AUIIdentifier],
+		_ ids: [AUIUserInterfaceIdentifier],
 		priority: NSLayoutConstraint.Priority? = nil,
 		constant: Double = 0
 	) -> Self {
@@ -308,7 +308,7 @@ public extension NSView {
 	/// - Returns: self
 	@discardableResult @inlinable
 	func equalLeading(
-		_ ids: [AUIIdentifier],
+		_ ids: [AUIUserInterfaceIdentifier],
 		priority: NSLayoutConstraint.Priority? = nil,
 		constant: Double = 0
 	) -> Self {
@@ -323,7 +323,7 @@ public extension NSView {
 	/// - Returns: self
 	@discardableResult @inlinable
 	func equalTrailing(
-		_ ids: [AUIIdentifier],
+		_ ids: [AUIUserInterfaceIdentifier],
 		priority: NSLayoutConstraint.Priority? = nil,
 		constant: Double = 0
 	) -> Self {
@@ -338,7 +338,7 @@ public extension NSView {
 	/// - Returns: self
 	@discardableResult @inlinable
 	func equalBottom(
-		_ ids: [AUIIdentifier],
+		_ ids: [AUIUserInterfaceIdentifier],
 		priority: NSLayoutConstraint.Priority? = nil,
 		constant: Double = 0
 	) -> Self {
@@ -355,7 +355,7 @@ public extension NSView {
 	@discardableResult
 	func equalConstraint(
 		_ attribute: NSLayoutConstraint.Attribute,
-		_ ids: [AUIIdentifier],
+		_ ids: [AUIUserInterfaceIdentifier],
 		priority: NSLayoutConstraint.Priority? = nil,
 		constant: Double = 0
 	) -> Self {
@@ -401,10 +401,10 @@ public extension NSView {
 	/// - Returns: self
 	@discardableResult
 	func constraint(
-		from: AUIIdentifier,
+		from: AUIUserInterfaceIdentifier,
 		attribute attr1: NSLayoutConstraint.Attribute,
 		relatedBy: NSLayoutConstraint.Relation,
-		to: AUIIdentifier,
+		to: AUIUserInterfaceIdentifier,
 		attribute attr2: NSLayoutConstraint.Attribute,
 		multipler: Double = 1,
 		constant: Double = 0,

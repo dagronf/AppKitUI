@@ -353,7 +353,7 @@ public extension NSView {
 	/// - Parameter id: The view's identifier
 	/// - Returns: self
 	@discardableResult @inlinable
-	func identifier(_ id: AUIIdentifier) -> Self {
+	func identifier(_ id: AUIUserInterfaceIdentifier) -> Self {
 		self.identifier = id.identifier
 		return self
 	}
