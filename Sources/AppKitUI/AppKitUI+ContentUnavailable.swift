@@ -165,6 +165,13 @@ private let appIcon__ = NSImage(named: NSImage.everyoneName)!
 #Preview("desc, button") {
 	AUIContentUnavailableView(title: "No Internet")
 		.description("Try checking the network cables, modem, and router or reconnecting to Wi-Fi.")
+		.addButton(
+			NSButton()
+				.title("Try again")
+				.onAction { _ in
+					Swift.print("Pressed the try again button")
+				}
+		)
 		.debugFrames()
 }
 
@@ -172,6 +179,7 @@ private let appIcon__ = NSImage(named: NSImage.everyoneName)!
 #Preview("image, desc, button") {
 	AUIContentUnavailableView(title: "No Internet")
 		.description("Try checking the network cables, modem, and router or reconnecting to Wi-Fi.")
+		.image(appIcon__)
 		.addButton(
 			NSButton()
 				.title("Try again")
