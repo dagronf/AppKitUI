@@ -19,7 +19,7 @@
 
 import AppKit
 
-/// A simple view that displays an image
+/// A simple view that displays an image that fills the view.
 ///
 /// The view itself has no implicit size, it is up to the caller to specify a size.
 @MainActor
@@ -77,6 +77,7 @@ public extension AUIImage {
 	/// Set the image for the view
 	/// - Parameter value: The image binding
 	/// - Returns: self
+	@discardableResult
 	func image(_ value: Bind<NSImage?>) -> Self {
 		value.register(self) { @MainActor [weak self] image in
 			self?.build(image)

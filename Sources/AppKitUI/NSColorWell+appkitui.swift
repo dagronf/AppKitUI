@@ -98,7 +98,7 @@ public extension NSColorWell {
 
 @MainActor
 public extension NSColorWell {
-	/// A block to call when the selected menu item changes
+	/// A block to call when the color changes in the color well
 	/// - Parameter change: The block to call
 	/// - Returns: self
 	@discardableResult
@@ -112,7 +112,7 @@ public extension NSColorWell {
 
 @MainActor
 public extension NSColorWell {
-	/// A block to call when the selected menu item changes
+	/// Bind the displayed color
 	/// - Parameter color: The color binding
 	/// - Returns: self
 	@discardableResult

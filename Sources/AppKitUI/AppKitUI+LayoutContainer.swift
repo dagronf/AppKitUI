@@ -137,6 +137,9 @@ public extension LayoutContainer {
 		return self
 	}
 
+	/// Pin the indexed view inside this view
+	/// - Parameter index: The index of the view within the container
+	/// - Returns: self
 	@discardableResult
 	func constraintPinInside(index: Int) -> Self {
 		guard let i1 = self.childViews.at(index) else {

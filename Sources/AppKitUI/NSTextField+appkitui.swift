@@ -580,8 +580,4 @@ fileprivate extension NSTextField {
 	}
 }
 
-
-
-
-
 #endif

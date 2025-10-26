@@ -30,7 +30,7 @@ public extension NSButton {
 		AUICheckbox(onAction: onAction)
 	}
 
-	/// Create a checkbox with no title
+	/// Create a checkbox with a title
 	/// - Parameters:
 	///   - title: The text appearing on the checkbox
 	///   - onAction: The action to call when the checkbox state changes

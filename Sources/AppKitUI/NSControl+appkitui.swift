@@ -57,7 +57,7 @@ public extension NSControl {
 		return self
 	}
 
-	/// The size of the control.
+	/// The enabled state for the control
 	@discardableResult @inlinable
 	func isEnabled(_ isEnabled: Bool) -> Self {
 		self.isEnabled = isEnabled

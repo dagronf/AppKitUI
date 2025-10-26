@@ -21,6 +21,17 @@ import AppKit
 import os.log
 
 /// An NSSwitch equivalent supported back to 10.11
+///
+/// Example usage :-
+///
+/// ```swift
+/// let stateRegular = Bind(false)
+/// ...
+/// AUISwitch()
+///    .state(stateRegular)
+///    .controlSize(.regular)
+///    .isEnabled(enabled)
+/// ```
 @MainActor
 public class AUISwitch: NSControl {
 	public override var acceptsFirstResponder: Bool { self.isEnabled }

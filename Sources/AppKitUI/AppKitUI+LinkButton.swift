@@ -103,14 +103,15 @@ public class AUILinkButton: NSButton {
 
 		// Listen for changes to the enabled status so we can update the colors to reflect the new state
 		self.kvo = self.observe(\.cell?.isEnabled, options: [.initial, .new]) { button, change in
-			button.updateAppearance()
+			// KVO callbacks are not guaranteed to be called on the main thread.
+			DispatchQueue.main.async { [weak button] in
+				button?.updateAppearance()
+			}
 		}
 
 		// Reflect the appearance settings
 		self.updateAppearance()
 	}
-
-	private var kvo: NSKeyValueObservation?
 
 	/// A Boolean value that indicates whether the receiver reacts to mouse events.
 	override public var isEnabled: Bool {
@@ -145,6 +146,8 @@ public class AUILinkButton: NSButton {
 			self.attributedTitle = attributedTitle
 		}
 	}
+
+	private var kvo: NSKeyValueObservation?
 }
 
 // MARK: - Modifiers
