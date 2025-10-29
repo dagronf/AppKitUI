@@ -64,6 +64,16 @@ public extension NSTextField {
 			.content(value, formatter: formatter)
 			.updateOnEndEditingOnly(true)
 	}
+
+	/// Create a text field label displaying an editable integer value
+	/// - Parameters:
+	///   - value: The integer value binding
+	convenience init(value: Bind<Int>) {
+		self.init()
+		self
+			.content(value)
+			.updateOnEndEditingOnly(true)
+	}
 }
 
 @MainActor
@@ -343,6 +353,31 @@ public extension NSTextField {
 		return self
 	}
 
+	/// Bind int content
+	/// - Parameters:
+	///   - value: The value binder
+	/// - Returns: self
+	@discardableResult
+	func content(_ value: Bind<Int>) -> Self {
+		// Register for changes to the binding
+		value.register(self) { @MainActor [weak self] newValue in
+			guard let `self` = self else { return }
+			if self.integerValue != newValue {
+				self.integerValue = newValue
+
+				self.usingTextFieldStorage {
+					$0.onChange?(self.stringValue)
+				}
+
+			}
+		}
+		self.formatter = formatter
+		self.usingTextFieldStorage { $0.integerValue = value }
+		self.integerValue = value.wrappedValue
+
+		return self
+	}
+
 	/// Bind the text (foreground) color
 	/// - Parameter color: The binding
 	/// - Returns: self
@@ -468,6 +503,7 @@ fileprivate extension NSTextField {
 
 		var stringValue: Bind<String>?
 		var hasText: Bind<Bool>?
+		var integerValue: Bind<Int>?
 		var doubleValue: Bind<Double>?
 
 		var onChange: ((String) -> Void)?
@@ -514,7 +550,10 @@ fileprivate extension NSTextField {
 			self.stringValue?.wrappedValue = value
 			self.hasText?.wrappedValue = value.count > 0
 			self.onChange?(value)
+
+			// Reflect to value bindings if they've been set
 			self.doubleValue?.wrappedValue = ctrl.doubleValue
+			self.integerValue?.wrappedValue = ctrl.integerValue
 		}
 	}
 }

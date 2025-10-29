@@ -56,6 +56,9 @@ class StepperPane: Pane {
 			model.log("nf3Value is now '\(nf3.string(for: newValue) ?? "<>")'")
 		}
 
+		let intStepper = Bind(1)
+		let mappedDoubleStepper = intStepper.twoWayTransform(BindTransformers.IntToDouble())
+
 		return NSView(layoutStyle: .centered) {
 			VStack(spacing: 20) {
 
@@ -153,6 +156,12 @@ class StepperPane: Pane {
 							}
 						NSButton.checkbox(title: "Enable")
 							.state(enabled)
+					}
+
+					HStack {
+						NSTextField(value: intStepper)
+							.alignment(.right)
+						NSStepper(value: mappedDoubleStepper, range: 0 ... 20)
 					}
 				}
 			}

@@ -63,6 +63,26 @@ public extension BindTransformers {
 		private let formatter: NumberFormatter
 	}
 
+	// MARK: Int to Double (and back)
+
+	/// A transformer to convert from Int to Double and back
+	///
+	/// Note: Truncation is incredibly simple!
+	struct IntToDouble: BindTransformer {
+		public init() { }
+		public func encode(_ value: Int) -> Double { Double(value) }
+		public func decode(_ value: Double) -> Int { Int(value) }
+	}
+
+	/// A transformer to convert from Double to Int and back
+	///
+	/// Note: Truncation is incredibly simple!
+	struct DoubleToInt: BindTransformer {
+		public init() { }
+		public func encode(_ value: Double) -> Int { Int(value) }
+		public func decode(_ value: Int) -> Double { Double(value) }
+	}
+
 	// MARK: String to Bool and back
 
 	struct StringToBool: BindTransformer {

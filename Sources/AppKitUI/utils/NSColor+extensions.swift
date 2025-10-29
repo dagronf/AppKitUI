@@ -18,33 +18,15 @@
 //
 
 import AppKit
+import SwiftUI
 
-extension NSView {
-	/// Is this view currently being displayed in dark mode?
-	@inlinable var isDarkMode: Bool {
-		if #available(macOS 10.14, *) {
-			return self.effectiveAppearance.bestMatch(from: [.darkAqua, .aqua]) == .darkAqua
-		} else {
-			return false
-		}
-	}
+// NSColor extensions
 
-	/// Are we in high contrast?
-	@inlinable var isHighContrast: Bool {
-		NSWorkspace.shared.accessibilityDisplayShouldIncreaseContrast
-	}
-
-	/// Returns true if the window containing this view has key
-	@inlinable var isWindowInFocus: Bool {
-		self.window?.isKeyWindow ?? false
-	}
-
-	/// Perform a block using the effective appearance for the view
-	func usingEffectiveAppearance(_ block: () -> Void) {
-		let saved = self.appearance
-		defer { self.appearance = saved }
-
-		self.appearance = self.effectiveAppearance
-		block()
+@available(macOS 11, *)
+extension NSColor {
+	/// Create an NSColor from a SwiftUI color, or return `nil` if the color is also nil
+	convenience init?(color: Color?) {
+		guard let color else { return nil }
+		self.init(color)
 	}
 }

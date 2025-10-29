@@ -127,7 +127,7 @@ public extension NSImageView {
 
 @MainActor
 public extension NSImageView {
-	/// Set the image for the image view
+	/// Bind the image
 	/// - Parameter image: The image
 	/// - Returns: self
 	@discardableResult
@@ -166,7 +166,6 @@ private extension NSImageView {
 
 		@MainActor
 		init(_ imageView: NSImageView) {
-
 			// Observe any changes in the image stored in the imageview
 			// Note we cannot use @MainActor in the observe callback without generating errors in Xcode 16.3 and earlier
 			self.imageObserver = imageView.observe(\.image, options: [.old, .new]) { [weak self] view, change in

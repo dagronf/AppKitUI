@@ -13,14 +13,14 @@ class AlertsPane: Pane {
 	@MainActor
 	override func make(model: Model) -> NSView {
 
-		@Binding var asr = false
-		@Binding var asr2 = false
-		@Binding var sheet1 = false
-		@Binding var popover1 = false
-		@Binding var progressValue = 0.2
+		@Bindable var asr = false
+		@Bindable var asr2 = false
+		@Bindable var sheet1 = false
+		@Bindable var popover1 = false
+		@Bindable var progressValue = 0.2
 
-		@Binding var count = 0
-		@Binding var suppressionState = true
+		@Bindable var count = 0
+		@Bindable var suppressionState = true
 
 		return NSView(layoutStyle: .centered) {
 			VStack {
