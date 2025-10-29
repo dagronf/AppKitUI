@@ -19,10 +19,10 @@
 
 import Foundation
 
-/// A Bind property wrapper
+/// A Bind property wrapper. Similar in use to `@Binding` in SwiftUI
 @MainActor
 @propertyWrapper
-public struct Binding<ValueType: Equatable> {
+public struct Binder<ValueType: Equatable> {
 	/// The wrapped value for the binding
 	public var wrappedValue: ValueType {
 		set { self.valueBinder.wrappedValue = newValue }
