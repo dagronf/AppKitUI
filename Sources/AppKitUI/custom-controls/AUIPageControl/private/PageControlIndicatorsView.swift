@@ -150,7 +150,6 @@ extension PageControlIndicatorsView {
 
 	private func pageSelected(_ index: Int) {
 		self.content.currentPage = index
-
 		self.usingEffectiveAppearance {
 			for item in indicators.enumerated() {
 				let b = item.element

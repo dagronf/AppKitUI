@@ -335,6 +335,19 @@ public extension AUIPageControl {
 	}
 }
 
+// MARK: - Actions
+
+public extension AUIPageControl {
+	/// A block to call when the page control selection changes
+	/// - Parameter block: The block to call when the change occurs passing the new selected page
+	/// - Returns: self
+	@discardableResult @inlinable
+	func onSelectedPageChange(_ block: @escaping (Int) -> Void) -> Self {
+		self.selectedPageDidChange = block
+		return self
+	}
+}
+
 // MARK: - Bindings
 
 public extension AUIPageControl {
@@ -358,6 +371,7 @@ public extension AUIPageControl {
 	/// Bind the current page
 	/// - Parameter page: The current page
 	/// - Returns: self
+	@discardableResult
 	func currentPage(_ page: Bind<Int>) -> Self {
 		page.register(self) { @MainActor [weak self] newPage in
 			self?.currentPage = newPage
@@ -415,6 +429,9 @@ import AppKitUI
 			NSTextField(label: "9")
 			NSTextField(label: "12")
 			AUIPageControl(numberOfPages: 9, windowSize: 12)
+				.onSelectedPageChange { newPage in
+					Swift.print("Selected page is now \(newPage)")
+				}
 		}
 		NSGridView.Row {
 			NSTextField(label: "7")

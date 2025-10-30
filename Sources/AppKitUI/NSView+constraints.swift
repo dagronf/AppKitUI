@@ -202,6 +202,16 @@ public extension NSView {
 			.width(dimension, priority: priority)
 			.height(dimension, priority: priority)
 	}
+
+	/// Set the views dimension (same width and height) for the view
+	/// - Parameters:
+	///   - dimension: The dimension
+	///   - priority: The priority for the created constraints
+	/// - Returns: self
+	@discardableResult @inlinable
+	func frame(dimension: Int, priority: NSLayoutConstraint.Priority? = nil) -> Self {
+		self.frame(dimension: Double(dimension), priority: priority)
+	}
 }
 
 // MARK: Bindings

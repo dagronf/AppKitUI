@@ -43,6 +43,10 @@ class PageControlPane: Pane {
 							NSTextField(labelWithString: "7")
 							VStack {
 								AUIPageControl(numberOfPages: 7, windowSize: 7, currentPage: c0)
+									.onSelectedPageChange { newPage in
+										model.log("page control selection is now \(newPage)")
+									}
+
 								AUIPageControl(pageIndicatorSize: CGSize(width: 16, height: 16), numberOfPages: 7, windowSize: 7, currentPage: c0)
 									.isKeyboardNavigable(true)
 									.pageIndicatorTintColor(.systemOrange)

@@ -187,18 +187,14 @@ private let image2 = NSImage(named: NSImage.computerName)!
 
 @available(macOS 14, *)
 #Preview("default") {
-
 	VStack {
 		HStack {
-			AUIImage(named: NSImage.colorPanelName)
-				.frame(dimension: 120)
-			AUIImage(named: NSImage.colorPanelName)
-				.frame(dimension: 80)
-			AUIImage(named: NSImage.colorPanelName)
-				.frame(dimension: 40)
-			AUIImage(named: NSImage.colorPanelName)
-				.frame(dimension: 20)
-				.toolTip("This is the smallest image")
+			for sc in [120, 100, 80, 60, 40, 20] {
+				AUIImage(named: NSImage.colorPanelName)
+					.toolTip("image with frame size \(sc)")
+					.frame(dimension: sc)
+					.debugFrame()
+			}
 		}
 	}
 }
@@ -255,12 +251,16 @@ private let image2 = NSImage(named: NSImage.computerName)!
 @available(macOS 14, *)
 #Preview("image scaling") {
 	HStack {
-		for sc in [1.6, 1.4, 1.2, 1.0, 0.8, 0.6, 0.4, 0.2, 0.0] {
-			AUIImage(named: NSImage.colorPanelName)
-				.aspectRatio(.fit)
-				.scale(sc)
-				.frame(width: 40, height: 40)
-				.debugFrame(.systemPink)
+		for sc in [1.8, 1.6, 1.4, 1.2, 1.0, 0.8, 0.6, 0.4, 0.2, 0.0] {
+			VStack {
+				AUIImage(named: NSImage.colorPanelName)
+					.aspectRatio(.fit)
+					.scale(sc)
+					.frame(width: 40, height: 40)
+					.debugFrame(.systemPink)
+				NSTextField(label: "\(sc)")
+					.font(.monospaced.size(10))
+			}
 		}
 	}
 }
