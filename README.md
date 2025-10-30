@@ -25,6 +25,7 @@ There is a demo application in the 'Demo' folder that demonstrates many of the c
 2. I like Interface Builder a lot but I dislike XIBs and Storyboard files (especially when merging)
 3. I like SwiftUI and how you build your views, but there's still a lot of mac apps built without SwiftUI support. 
 4. I like SwiftUI's @Binding/@State mechanism for passing data around.
+5. I like SwiftUI's `#Preview`, but is VERY limited when it comes to AppKit support (eg. you can only show a single instance)
 
 IMHO you're better off moving to SwiftUI nowadays for your Mac app, but if you need to support back earlier than macOS 11 you're kinda stuck.
 
@@ -113,6 +114,20 @@ let well = NSColorWell()
    }
    .frame(width: 60, height: 60)
 ```
+
+## Custom controls
+
+AppKitUI provides a number of custom controls to make your life easier when creating your AppKit UI
+
+* `AUIPageControl` - A control similar to `UIPageControl` on iOS which displays an animated page selector
+* `AUIHidableView` - A view that can animate showing and hiding its contents
+* `AUIViewSwitcher` - A view that can dynamically switch the subview that is currently visible
+* `AUIComboButton` - An `NSComboButton` supported back to macOS 10.13
+* `AUIContentUnavailableView` - A view that mimics SwiftUI's [`ContentUnavailableView`](https://developer.apple.com/documentation/swiftui/contentunavailableview)
+* `AUILinkButton` - An `NSButton` that looks like a hyperlink
+* `Flow` - A view which displays a collection of subviews in a flow-style horizontal layout
+
+... and more!
 
 ## Bindable Values
 
