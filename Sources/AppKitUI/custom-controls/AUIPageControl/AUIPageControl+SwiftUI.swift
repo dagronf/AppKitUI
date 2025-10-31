@@ -44,7 +44,7 @@ public struct AUIPageControlUI {
 
 	public init(
 		_ orientation: NSUserInterfaceLayoutOrientation = .horizontal,
-		pageIndicatorSize: CGSize = AUIPageControl.DefaultPageIndicatorSize,
+		pageIndicatorSize: CGSize = AUIPageControlDefaultPageIndicatorSize,
 		numberOfPages: Int,
 		windowSize: Int,
 		currentPage: Binding<Int>

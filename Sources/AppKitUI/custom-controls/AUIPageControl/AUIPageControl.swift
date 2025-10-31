@@ -20,20 +20,19 @@
 import AppKit
 import os.log
 
-/// A page control
-@IBDesignable
-@MainActor
-@objc public class AUIPageControl: NSControl {
-	/// The default page indicator size
-	public static let DefaultPageIndicatorSize = CGSize(width: 21, height: 21)
+/// The default page indicator size
+public let AUIPageControlDefaultPageIndicatorSize = CGSize(width: 21, height: 21)
 
+/// A page control
+@MainActor
+@IBDesignable
+@objc public class AUIPageControl: NSControl {
 	/// Orientation
 	@IBInspectable @objc public dynamic var isHorizontal: Bool = true
-
 	/// Page indicator width
-	@IBInspectable @objc public dynamic var pageIndicatorWidth: Double = AUIPageControl.DefaultPageIndicatorSize.width
+	@IBInspectable @objc public dynamic var pageIndicatorWidth: Double = AUIPageControlDefaultPageIndicatorSize.width
 	/// Page indicator height
-	@IBInspectable @objc public dynamic var pageIndicatorHeight: Double = AUIPageControl.DefaultPageIndicatorSize.height
+	@IBInspectable @objc public dynamic var pageIndicatorHeight: Double = AUIPageControlDefaultPageIndicatorSize.height
 	/// The page indicator size
 	private var pageIndicatorSize: CGSize {
 		CGSize(width: self.pageIndicatorWidth, height: self.pageIndicatorHeight)
@@ -95,7 +94,7 @@ import os.log
 	///   - initialPage: The initial selection for the control
 	public init(
 		_ orientation: NSUserInterfaceLayoutOrientation = .horizontal,
-		pageIndicatorSize: CGSize = AUIPageControl.DefaultPageIndicatorSize,
+		pageIndicatorSize: CGSize = AUIPageControlDefaultPageIndicatorSize,
 		numberOfPages: Int,
 		windowSize: Int,
 		initialPage: Int = 0
@@ -357,9 +356,9 @@ public extension AUIPageControl {
 	///   - numberOfPages: The total number of pages
 	///   - windowSize: The window size
 	///   - currentPage: The current page binding
-	convenience public init(
+	convenience init(
 		_ orientation: NSUserInterfaceLayoutOrientation = .horizontal,
-		pageIndicatorSize: CGSize = AUIPageControl.DefaultPageIndicatorSize,
+		pageIndicatorSize: CGSize = AUIPageControlDefaultPageIndicatorSize,
 		numberOfPages: Int,
 		windowSize: Int,
 		currentPage: Bind<Int>
@@ -404,9 +403,7 @@ internal extension AUIPageControl {
 
 // MARK: - Previews
 
-#if DEBUG && canImport(AppKitUI)
-
-import AppKitUI
+#if DEBUG
 
 @available(macOS 14.0, *)
 #Preview("horizontal") {

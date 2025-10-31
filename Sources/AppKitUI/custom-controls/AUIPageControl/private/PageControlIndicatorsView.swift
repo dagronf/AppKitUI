@@ -177,9 +177,7 @@ extension PageControlIndicatorsView {
 
 // MARK: - Previews
 
-#if DEBUG && canImport(AppKitUI)
-
-import AppKitUI
+#if DEBUG
 
 @available(macOS 14.0, *)
 #Preview("horizontal") {

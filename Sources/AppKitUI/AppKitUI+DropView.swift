@@ -23,11 +23,11 @@ import AppKit
 public class AUIDropView: NSView {
 	
 	/// Create a drop view
-	public convenience init() {
+	convenience init() {
 		self.init(frame: .zero)
 	}
 
-	public convenience init(isDroppable: Bind<Bool>) {
+	convenience init(isDroppable: Bind<Bool>) {
 		self.init()
 		self.isDroppable = isDroppable
 	}
@@ -97,7 +97,7 @@ public extension AUIDropView {
 	/// - Parameter block: The block
 	/// - Returns: self
 	@discardableResult
-	public func onDragEntered(_ block: @escaping (AUIDragInfo) -> NSDragOperation) -> Self {
+	func onDragEntered(_ block: @escaping (AUIDragInfo) -> NSDragOperation) -> Self {
 		self.onDragEnteredBlock = block
 		return self
 	}
@@ -106,7 +106,7 @@ public extension AUIDropView {
 	/// - Parameter block: The block
 	/// - Returns: self
 	@discardableResult
-	public func onDragExited(_ block: @escaping (AUIDragInfo?) -> Void) -> Self {
+	func onDragExited(_ block: @escaping (AUIDragInfo?) -> Void) -> Self {
 		self.onDragExitedBlock = block
 		return self
 	}
@@ -115,13 +115,16 @@ public extension AUIDropView {
 	/// - Parameter block: The block. Returns true if the item should be accepted, or false to reject the drop
 	/// - Returns: self
 	@discardableResult
-	public func onDragPrepareForDragOperation(_ block: @escaping (AUIDragInfo) -> Bool) -> Self {
+	func onDragPrepareForDragOperation(_ block: @escaping (AUIDragInfo) -> Bool) -> Self {
 		self.onDragPrepareForDragOperationBlock = block
 		return self
 	}
 
+	/// Called when the drag operation is to be performed
+	/// - Parameter block: The block, passing in the drag information
+	/// - Returns: self
 	@discardableResult
-	public func onDragPerformOperation(_ block: @escaping (AUIDragInfo) -> Bool) -> Self {
+	func onDragPerformOperation(_ block: @escaping (AUIDragInfo) -> Bool) -> Self {
 		self.onDragPerformOperationBlock = block
 		return self
 	}
@@ -155,7 +158,7 @@ public extension AUIDropView {
 	}
 
 	// Final clean up when the drag operation completes
-	public override func concludeDragOperation(_ sender: (any NSDraggingInfo)?) {
+	override func concludeDragOperation(_ sender: (any NSDraggingInfo)?) {
 		self.isDroppable?.wrappedValue = false
 	}
 }

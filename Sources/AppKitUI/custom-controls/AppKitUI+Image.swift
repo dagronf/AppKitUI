@@ -110,7 +110,7 @@ public extension AUIImage {
 	/// - Parameter aspectRatio: The aspect ratio
 	/// - Returns: self
 	@discardableResult
-	public func aspectRatio(_ aspectRatio: AUIImage.AspectRatio) -> Self {
+	func aspectRatio(_ aspectRatio: AUIImage.AspectRatio) -> Self {
 		self.imageLayer.contentsGravity = aspectRatio.gravity
 		return self
 	}
@@ -119,7 +119,7 @@ public extension AUIImage {
 	/// - Parameter scale: The scale
 	/// - Returns: self
 	@discardableResult
-	public func scale(_ scale: Double) -> Self {
+	func scale(_ scale: Double) -> Self {
 		self.scale = scale
 		self.needsDisplay = true
 		return self

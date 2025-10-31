@@ -46,7 +46,7 @@ class PageControlIndicatorView: NSView {
 		}
 	}
 
-	var imageSize: CGSize = AUIPageControl.DefaultPageIndicatorSize
+	var imageSize: CGSize = AUIPageControlDefaultPageIndicatorSize
 
 	/// Set the tint color for the indicator
 	@inlinable func tintColor(_ color: NSColor?) -> Self {
@@ -54,7 +54,7 @@ class PageControlIndicatorView: NSView {
 		return self
 	}
 
-	init(imageSize: CGSize = AUIPageControl.DefaultPageIndicatorSize) {
+	init(imageSize: CGSize = AUIPageControlDefaultPageIndicatorSize) {
 		super.init(frame: .zero)
 		self.imageSize = imageSize
 		self.setup()
@@ -152,9 +152,7 @@ class PageControlIndicatorView: NSView {
 
 // MARK: - Previews
 
-#if DEBUG && canImport(AppKitUI)
-
-import AppKitUI
+#if DEBUG
 
 @available(macOS 14.0, *)
 #Preview("PageImageView check") {

@@ -21,7 +21,7 @@ import AppKit
 import os.log
 
 /// Delay types
-public enum DelayingCallType {
+public enum DelayingCallType: Sendable {
 	/// No delay
 	case none
 	/// Debounce a call.
@@ -35,7 +35,7 @@ public enum DelayingCallType {
 
 // MARK: - Delaying call
 
-class DelayingCall {
+final class DelayingCall: @unchecked Sendable {
 	init(_ type: DelayingCallType) {
 		self.type = type
 		switch type {
@@ -72,7 +72,7 @@ class DelayingCall {
 }
 
 // A class which throttles calls to its perform: action
-class Throttle {
+final class Throttle: @unchecked Sendable {
 	/// Create a throttler
 	/// - Parameters:
 	///   - delay: The time to wait between action invocations
@@ -128,15 +128,15 @@ class Throttle {
 	// MARK: - Properties
 
 	private let delay: TimeInterval
-	private var workItem: DispatchWorkItem?
 	private let queue: DispatchQueue
-	private var lastExecutionTime: Date?
-
 	private let lock = DispatchSemaphore(value: 1)
+
+	private var workItem: DispatchWorkItem?
+	private var lastExecutionTime: Date?
 }
 
 // A class which debounces calls to its perform: action
-class Debounce {
+final class Debounce: @unchecked Sendable {
 	/// Create a debouncer
 	/// - Parameters:
 	///   - delay: The time to wait before performing an action
