@@ -17,51 +17,53 @@
 //  OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
+/// A wrapper for the NSGlassEffectView. Supported on macOS 26.0+ and Xcode 26.0+
+///
+/// If you want a glass effect view that degrades nicely back to 10.13, take a look at the `GlassEffect` function.
+///
+/// Usage example :-
+///
+/// ```swift
+/// NSGlassEffectView {
+///    NSTextField(label: "Hello!")
+///       .padding()
+/// }
+/// ```
+
+import AppKit
+
 #if canImport(AppKit.NSGlassEffectView)
 
 /// Is `NSGlassEffectView` available?
 public let AppKitUI_supportsNSGlassEffectView: Bool = true
-
-import AppKit
 
 @available(macOS 26.0, *)
 @MainActor
 public extension NSGlassEffectView {
 	/// Create a glass effect view containing a view
 	/// - Parameters:
-	///   - viewBuilder: The content for the glass effect view
-	convenience init(_ viewBuilder: () -> NSView) {
-		self.init()
-		self.translatesAutoresizingMaskIntoConstraints = false
-		let content = viewBuilder()
-		content.translatesAutoresizingMaskIntoConstraints = false
-		self.contentView = content
-	}
-}
-
-@available(macOS 26.0, *)
-@MainActor
-public extension NSView {
-	/// Wrap this view within a glass effect view
-	/// - Parameters:
 	///   - style: The glass style
 	///   - cornerRadius: The amount of curvature for all corners of the glass
 	///   - tintColor: The color the glass effect view uses to tint the background and glass effect toward
-	/// - Returns: A new glass effect view
-	func glassEffect(
+	///   - viewBuilder: The content for the glass effect view
+	convenience init(
 		style: NSGlassEffectView.Style = .regular,
 		cornerRadius: CGFloat? = nil,
-		tintColor: NSColor? = nil
-	) -> NSGlassEffectView {
-		let container = NSGlassEffectView()
-		container.translatesAutoresizingMaskIntoConstraints = false
-		container.contentView = self
-		container.style = style
-		container.tintColor = tintColor
+		tintColor: NSColor? = nil,
+		_ viewBuilder: () -> NSView
+	) {
+		self.init()
+		self
+			.translatesAutoresizingMaskIntoConstraints(false)
+			.style(style)
+			.tintColor(tintColor)
 		if let cornerRadius {
-			container.cornerRadius = cornerRadius
+			self.cornerRadius(cornerRadius)
 		}
-		return container
+
+		let content = viewBuilder()
+		content.translatesAutoresizingMaskIntoConstraints = false
+		self.contentView = content
 	}
 }
 
@@ -69,12 +71,12 @@ public extension NSView {
 
 @available(macOS 26.0, *)
 @MainActor
-public extension NSGlassEffectView {
+extension NSGlassEffectView: AUIGlassEffectViewPresenting {
 	/// The amount of curvature for all corners of the glass.
 	/// - Parameter value: The curvature
 	/// - Returns: self
 	@discardableResult @inlinable
-	func cornerRadius(_ value: CGFloat) -> Self {
+	public func cornerRadius(_ value: CGFloat) -> Self {
 		self.cornerRadius = value
 		return self
 	}
@@ -83,7 +85,7 @@ public extension NSGlassEffectView {
 	/// - Parameter style: The glass style
 	/// - Returns: self
 	@discardableResult @inlinable
-	func style(_ style: NSGlassEffectView.Style) -> Self {
+	public func style(_ style: NSGlassEffectView.Style) -> Self {
 		self.style = style
 		return self
 	}
@@ -92,7 +94,7 @@ public extension NSGlassEffectView {
 	/// - Parameter color: The tint color
 	/// - Returns: self
 	@discardableResult @inlinable
-	func tintColor(_ color: NSColor) -> Self {
+	public func tintColor(_ color: NSColor?) -> Self {
 		self.tintColor = color
 		return self
 	}
@@ -104,3 +106,4 @@ public extension NSGlassEffectView {
 public let AppKitUI_supportsNSGlassEffectView: Bool = false
 
 #endif
+

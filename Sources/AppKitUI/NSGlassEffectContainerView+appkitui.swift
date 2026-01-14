@@ -17,6 +17,29 @@
 //  OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
+/// A wrapper for the NSGlassEffectContainerView. Supported on macOS 26.0+ and Xcode 26.0+ only
+///
+/// If you want a glass effect container view that degrades nicely back to 10.13,
+/// take a look at the `GlassEffectContainer` function.
+///
+/// Usage example :-
+///
+/// ```swift
+/// NSGlassEffectContainerView(spacing: 32) {
+///    HStack {
+///       NSButton.image(.systemSymbol("chevron.left"))
+///          .onAction { _ in Swift.print("Pressed left") }
+///          .glassEffect()
+///       NSButton.image(.systemSymbol("circle"))
+///          .onAction { _ in Swift.print("Pressed circle") }
+///          .glassEffect()
+///       NSButton.image(.systemSymbol("chevron.right"))
+///          .onAction { _ in Swift.print("Pressed right") }
+///          .glassEffect()
+///    }
+/// }
+/// ```
+
 #if canImport(AppKit.NSGlassEffectView)
 
 import AppKit
