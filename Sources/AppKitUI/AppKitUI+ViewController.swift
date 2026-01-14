@@ -25,15 +25,14 @@ import AppKit
 ///
 /// Example :-
 ///
-///```swift
+/// ```swift
 /// class MyController: AUIViewController {
-///
-/// override var body: NSView {
-///    VStack {
-///       NSTextField(label: "This is a test!")
+///    override var body: NSView {
+///       VStack {
+///          NSTextField(label: "This is a test!")
+///       }
 ///    }
 /// }
-///```
 @MainActor
 open class AUIViewController: NSViewController {
 	/// Create an AppKitUI-compatible view controller
@@ -43,7 +42,7 @@ open class AUIViewController: NSViewController {
 
 	/// The view body for the view controller.
 	///
-	/// It is once during the view loading process.
+	/// It is called once during the view loading process.
 	open var body: NSView {
 		fatalError("Overrriding class must provide body")
 	}
