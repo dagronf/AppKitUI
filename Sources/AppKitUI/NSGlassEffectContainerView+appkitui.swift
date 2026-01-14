@@ -17,28 +17,27 @@
 //  OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#if canImport(AppKit.NSBackgroundExtensionView)
-
-/// Is `NSBackgroundExtensionView` available?
-public let AppKitUI_supportsNSBackgroundExtensionView: Bool = true
+#if canImport(AppKit.NSGlassEffectView)
 
 import AppKit
 
 @available(macOS 26.0, *)
 @MainActor
-public extension NSBackgroundExtensionView {
-	/// Create a background extension view
+public extension NSGlassEffectContainerView {
+	/// Create a glass effect container view that efficiently merges descendant glass effect views together
+	/// when they are within a specified proximity to each other.
 	/// - Parameters:
-	///   - automaticallyPlacesContentView: Controls the automatic safe area placement of the contentView within the container
-	///   - viewBuilder: The content for the background extension view
-	convenience init(automaticallyPlacesContentView: Bool = true, _ viewBuilder: () -> NSView) {
+	///   - viewBuilder: The content for the glass effect view
+	///
+	/// Note that the glass effect container view has NO visual appearance of its own, it works on the glass effect
+	/// views contained within it. It's the glass scene root
+	convenience init(spacing: CGFloat = 0, _ viewBuilder: () -> NSView) {
 		self.init()
 		self.translatesAutoresizingMaskIntoConstraints = false
-
 		let content = viewBuilder()
 		content.translatesAutoresizingMaskIntoConstraints = false
 		self.contentView = content
-		self.automaticallyPlacesContentView = automaticallyPlacesContentView
+		self.spacing = spacing
 	}
 }
 
@@ -46,23 +45,38 @@ public extension NSBackgroundExtensionView {
 
 @available(macOS 26.0, *)
 @MainActor
-public extension NSBackgroundExtensionView {
-	/// Controls the automatic safe area placement of the contentView within the container
-	/// - Parameter value: safe area placement state
+public extension NSGlassEffectContainerView {
+	/// The proximity at which the glass effect container view begins merging eligible descendent glass effect views.
+	/// - Parameter value: The curvature
 	/// - Returns: self
-	///
-	/// When NO, the frame of the content view must be explicitly set or constraints added.
-	/// The extension effect will be used to fill the container view around the content.
 	@discardableResult @inlinable
-	func automaticallyPlacesContentView(_ value: Bool) -> Self {
-		self.automaticallyPlacesContentView = value
+	func spacing(_ value: CGFloat) -> Self {
+		self.spacing = value
 		return self
 	}
 }
 
-#else
+// MARK: - Previews
 
-/// Is `NSBackgroundExtensionView` available?
-public let AppKitUI_supportsNSBackgroundExtensionView: Bool = false
+#if DEBUG
+
+@available(macOS 26.0, *)
+#Preview("default") {
+	NSGlassEffectContainerView(spacing: 32) {
+		HStack {
+			NSButton.image(.systemSymbol("chevron.left"))
+				.onAction { _ in Swift.print("Pressed left") }
+				.glassEffect()
+			NSButton.image(.systemSymbol("circle"))
+				.onAction { _ in Swift.print("Pressed circle") }
+				.glassEffect()
+			NSButton.image(.systemSymbol("chevron.right"))
+				.onAction { _ in Swift.print("Pressed right") }
+				.glassEffect()
+		}
+	}
+}
+
+#endif
 
 #endif

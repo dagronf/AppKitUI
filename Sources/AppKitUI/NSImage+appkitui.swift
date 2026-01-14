@@ -1,5 +1,5 @@
 //
-//  Copyright © 2025 Darren Ford. All rights reserved.
+//  Copyright © 2026 Darren Ford. All rights reserved.
 //
 //  MIT license
 //
@@ -17,9 +17,9 @@
 //  OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-// To display a basic image (without all the overhead of NSImageView you can use AUIImage)
-
 import AppKit.NSImage
+
+// MARK: - Modifiers
 
 public extension NSImage {
 	/// Set whether the image represents a template image
@@ -50,11 +50,53 @@ public extension NSImage {
 		self.size = value
 		return self
 	}
+}
 
-	/// Create a new imageview containing a system symbol (macOS 11 and later)
+// MARK: - Image loading conveniences
+
+private let defaultMissingImage__ = NSImage(named: NSImage.cautionName)!
+
+public extension NSImage {
+	/// Create a new image containing a system symbol (macOS 11 and later)
 	/// - Parameter systemSymbolName: The symbol name
+	///
+	/// If the symbol can't be found, returns nil
 	@available(macOS 11.0, *)
 	convenience init?(systemSymbolName: String) {
 		self.init(systemSymbolName: systemSymbolName, accessibilityDescription: nil)
+	}
+
+	/// Create an image with a named image
+	/// - Parameter name: The image name
+	/// - Returns: An image.
+	///
+	/// If the symbol can't be found, returns the system symbol `NSImage.cautionName`
+	static func named(_ name: String) -> NSImage {
+		NSImage(named: name) ?? defaultMissingImage__
+	}
+
+	/// Create an image with a system symbol name (macOS 11.0+)
+	/// - Parameters:
+	///   - name: The system symbol name
+	///   - accessibilityDescription: The accessibility description for the symbol image, if any.
+	/// - Returns: An image.
+	///
+	/// If the symbol can't be found, returns the system symbol `NSImage.cautionName`
+	@available(macOS 11.0, *)
+	static func systemSymbol(_ name: String, accessibilityDescription: String? = nil) -> NSImage {
+		NSImage(systemSymbolName: name, accessibilityDescription: accessibilityDescription) ?? defaultMissingImage__
+	}
+}
+
+// MARK: - Accessibility
+
+public extension NSImage {
+	/// The image’s accessibility description.
+	/// - Parameter name: The description
+	/// - Returns: self
+	@discardableResult @inlinable
+	func accessibilityDescription(_ name: String) -> Self {
+		self.accessibilityDescription = name
+		return self
 	}
 }
