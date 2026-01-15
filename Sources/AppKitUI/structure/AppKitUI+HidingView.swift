@@ -29,29 +29,33 @@ import AppKit
 /// VStack(spacing: 0) {
 ///    NSButton.checkbox(title: "is visible")
 ///       .state(isVisible)
-///    AUiHidableView(
-///       isVisible: isVisible,
-///       view:
-///          VStack {
-///             AUIImage(named: NSImage.homeTemplateName)
-///                .frame(dimension: 48)
-///             NSTextField(label: "Hi there")
-///                .width(100)
-///                .alignment(.center)
-///          }
-///    )
+///    AUIHidableView(isVisible: isVisible) {
+///       VStack {
+///          AUIImage(named: NSImage.homeTemplateName)
+///             .frame(dimension: 48)
+///          NSTextField(label: "Hi there")
+///             .width(100)
+///             .alignment(.center)
+///       }
+///    }
 /// }
 /// ```
 ///
 @MainActor
 public class AUIHidableView: NSView {
+	/// Create a hidable view
+	/// - Parameters:
+	///   - isVisible: The binding for showing/hiding the content view
+	///   - viewBuilder: The view builder for the content
+	public convenience init(isVisible: Bind<Bool>, _ viewBuilder: () -> NSView) {
+		let content = viewBuilder().translatesAutoresizingMaskIntoConstraints(false)
+		self.init(isVisible: isVisible, view: content)
+	}
 
-	private let child: NSView
-	private let isVisible: Bind<Bool>
-
-	private var bottomConstraint: NSLayoutConstraint?
-	private var heightConstraint: NSLayoutConstraint?
-
+	/// Create a hidable view
+	/// - Parameters:
+	///   - isVisible: The binding for showing/hiding the content view
+	///   - view: The content
 	public init(isVisible: Bind<Bool>, view: NSView) {
 		self.child = view
 		self.isVisible = isVisible
@@ -130,8 +134,15 @@ public class AUIHidableView: NSView {
 		self.heightConstraint?.animator().constant = 0.0
 		CATransaction.commit()
 	}
-}
 
+	// MARK: - Private
+
+	private let child: NSView
+	private let isVisible: Bind<Bool>
+
+	private var bottomConstraint: NSLayoutConstraint?
+	private var heightConstraint: NSLayoutConstraint?
+}
 
 // MARK: - Previews
 
@@ -147,17 +158,15 @@ public class AUIHidableView: NSView {
 			VStack(spacing: 0) {
 				NSButton.checkbox(title: "is visible")
 					.state(isVisible)
-				AUIHidableView(
-					isVisible: isVisible,
-					view:
-						VStack {
-							AUIImage(named: NSImage.homeTemplateName)
-								.frame(dimension: 48)
-							NSTextField(label: "Hi there")
-								.width(100)
-								.alignment(.center)
-						}
-				)
+				AUIHidableView(isVisible: isVisible) {
+					VStack {
+						AUIImage(named: NSImage.homeTemplateName)
+							.frame(dimension: 48)
+						NSTextField(label: "Hi there")
+							.width(100)
+							.alignment(.center)
+					}
+				}
 			}
 
 			HDivider()

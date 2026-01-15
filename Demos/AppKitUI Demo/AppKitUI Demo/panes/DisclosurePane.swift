@@ -20,13 +20,43 @@
 import AppKit
 import AppKitUI
 
+@MainActor
 class DisclosurePane: Pane {
+
+	let auiDisclosure = AUIDisclosureVC()
+	let hidableVC = AUIHidableVC()
+
 	override func title() -> String { "Disclosure Views" }
 	@MainActor
 	override func make(model: Model) -> NSView {
-		let date = Bind(Date())
-		let isVisible = Bind(true)
-		return ScrollView(fitHorizontally: true) {
+		VSplitView {
+			VStack(alignment: .leading) {
+				NSTextField(label: "AUIDisclosure")
+					.font(.title2)
+					.huggingPriority(.defaultLow, for: .horizontal)
+				auiDisclosure.view
+			}
+			.padding(8)
+
+			VStack(alignment: .leading) {
+				NSTextField(label: "AUIHidableView")
+					.font(.title2)
+					.huggingPriority(.defaultLow, for: .horizontal)
+				hidableVC.view
+			}
+			.padding(8)
+		}
+		.holdingPriority(.init(rawValue: 400), forItemAtIndex: 1)
+	}
+}
+
+class AUIDisclosureVC: AUIViewController {
+
+	let date = Bind(Date())
+	let isVisible = Bind(true)
+
+	override var body: NSView {
+		ScrollView(borderType: .noBorder, fitHorizontally: true) {
 			VStack(spacing: 2) {
 				AUIDisclosure(title: "First one") {
 					HStack {
@@ -43,7 +73,7 @@ class DisclosurePane: Pane {
 
 				AUIDisclosure(title: "Second one") {
 					VStack {
-						NSDatePicker(date: date, style: .clockAndCalendar)
+						NSDatePicker(date: self.date, style: .clockAndCalendar)
 							.elements([.yearMonthDay])
 							.timeZone(TimeZone(identifier: "GMT")!)
 					}
@@ -54,8 +84,57 @@ class DisclosurePane: Pane {
 
 				Spacer()
 			}
+			.padding(8)
 		}
-		.borderType(.grooveBorder)
+	}
+}
+
+class AUIHidableVC: AUIViewController {
+
+	let isVisible = Bind(true)
+	let isVisible2 = Bind(false)
+
+	override var body: NSView {
+		ScrollView(borderType: .noBorder) {
+			VStack {
+				VStack(spacing: 0) {
+					NSButton.checkbox(title: "is visible")
+						.state(isVisible)
+					AUIHidableView(isVisible: isVisible) {
+						VStack {
+							AUIImage(named: NSImage.homeTemplateName)
+								.frame(dimension: 48)
+							NSTextField(label: "Hi there")
+								.width(100)
+								.alignment(.center)
+						}
+					}
+				}
+
+				HDivider()
+
+				NSButton.checkbox(title: "is visible 2")
+					.state(isVisible2)
+				AUIHidableView(
+					isVisible: isVisible2,
+					view:
+						AUIRadioGroup()
+						.items([
+							"one item here",
+							"second item here",
+							"third? Groundbreaking",
+							"fourth of nature",
+							"i plead the fifth"
+						])
+						.padding(8)
+				)
+
+				HDivider()
+
+				Spacer()
+			}
+			.padding(8)
+		}
 	}
 }
 

@@ -19,6 +19,9 @@
 
 import AppKit
 
+// MARK: - Create
+
+/// Create a vertical split view
 @MainActor
 public func VSplitView(
 	dividerStyle: NSSplitView.DividerStyle = .paneSplitter,
@@ -27,6 +30,7 @@ public func VSplitView(
 	SplitView(orientation: .vertical, dividerStyle: dividerStyle, builder: builder)
 }
 
+/// Create a horizontal split view
 @MainActor
 public func HSplitView(
 	dividerStyle: NSSplitView.DividerStyle = .paneSplitter,
@@ -34,6 +38,33 @@ public func HSplitView(
 ) -> NSSplitView {
 	SplitView(orientation: .horizontal, dividerStyle: dividerStyle, builder: builder)
 }
+
+// MARK: - Modifiers
+
+@MainActor
+public extension NSSplitView {
+	/// The style of divider between views
+	/// - Parameter style: The style
+	/// - Returns: self
+	@discardableResult @inlinable
+	func dividerStyle(_ style: NSSplitView.DividerStyle) -> Self {
+		self.dividerStyle = style
+		return self
+	}
+
+	/// Sets the priority for split view subviews to maintain their width or height.
+	/// - Parameters:
+	///   - priority: The priority.
+	///   - index: The index of the subview
+	/// - Returns: self
+	@discardableResult @inlinable
+	func holdingPriority(_ priority: NSLayoutConstraint.Priority, forItemAtIndex index: Int) -> Self {
+		self.setHoldingPriority(priority, forSubviewAt: index)
+		return self
+	}
+}
+
+// MARK: - Private
 
 @MainActor
 private func SplitView(
@@ -53,19 +84,4 @@ private func SplitView(
 		s.addArrangedSubview($0)
 	}
 	return s
-}
-
-@MainActor
-public extension NSSplitView {
-	@discardableResult @inlinable
-	func dividerStyle(_ style: NSSplitView.DividerStyle) -> Self {
-		self.dividerStyle = style
-		return self
-	}
-
-	@discardableResult @inlinable
-	func holdingPriority(_ priority: NSLayoutConstraint.Priority, forItemAtIndex index: Int) -> Self {
-		self.setHoldingPriority(priority, forSubviewAt: index)
-		return self
-	}
 }
