@@ -52,7 +52,8 @@ class Model {
 			BasicViewSizingPane(),
 			SimpleDropPane(),
 			ImageViewBasicPane(),
-			PageControlPane()
+			PageControlPane(),
+			GlassExamplePane(),
 		]
 		if #available(macOS 11, *) {
 			p.append(SwitchPane())
