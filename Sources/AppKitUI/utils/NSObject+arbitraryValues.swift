@@ -76,4 +76,14 @@ internal extension NSObject {
 		}
 		return nil
 	}
+
+	/// Remove the value identified by `key`
+	/// - Parameter key: The key for the object to remove
+	///
+	/// If `key` doesn't exist this function does nothing
+	func removeArbitraryValue(forKey key: String) {
+		if let values: NSView.Values = getAssociatedValue(key: __arbitraryValuesIdentifier) {
+			values.allValues.removeValue(forKey: key)
+		}
+	}
 }
