@@ -50,10 +50,10 @@ private let __arbitraryValuesIdentifier = "AppKitUI.NSObject.ArbitraryValues"
 @MainActor
 internal extension NSObject {
 	/// A class holding a dictionary of arbitrary key-value pairs
-	private class Values {
+	private class ArbitraryValues {
 		var allValues = [String: Any]()
 		deinit {
-			os_log("deinit: NSObject.Values", log: logger, type: .debug)
+			os_log("deinit: NSObject.ArbitraryValues", log: logger, type: .debug)
 		}
 	}
 
@@ -62,7 +62,7 @@ internal extension NSObject {
 	///   - value: The value
 	///   - key: The key
 	func setArbitraryValue<T: Any>(_ value: T, forKey key: String) {
-		let values: NSView.Values = getAssociatedValue(key: __arbitraryValuesIdentifier) ?? NSView.Values()
+		let values: NSObject.ArbitraryValues = getAssociatedValue(key: __arbitraryValuesIdentifier) ?? NSObject.ArbitraryValues()
 		values.allValues[key] = value
 		self.setAssociatedValue(key: __arbitraryValuesIdentifier, value: values)
 	}
@@ -71,7 +71,7 @@ internal extension NSObject {
 	/// - Parameter key: The value's key
 	/// - Returns: The value, or nil if it couldn't be found
 	func getArbitraryValue<T: Any>(forKey key: String) -> T? {
-		if let values: NSView.Values = getAssociatedValue(key: __arbitraryValuesIdentifier) {
+		if let values: NSObject.ArbitraryValues = getAssociatedValue(key: __arbitraryValuesIdentifier) {
 			return values.allValues[key] as? T
 		}
 		return nil
@@ -82,7 +82,7 @@ internal extension NSObject {
 	///
 	/// If `key` doesn't exist this function does nothing
 	func removeArbitraryValue(forKey key: String) {
-		if let values: NSView.Values = getAssociatedValue(key: __arbitraryValuesIdentifier) {
+		if let values: NSObject.ArbitraryValues = getAssociatedValue(key: __arbitraryValuesIdentifier) {
 			values.allValues.removeValue(forKey: key)
 		}
 	}
