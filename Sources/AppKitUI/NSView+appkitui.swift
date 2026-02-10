@@ -56,6 +56,14 @@ public extension NSView {
 		self.content(layoutStyle: layoutStyle, content: builder())
 	}
 
+	/// Create a view with empty content
+	///
+	/// Useful when the content is automatically generated
+	convenience init(layoutStyle: LayoutStyle, builder: () -> Void) {
+		self.init()
+		self.translatesAutoresizingMaskIntoConstraints = false
+	}
+
 	/// Create a view specifying the child subviews
 	/// - Parameters:
 	///   - subViewsBuilder: The block to call to retrieve the content

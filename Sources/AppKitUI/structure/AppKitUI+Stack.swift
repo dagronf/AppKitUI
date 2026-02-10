@@ -41,6 +41,31 @@ public func VStack(
 	NSStackView(orientation: .vertical, alignment: alignment, spacing: spacing, gravity: gravity, builder: builder)
 }
 
+/// Create a vertical stack with empty content
+/// - Parameters:
+///   - alignment: The view alignment within the stack view
+///   - spacing: The spacing
+///   - gravity: The gravity to apply to ALL elements in the stack.
+///
+/// Useful when the stack's content is dynamically generated (eg. within a for loop) and the result can be empty
+@MainActor @inlinable
+public func VStack(
+	alignment: NSLayoutConstraint.Attribute? = nil,
+	spacing: Double? = nil,
+	gravity: NSStackView.Gravity? = nil,
+	@NSViewsBuilder builder: () -> Void
+) -> NSStackView {
+	NSStackView(
+		orientation: .vertical,
+		alignment: alignment,
+		spacing: spacing,
+		gravity: gravity,
+		builder: { [NSView]() }
+	)
+}
+
+// MARK: HStack
+
 /// Create a horizontal stack
 /// - Parameters:
 ///   - alignment: The view alignment within the stack view
@@ -59,4 +84,27 @@ public func HStack(
 	@NSViewsBuilder builder: () -> [NSView]
 ) -> NSStackView {
 	NSStackView(orientation: .horizontal, alignment: alignment, spacing: spacing, gravity: gravity, builder: builder)
+}
+
+/// Create a horizontal stack with no content
+/// - Parameters:
+///   - alignment: The view alignment within the stack view
+///   - spacing: The spacing
+///   - gravity: The gravity to apply to ALL elements in the stack.
+///
+/// Useful when the stack's content is dynamically generated (eg. within a for loop) and the result can be empty
+@MainActor @inlinable
+public func HStack(
+	alignment: NSLayoutConstraint.Attribute? = nil,
+	spacing: Double? = nil,
+	gravity: NSStackView.Gravity? = nil,
+	@NSViewsBuilder builder: () -> Void
+) -> NSStackView {
+	NSStackView(
+		orientation: .horizontal,
+		alignment: alignment,
+		spacing: spacing,
+		gravity: gravity,
+		builder: { [NSView]() }
+	)
 }
