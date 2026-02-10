@@ -65,6 +65,15 @@ public extension NSMenuItem {
 		return self
 	}
 
+	/// Set the menu item's attributed title
+	/// - Parameter title: The title
+	/// - Returns: self
+	@discardableResult @inlinable
+	func attributedTitle(_ title: NSAttributedString) -> Self {
+		self.attributedTitle = title
+		return self
+	}
+
 	/// The menu item's image
 	/// - Parameter image: The image
 	/// - Returns: self
@@ -142,6 +151,33 @@ public extension NSMenuItem {
 	func badge(_ badge: NSMenuItemBadge?) -> Self {
 		self.badge = badge
 		return self
+	}
+}
+
+// MARK: - Section Header
+
+extension NSMenuItem {
+	/// Create a menu item section header
+	/// - Parameter title: The title for the header
+	/// - Returns: a new NSMenuItem
+	@MainActor
+	public static func sectionHeader(_ title: String) -> NSMenuItem {
+		if #available(macOS 14.0, *) {
+			return NSMenuItem.sectionHeader(title: title)
+		} else {
+			return Self.sectionHeaderLegacy(title)
+		}
+	}
+
+	/// Create a section header for legacy macOS (< 14.0)
+	@MainActor
+	static func sectionHeaderLegacy(_ title: String) -> NSMenuItem {
+		let menuFont = NSFont.systemSmall.weight(.semibold)
+		let atitle = NSAttributedString(string: title, attributes: [.font: menuFont])
+		return NSMenuItem()
+			.attributedTitle(atitle)
+			.isEnabled(false)
+			.onAction { _ in }
 	}
 }
 

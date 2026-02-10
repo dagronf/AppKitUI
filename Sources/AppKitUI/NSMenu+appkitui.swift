@@ -116,11 +116,12 @@ private extension NSMenu {
 
 @available(macOS 14, *)
 #Preview("default") {
-	let selected = Bind(2)
+	let selected = Bind(4)
 	VStack {
 		NSPopUpButton()
 			.menu(
 				NSMenu(title: "title") {
+					NSMenuItem.sectionHeader("First Section")
 					NSMenuItem(title: "zero")
 						.image(systemSymbolName: "0.circle")
 						.onAction { _ in Swift.print("zero") }
@@ -128,6 +129,7 @@ private extension NSMenu {
 						.image(systemSymbolName: "1.circle")
 						.onAction { _ in Swift.print("one") }
 						.isEnabled(false)
+					NSMenuItem.sectionHeader("Second Section")
 					NSMenuItem(title: "two")
 						.image(systemSymbolName: "2.circle")
 						.onAction { _ in Swift.print("two") }
@@ -135,10 +137,16 @@ private extension NSMenu {
 						.image(systemSymbolName: "3.circle")
 						.badge(.alerts(count: 2))
 						.onAction { _ in Swift.print("three") }
+					NSMenuItem.sectionHeader("Third Section")
 					NSMenuItem(title: "Wheeee!") {
 						NSMenuItem(title: "eight")
 							.onAction { _ in Swift.print("eight") }
 					}
+
+					NSMenuItem.separator()
+
+					NSMenuItem.sectionHeader("Modern section header")
+					NSMenuItem.sectionHeaderLegacy("Modern legacy header")
 				}
 				.onMenuWillAppear { menu in
 					Swift.print("Menu will appear")
