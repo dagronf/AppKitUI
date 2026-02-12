@@ -54,6 +54,7 @@ class Model {
 			ImageViewBasicPane(),
 			PageControlPane(),
 			GlassExamplePane(),
+			MenuPane(),
 		]
 		if #available(macOS 11, *) {
 			p.append(SwitchPane())
