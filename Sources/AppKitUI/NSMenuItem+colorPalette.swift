@@ -22,7 +22,7 @@ import os.log
 
 @available(macOS 14.0, *)
 @MainActor
-public extension NSMenuItem {
+extension NSMenuItem {
 	/// Creates a palette style menu displaying user-selectable color tags that tint using the specified array of colors.
 	/// - Parameters:
 	///   - colors: The display colors for the menu items.

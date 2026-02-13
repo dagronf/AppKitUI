@@ -24,49 +24,123 @@ class MenuPane: Pane {
 	override func title() -> String { "Menu examples" }
 	@MainActor
 	override func make(model: Model) -> NSView {
-		
-		if #available(macOS 14.0, *) {
-			let selected = Bind(Set(arrayLiteral: 2)) { n in Swift.print(".binding: \(n)") }
-			let selected2 = Bind(Set<Int>()) { n in Swift.print(".binding2: \(n)") }
-
-			return NSView(layoutStyle: .centered) {
-				VStack {
-					HStack {
-						NSPopUpButton()
-							.menu(
-								NSMenu(title: "title") {
-									NSMenuItem(title: "Color palette menu item examples")
-									NSMenuItem.sectionHeader("Multiple selection")
-									NSMenuItem.colorPalette([.systemRed, .systemGreen, .systemBlue, .systemYellow])
-										.selection(selected)
-										.onSelectionChange { newSelection in
-											model.log("First palette changed selection to \(newSelection)")
-										}
-
-									NSMenuItem.sectionHeader("Single selection")
-
-									NSMenuItem.colorPalette([.systemRed, .systemGreen, .systemBlue, .systemYellow], selectionMode: .selectOne)
-										.onStateImage(NSImage(systemSymbolName: "lightswitch.on")!)
-										.offStateImage(NSImage(systemSymbolName: "lightswitch.off")!)
-										.selection(selected2)
-										.onSelectionChange { newSelection in
-											model.log("Second palette changed selection to \(newSelection)")
-										}
-								}
-							)
-						NSButton(title: "Reset selection") { _ in
-							selected.wrappedValue = Set()
-							selected2.wrappedValue = Set()
-						}
-						.isEnabled(selected.oneWayTransform { $0.count > 0 } )
-					}
-				}
+		NSView(layoutStyle: .centered) {
+			VStack(spacing: 12) {
+				makeColorPaletteMenuItemSingleSelection(model: model)
+				makeColorPaletteMenuItemMultipleSelection(model: model)
+				HDivider()
+				makeViewMenuItem(model: model)
 			}
-		}
-		else {
-			return NSView.empty
+			.equalWidths(["popup1", "popup2"])
 		}
 	}
+}
+
+@MainActor
+func makeColorPaletteMenuItemSingleSelection(model: Model) -> NSView {
+	if #available(macOS 14.0, *) {
+		let selected = Bind(Set<Int>()) { n in Swift.print(".binding: \(n)") }
+		return HStack {
+			NSPopUpButton()
+				.menu(
+					NSMenu(title: "title") {
+						NSMenuItem(title: "Single select color")
+						NSMenuItem.sectionHeader("Single selection")
+
+						NSMenuItem.colorPalette([.systemRed, .systemGreen, .systemBlue, .systemYellow], selectionMode: .selectOne)
+							.onStateImage(NSImage(systemSymbolName: "lightswitch.on")!)
+							.offStateImage(NSImage(systemSymbolName: "lightswitch.off")!)
+							.selection(selected)
+							.onSelectionChange { newSelection in
+								model.log("Second palette changed selection to \(newSelection)")
+							}
+					}
+				)
+				.identifier("popup1")
+
+			NSTextField(content: selected.oneWayTransform { "\($0)" })
+				.font(.monospaced)
+				.width(150)
+
+			NSButton(title: "Reset") { _ in
+				selected.wrappedValue = Set()
+			}
+		}
+	}
+	else {
+		return NSView.empty
+	}
+}
+
+@MainActor
+func makeColorPaletteMenuItemMultipleSelection(model: Model) -> NSView {
+	if #available(macOS 14.0, *) {
+		let selected = Bind(Set(arrayLiteral: 2)) { n in Swift.print(".binding: \(n)") }
+		return HStack {
+			NSPopUpButton()
+				.menu(
+					NSMenu(title: "title") {
+						NSMenuItem(title: "Multiple select color")
+						NSMenuItem.sectionHeader("Multiple selection")
+						NSMenuItem.colorPalette([.systemRed, .systemGreen, .systemBlue, .systemYellow])
+							.selection(selected)
+							.onSelectionChange { newSelection in
+								model.log("First palette changed selection to \(newSelection)")
+							}
+					}
+				)
+				.identifier("popup2")
+
+			NSTextField(content: selected.oneWayTransform { "\($0)" })
+				.font(.monospaced)
+				.width(150)
+
+			NSButton(title: "Reset") { _ in
+				selected.wrappedValue = Set()
+			}
+		}
+	}
+	else {
+		return NSView.empty
+	}
+}
+
+@MainActor
+func makeViewMenuItem(model: Model) -> NSView {
+	let val = Bind(0.33)
+	let color = Bind(NSColor(hue: val.wrappedValue, saturation: 1, brightness: 1, alpha: 1))
+	return NSPopUpButton()
+		.menu(
+			NSMenu(title: "title") {
+				NSMenuItem(title: "Custom hue")
+				NSMenuItem.separator()
+				NSMenuItem.view {
+					HStack {
+						NSTextField(label: "Hue:")
+							.compressionResistancePriority(.required, for: .horizontal)
+						Rectangle(cornerRadius: 4)
+							.frame(dimension: 18)
+							.fill(color: color)
+							.shadow(offset: CGSize(width: 1, height: -1), color: .black.alpha(0.6), blurRadius: 0.5)
+
+						NSSlider(val, range: 0.0 ... 1.0)
+							.numberOfTickMarks(9, allowsTickMarkValuesOnly: true)
+							.tickMarkPosition(.below)
+							.onChange { newValue in
+								color.wrappedValue = NSColor(hue: newValue, saturation: 1, brightness: 1, alpha: 1)
+							}
+							.controlSize(.small)
+							.width(120, priority: .defaultHigh)
+					}
+					.padding(top: 4, left: 24, bottom: 4, right: 20)
+				}
+				NSMenuItem.separator()
+				NSMenuItem(title: "Something else")
+					.onAction { _ in
+						Swift.print("Selected 'Something else'")
+					}
+			}
+		)
 }
 
 #if DEBUG
