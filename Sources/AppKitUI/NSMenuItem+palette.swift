@@ -29,12 +29,12 @@ extension NSMenuItem {
 	///   - selectionMode: The selection mode for items in the palette
 	///   - template: The image the system displays for the menu items.
 	@inlinable
-	public static func colorPalette(
+	public static func palette(
 		_ colors: [NSColor],
 		selectionMode: NSMenu.SelectionMode = .selectAny,
 		template: NSImage? = nil
-	) -> NSMenuItemColorPalette {
-		NSMenuItemColorPalette(colors: colors, selectionMode: selectionMode, template: template)
+	) -> NSMenuItemPalette {
+		NSMenuItemPalette(colors: colors, selectionMode: selectionMode, template: template)
 	}
 
 	/// Creates a palette style menu displaying user-selectable color tags that tint using the specified array of colors.
@@ -43,22 +43,34 @@ extension NSMenuItem {
 	///   - selectionMode: The selection mode for items in the palette
 	///   - template: The image the system displays for the menu items.
 	@inlinable
-	public static func colorPalette(
-		_ items: [NSMenuItemColorPalette.Item],
+	public static func palette(
+		_ items: [NSMenuItemPalette.ColorItem],
 		selectionMode: NSMenu.SelectionMode = .selectAny,
 		template: NSImage? = nil
-	) -> NSMenuItemColorPalette {
-		NSMenuItemColorPalette(items, selectionMode: selectionMode, template: template)
+	) -> NSMenuItemPalette {
+		NSMenuItemPalette(items, selectionMode: selectionMode, template: template)
+	}
+
+	/// Creates a palette style menu displaying user-selectable color tags that tint using the specified array of colors.
+	/// - Parameters:
+	///   - icons: The display colors for the menu items.
+	///   - selectionMode: The selection mode for items in the palette
+	@inlinable
+	public static func palette(
+		_ icons: [NSMenuItemPalette.IconItem],
+		selectionMode: NSMenu.SelectionMode = .selectAny
+	) -> NSMenuItemPalette {
+		NSMenuItemPalette(icons, selectionMode: selectionMode)
 	}
 }
 
 /// A menu item that contains a selectable color palette
 @available(macOS 14.0, *)
 @MainActor
-public class NSMenuItemColorPalette: NSMenuItem {
+public class NSMenuItemPalette: NSMenuItem {
 
 	/// An item within a color palette
-	public struct Item {
+	public struct ColorItem {
 		let title: String
 		let color: NSColor
 
@@ -66,9 +78,34 @@ public class NSMenuItemColorPalette: NSMenuItem {
 		/// - Parameters:
 		///   - color: The color
 		///   - title: The title
-		public init(_ color: NSColor, _ title: String = "") {
+		public init(_ color: NSColor, title: String = "") {
 			self.title = title
 			self.color = color.makeCopy()
+		}
+
+		@inlinable
+		public static func color(_ color: NSColor, title: String = "") -> ColorItem {
+			ColorItem(color, title: title)
+		}
+	}
+
+	/// An icon within the palette
+	public struct IconItem {
+		let title: String
+		let image: NSImage
+
+		/// Create a color palette item
+		/// - Parameters:
+		///   - color: The color
+		///   - title: The title
+		public init(_ image: NSImage, title: String = "") {
+			self.title = title
+			self.image = image.makeCopy()
+		}
+
+		@inlinable
+		public static func icon(_ image: NSImage, title: String = "") -> IconItem {
+			IconItem(image, title: title)
 		}
 	}
 
@@ -82,7 +119,7 @@ public class NSMenuItemColorPalette: NSMenuItem {
 		selectionMode: NSMenu.SelectionMode = .selectAny,
 		template: NSImage? = nil
 	) {
-		self.init(colors.map { NSMenuItemColorPalette.Item($0) }, selectionMode: selectionMode, template: template)
+		self.init(colors.map { NSMenuItemPalette.ColorItem($0) }, selectionMode: selectionMode, template: template)
 	}
 
 	/// Creates a palette style menu displaying user-selectable color tags that tint using the specified array of colors.
@@ -91,7 +128,7 @@ public class NSMenuItemColorPalette: NSMenuItem {
 	///   - selectionMode: The selection mode for items in the palette
 	///   - template: The image the system displays for the menu items.
 	public init(
-		_ items: [NSMenuItemColorPalette.Item],
+		_ items: [NSMenuItemPalette.ColorItem],
 		selectionMode: NSMenu.SelectionMode = .selectAny,
 		template: NSImage? = nil
 	) {
@@ -103,29 +140,56 @@ public class NSMenuItemColorPalette: NSMenuItem {
 			titles: items.map { $0.title },
 			template: template,
 			onSelectionChange: { @MainActor [weak self] menu in
-				self?.onSelectionChange(menu)
+				self?.userChangedSelection(menu)
 			}
 		)
 		paletteMenu.selectionMode = selectionMode
 
 		self.submenu = paletteMenu
 	}
-	
+
+	/// Creates a palette style menu displaying user-selectable color tags that tint using the specified array of colors.
+	/// - Parameters:
+	///   - icons: An array of icon images
+	///   - selectionMode: The selection mode for items in the palette
+	public init(
+		_ icons: [NSMenuItemPalette.IconItem],
+		selectionMode: NSMenu.SelectionMode = .selectAny
+	) {
+
+		super.init(title: "", action: nil, keyEquivalent: "")
+
+		let items = icons.map {
+			let item = NSMenuItem(title: $0.title, action: #selector(userChangedSelection(_:)), keyEquivalent: "")
+			item.target = self
+			item.image = $0.image.makeCopy()
+			return item
+		}
+
+		let paletteMenu = NSMenu(title: "", items: items)
+		paletteMenu.presentationStyle = .palette
+		paletteMenu.selectionMode = selectionMode
+		self.submenu = paletteMenu
+	}
+
+
+
+
 	required init(coder: NSCoder) {
 		fatalError("init(coder:) has not been implemented")
 	}
 	
 	deinit {
-		os_log("deinit: NSMenuItemColorPalette", log: logger, type: .debug)
+		os_log("deinit: NSMenuItemPalette", log: logger, type: .debug)
 	}
 
 	// The palette menu
 	private var paletteMenu: NSMenu { self.submenu! }
-	// The current selections in the color palette
+	// The selected indexes in the palette
 	private var currentSelectionIndexes: Set<Int> {
-		let indexes = self.paletteMenu.selectedItems
-			.map { self.paletteMenu.index(of: $0) }
-			.filter { $0 >= 0 }
+		let indexes = self.paletteMenu.items
+			.enumerated()
+			.compactMap { $0.element.state == .on ? $0.offset : nil }
 		return Set(indexes)
 	}
 	// Return the menu items at the specified index(es)
@@ -140,7 +204,7 @@ public class NSMenuItemColorPalette: NSMenuItem {
 // MARK: - Modifiers
 
 @available(macOS 14.0, *)
-@MainActor extension NSMenuItemColorPalette {
+@MainActor extension NSMenuItemPalette {
 
 	/// The selection mode for the menu item
 	@discardableResult
@@ -167,7 +231,7 @@ public class NSMenuItemColorPalette: NSMenuItem {
 // MARK: - Actions
 
 @available(macOS 14.0, *)
-@MainActor extension NSMenuItemColorPalette {
+@MainActor extension NSMenuItemPalette {
 	/// A callback block for when the selection changes
 	/// - Parameter block: The block to call
 	/// - Returns: self
@@ -181,8 +245,8 @@ public class NSMenuItemColorPalette: NSMenuItem {
 // MARK: - Bindings
 
 @available(macOS 14.0, *)
-@MainActor extension NSMenuItemColorPalette {
-	/// Bind the color palette selection
+@MainActor extension NSMenuItemPalette {
+	/// Bind the selection
 	/// - Parameter selection: The selection binding
 	/// - Returns: self
 	@discardableResult
@@ -190,22 +254,27 @@ public class NSMenuItemColorPalette: NSMenuItem {
 		self.selectionBinding = selection
 
 		selection.register(self) { @MainActor [weak self] newSelections in
-			guard let `self` = self else { return }
-			if newSelections == self.currentSelectionIndexes { return }
-			let sels = self.paletteMenu.items
-				.enumerated()
-				.filter { newSelections.contains($0.offset) }
-				.map { $0.element }
-			self.paletteMenu.selectedItems = sels
+			guard let `self` = self, newSelections != self.currentSelectionIndexes else {
+				return
+			}
+
+			// Select the indexes in the menu
+			self.selectIndexes(newSelections)
 
 			// If the binding changes from _outside_ the control (eg. a reset button sets the selection to empty),
 			// make sure we reflect this change to the user's `onSelectionChange` callback
 			self.onSelectionChangeBlock?(newSelections)
 		}
 
-		self.paletteMenu.selectedItems = self.items(at: selection.wrappedValue)
+		self.selectIndexes(selection.wrappedValue)
 
 		return self
+	}
+
+	private func selectIndexes(_ indexes: Set<Int>) {
+		self.paletteMenu.items.enumerated().forEach { item in
+			item.element.state = indexes.contains(item.offset) ? .on : .off
+		}
 	}
 }
 
@@ -213,9 +282,9 @@ public class NSMenuItemColorPalette: NSMenuItem {
 
 @available(macOS 14.0, *)
 @MainActor
-extension NSMenuItemColorPalette {
+extension NSMenuItemPalette {
 	// Called when the _user_ changes the selection via the control
-	private func onSelectionChange(_ menu: NSMenu) {
+	@objc private func userChangedSelection(_ menu: NSMenu) {
 		// Get the new selection from the control
 		let selection = self.currentSelectionIndexes
 
@@ -232,25 +301,28 @@ extension NSMenuItemColorPalette {
 #if DEBUG
 
 @available(macOS 14, *)
-#Preview("basic palette") {
-	let selected = Bind(Set(arrayLiteral: 2)) { n in Swift.print(".binding: \(n)") }
+#Preview("color palette") {
+	let selected = Bind(Set([2])) { n in Swift.print(".binding: \(n)") }
 	let selected2 = Bind(Set<Int>()) { n in Swift.print(".binding2: \(n)") }
+	let selected3 = Bind(Set<Int>([3, 2])) { n in Swift.print(".binding3: \(n)") }
 	VStack {
 		HStack {
 			NSPopUpButton()
 				.menu(
 					NSMenu(title: "title") {
-						NSMenuItem(title: "Select multiple items")
+						NSMenuItem(title: "Menu palette items")
 
-						NSMenuItemColorPalette(colors: [.systemRed, .systemGreen, .systemBlue, .systemBrown, .black, .white])
+						NSMenuItem.sectionHeader(title: "Multiple selection")
+
+						NSMenuItem.palette([.systemRed, .systemGreen, .systemBlue, .systemBrown, .black, .white])
 							.selection(selected)
 							.onSelectionChange { newSelection in
 								Swift.print(".onSelectionChange: \(newSelection)")
 							}
 
-						NSMenuItem(title: "Select a single item")
+						NSMenuItem.sectionHeader(title: "Single selection")
 
-						NSMenuItem.colorPalette(
+						NSMenuItem.palette(
 							[.systemRed, .systemGreen, .systemBlue, .systemBrown, .black, .white],
 							template: NSImage(systemSymbolName: "lightbulb.fill")!
 						)
@@ -260,19 +332,21 @@ extension NSMenuItemColorPalette {
 							Swift.print(".onSelectionChange2: \(newSelection)")
 						}
 
-						NSMenuItem(title: "Fourth one")
+						NSMenuItem.sectionHeader(title: "Multiple with custom selection")
 
-						NSMenuItem.colorPalette([.systemRed, .systemGreen, .systemBlue, .systemBrown, .black, .white])
-							.onStateImage(NSImage(systemSymbolName: "lightswitch.on")!)
-							.offStateImage(NSImage(systemSymbolName: "lightswitch.off")!)
-							.selection(selected2)
+						NSMenuItem.palette([.systemRed, .systemGreen, .systemBlue, .systemBrown, .black, .white])
+							.onStateImage(NSImage(systemSymbolName: "circle.fill")!)
+							.offStateImage(NSImage(systemSymbolName: "circle")!)
+							.selection(selected3)
 							.onSelectionChange { newSelection in
-								Swift.print(".onSelectionChange2: \(newSelection)")
+								Swift.print(".onSelectionChange3: \(newSelection)")
 							}
 					}
 				)
 			NSButton(title: "Reset selection") { _ in
-				selected.wrappedValue = Set()
+				selected.wrappedValue = Set(arrayLiteral: 2)
+				selected2.wrappedValue = Set()
+				selected3.wrappedValue = Set([3, 2])
 			}
 			.isEnabled(selected.oneWayTransform { $0.count > 0 } )
 		}
@@ -280,8 +354,66 @@ extension NSMenuItemColorPalette {
 }
 
 @available(macOS 14, *)
-#Preview("color palette") {
+#Preview("icon palette") {
 	VStack {
+		let allIcons: [NSMenuItemPalette.IconItem] = [
+			.icon(NSImage(systemSymbolName: "figure.barre", accessibilityDescription: "Barre")!.isTemplate(true), title: "Barre"),
+			.icon(NSImage(systemSymbolName: "figure.american.football", accessibilityDescription: "American Football")!.isTemplate(true), title: "American Football"),
+			.icon(NSImage(systemSymbolName: "figure.indoor.soccer", accessibilityDescription: "Indoor Soccer")!.isTemplate(true), title: "Indoor Soccer"),
+			.icon(NSImage(systemSymbolName: "figure.fishing", accessibilityDescription: "Fishing")!.isTemplate(true), title: "Fishing"),
+			.icon(NSImage(systemSymbolName: "figure.roll", accessibilityDescription: "Wheelchair Soccer")!.isTemplate(true), title: "Wheelchair Soccer"),
+		]
+
+		var selectedImage: NSImage? {
+			if let s = selected.wrappedValue.first {
+				return allIcons[s].image
+			}
+			return nil
+		}
+
+		let selected = Bind(Set([1])) { n in Swift.print(".binding: \(n)") }
+		let selectedImageBinding = Bind<NSImage?>(selectedImage)
+
+		HStack {
+			NSPopUpButton()
+				.menu(
+					NSMenu(title: "title") {
+						NSMenuItem(title: "Select single item")
+						NSMenuItem.palette(allIcons, selectionMode: .selectOne)
+							.selection(selected)
+							.onSelectionChange { selected in
+								if let s = selected.first {
+									selectedImageBinding.wrappedValue = allIcons[s].image
+								}
+							}
+					}
+				)
+			NSImageView(image: selectedImageBinding)
+				.frame(dimension: 32)
+				.imageScaling(.scaleProportionallyUpOrDown)
+				.debugFrame()
+
+			NSButton(title: "Reset") { _ in
+				selected.wrappedValue = Set([1])
+			}
+		}
+
+		let selected2 = Bind(Set([1, 3])) { n in Swift.print(".binding2: \(n)") }
+
+		HStack {
+			NSButton(title: "Multiple select")
+				.onActionMenu(
+					NSMenu(title: "title") {
+						NSMenuItem.sectionHeader("Select multiple items")
+						NSMenuItem.palette(allIcons, selectionMode: .selectAny)
+							.selection(selected2)
+					}
+				)
+
+			NSButton(title: "Reset") { _ in
+				selected2.wrappedValue = Set([1, 3])
+			}
+		}
 	}
 }
 

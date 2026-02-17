@@ -47,7 +47,7 @@ func makeColorPaletteMenuItemSingleSelection(model: Model) -> NSView {
 						NSMenuItem(title: "Single select color")
 						NSMenuItem.sectionHeader("Single selection")
 
-						NSMenuItem.colorPalette([.systemRed, .systemGreen, .systemBlue, .systemYellow], selectionMode: .selectOne)
+						NSMenuItem.palette([.systemRed, .systemGreen, .systemBlue, .systemYellow], selectionMode: .selectOne)
 							.onStateImage(NSImage(systemSymbolName: "lightswitch.on")!)
 							.offStateImage(NSImage(systemSymbolName: "lightswitch.off")!)
 							.selection(selected)
@@ -82,7 +82,7 @@ func makeColorPaletteMenuItemMultipleSelection(model: Model) -> NSView {
 					NSMenu(title: "title") {
 						NSMenuItem(title: "Multiple select color")
 						NSMenuItem.sectionHeader("Multiple selection")
-						NSMenuItem.colorPalette([.systemRed, .systemGreen, .systemBlue, .systemYellow])
+						NSMenuItem.palette([.systemRed, .systemGreen, .systemBlue, .systemYellow])
 							.selection(selected)
 							.onSelectionChange { newSelection in
 								model.log("First palette changed selection to \(newSelection)")
@@ -131,6 +131,14 @@ func makeViewMenuItem(model: Model) -> NSView {
 							}
 							.controlSize(.small)
 							.width(120, priority: .defaultHigh)
+
+						NSButton.image(NSImage(named: NSImage.refreshTemplateName)!)
+							.bezelStyle(.circular)
+							.isBordered(true)
+							.onAction { _ in
+								val.wrappedValue = 0.33
+								color.wrappedValue = NSColor(hue: 0.33, saturation: 1, brightness: 1, alpha: 1)
+							}
 					}
 					.padding(top: 4, left: 24, bottom: 4, right: 20)
 				}
