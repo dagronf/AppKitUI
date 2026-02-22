@@ -20,20 +20,30 @@
 import AppKit
 import os.log
 
-/// A view that displays an ellipse
+/// A view that displays an circle in the center of the view
 @MainActor
-public class Ellipse: AUIShape {
-	/// Draw an ellipse shape
+public class Circle: AUIShape {
+	/// Draw an circle shape
 	/// - Parameter bounds: The bounds to draw the shape
 	/// - Returns: a path that represents the shape
 	public override func shape(bounds: CGRect) -> CGPath {
 		let inset = self.strokeLineWidth / 2
 		let destination = bounds.insetBy(dx: inset, dy: inset)
-		return CGPath(ellipseIn: destination, transform: nil)
+
+		let sz = min(destination.height, destination.width)
+
+		let rr = CGRect(
+			x: ((destination.width - sz) / 2.0) + inset,
+			y: ((destination.height - sz) / 2.0) + inset,
+			width: sz,
+			height: sz
+		)
+
+		return CGPath(ellipseIn: rr, transform: nil)
 	}
 
 	deinit {
-		os_log("deinit: AUIShape.Ellipse", log: logger, type: .debug)
+		os_log("deinit: AUIShape.Circle", log: logger, type: .debug)
 	}
 }
 
@@ -44,22 +54,6 @@ public class Ellipse: AUIShape {
 @available(macOS 14, *)
 #Preview("Basic") {
 	VStack {
-		HStack {
-			Ellipse()
-				.fill(color: .systemRed)
-				.frame(width: 50, height: 50)
-			Ellipse()
-				.fill(color: .systemRed)
-				.stroke(.systemBlue, lineWidth: 2)
-				.frame(width: 50, height: 50)
-			Ellipse()
-				.fill(color: .systemOrange)
-				.frame(width: 150, height: 50)
-			Ellipse()
-				.fill(color: .systemYellow)
-				.frame(width: 50, height: 150)
-		}
-
 		HStack {
 			Circle()
 				.fill(color: .systemPurple)
@@ -74,8 +68,20 @@ public class Ellipse: AUIShape {
 				.stroke(.textColor, lineWidth: 3)
 				.frame(width: 50, height: 100)
 		}
-		.debugFrames()
+
+		HStack {
+			Circle()
+				.fill(color: .systemBlue)
+				.frame(width: 100, height: 100)
+			Circle()
+				.fill(color: .systemBlue)
+				.frame(width: 80, height: 100)
+			Circle()
+				.fill(color: .systemBlue)
+				.frame(width: 120, height: 80)
+		}
 	}
+	.debugFrames()
 }
 
 #endif

@@ -382,6 +382,35 @@ class ShapesPane: Pane {
 							.frame(width: 250, height: 80)
 					}
 				)
+
+				HDivider()
+
+				HStack {
+					Capsule()
+						.frame(width: 100, height: 50)
+						.fill(.gradient(color: .systemPurple))
+						.inset(0)
+					Capsule()
+						.frame(width: 100, height: 50)
+						.fill(.gradient(color: .systemPurple))
+						.inset(5)
+					Capsule()
+						.frame(width: 100, height: 50)
+						.fill(.gradient(color: .systemPurple))
+						.inset(10)
+
+					ZStack {
+						Capsule()
+						.frame(width: 100, height: 50)
+						.fill(.gradient(color: .systemBrown))
+
+						Capsule()
+						.frame(width: 100, height: 50)
+						.fill(.gradient(color: .systemGreen))
+						.inset(15)
+					}
+				}
+				.debugFrames()
 			}
 			.padding()
 		}

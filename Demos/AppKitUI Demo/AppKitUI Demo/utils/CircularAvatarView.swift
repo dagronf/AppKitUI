@@ -18,6 +18,9 @@
 //
 
 import AppKit
+import AppKitUI
+
+// MARK: - AppKit Circular avatar view
 
 class CircularAvatarView: NSView {
 
@@ -225,7 +228,8 @@ class CircularAvatarView: NSView {
 	}
 }
 
-// MARK: - Convenience Extensions
+// MARK: Convenience Extensions
+
 extension CircularAvatarView {
 
 	/// Load image from file path
@@ -266,3 +270,33 @@ extension CircularAvatarView {
 		mainLayer.shadowOpacity = 0
 	}
 }
+
+// MARK: - Circular avatar view using AppKitUI
+
+@MainActor
+func CircularAvatar(image: Bind<NSImage?>, size: Double = 64) -> NSView {
+	ZStack {
+		Circle()
+			.fill(color: .windowBackgroundColor)
+			.shadow(offset: .init(width: 0, height: -2), color: .black.alpha(0.4), blurRadius: 4)
+			.frame(dimension: size)
+		AUIImage(image: image)
+			.frame(dimension: size)
+			.clipShape(Circle())
+		Circle()
+			.stroke(.textColor, lineWidth: 2)
+			.frame(dimension: size)
+		Circle()
+			.stroke(.textBackgroundColor, lineWidth: 0.5)
+			.frame(dimension: size - 4)
+	}
+}
+
+#if DEBUG
+@available(macOS 14, *)
+#Preview("Default") {
+	let image: Bind<NSImage?> = Bind(NSImage.sulley)
+	CircularAvatar(image: image, size: 128)
+}
+
+#endif

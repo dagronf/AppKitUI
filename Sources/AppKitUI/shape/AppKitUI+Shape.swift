@@ -60,6 +60,13 @@ public class AUIShape: NSView {
 		}
 	}
 
+	/// Set the inset from the bounds of the frame in which to draw the shape
+	public var shapeInset: Double = 0 {
+		didSet {
+			self.rebuild()
+		}
+	}
+
 	/// Create a shape with no fill or stoke
 	public init() {
 		super.init(frame: .zero)
@@ -110,6 +117,18 @@ public class AUIShape: NSView {
 	private var observer: NSKeyValueObservation?
 
 	private var showMarchingAnts: Bind<Bool>?
+}
+
+// MARK: - Modifiers
+
+@MainActor
+public extension AUIShape {
+	/// Set the inset when drawing the shape
+	@discardableResult @inlinable
+	func inset(_ inset: Double) -> Self {
+		self.shapeInset = inset
+		return self
+	}
 }
 
 // MARK: - Fill
@@ -283,7 +302,7 @@ extension AUIShape {
 		self.borderLayer?.removeFromSuperlayer()
 
 		self.shapeLayer.frame = self.bounds
-		self.shapeLayer.path = self.shape(bounds: self.bounds)
+		self.shapeLayer.path = self.shape(bounds: self.bounds.insetBy(dx: self.shapeInset, dy: self.shapeInset))
 		self.shapeLayer.fillColor = .black
 
 		// Update the colors to match the appearance

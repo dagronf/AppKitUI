@@ -26,6 +26,7 @@ class ImageViewBasicPane: Pane {
 	override func make(model: Model) -> NSView {
 		let image1 = NSImage(named: NSImage.bonjourName)!
 		let image2 = NSImage(named: NSImage.computerName)!
+		let sulley1: Bind<NSImage?> = Bind(NSImage.sulley)
 
 		let selected = Bind(1)
 		let image = Bind<NSImage?>(image1)
@@ -86,6 +87,22 @@ class ImageViewBasicPane: Pane {
 						}
 				}
 				.hugging(.init(10), for: .horizontal)
+			}
+			.huggingPriority(.init(10), for: .horizontal)
+
+			NSBox(title: "image clipping") {
+				HStack {
+					CircularAvatar(image: sulley1, size: 24)
+					CircularAvatar(image: sulley1, size: 48)
+					CircularAvatar(image: sulley1, size: 96)
+					CircularAvatar(image: sulley1, size: 128)
+						.onClickGesture {
+							NSSound.beep()
+						}
+				}
+				.hugging(.init(10), for: .horizontal)
+				.padding()
+				.debugFrames()
 			}
 			.huggingPriority(.init(10), for: .horizontal)
 		}

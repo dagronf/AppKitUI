@@ -28,7 +28,7 @@ import AppKit
 /// First item in the list is the _highest_ item in the zstack
 @MainActor
 public func ZStack(
-	padding: Double = 20,
+	padding: Double = 0,
 	@NSViewsBuilder builder: () -> [NSView]
 ) -> NSView {
 	let view = NSView()
