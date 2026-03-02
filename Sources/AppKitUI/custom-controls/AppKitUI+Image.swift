@@ -46,6 +46,7 @@ public class AUIImage: NSView {
 	public override var wantsUpdateLayer: Bool { true }
 
 	private var scale: Double = 1.0
+	private var animateScaleChanges: Bool = true
 
 	/// The layer that displays the image
 	private lazy var imageLayer: CALayer = {
@@ -121,7 +122,9 @@ public extension AUIImage {
 	@discardableResult
 	func scale(_ scale: Double) -> Self {
 		self.scale = scale
-		self.needsDisplay = true
+		withDisabledAnimations(self.animateScaleChanges == false) { @MainActor [weak self] in
+			self?.needsDisplay = true
+		}
 		return self
 	}
 }
@@ -150,10 +153,13 @@ public extension AUIImage {
 	}
 
 	/// Set the image scale
-	/// - Parameter value: The scale
+	/// - Parameters:
+	///  - value: The scale binding
+	///  - animateScaleChanges: If true, animates the scale change
 	/// - Returns: self
 	@discardableResult
-	func scale(_ value: Bind<Double>) -> Self {
+	func scale(_ value: Bind<Double>, animateScaleChanges: Bool = false) -> Self {
+		self.animateScaleChanges = animateScaleChanges
 		value.register(self) { @MainActor [weak self] newScale in
 			self?.scale(newScale)
 		}
@@ -275,17 +281,19 @@ private let image2 = NSImage(named: NSImage.computerName)!
 #Preview("image binding") {
 	let selected = Bind(1)
 	let image = Bind<NSImage?>(image1)
-	HStack {
-		AUIImage(image: image)
-			.frame(dimension: 48)
-			.padding(8)
-			.debugFrame()
-		AUIImage(image: image)
-			.aspectRatio(.fill)
-			.scale(0.8)
-			.frame(dimension: 128)
-			.padding(8)
-			.debugFrame()
+	VStack {
+		HStack {
+			AUIImage(image: image)
+				.frame(dimension: 48)
+				.padding(8)
+				.debugFrame()
+			AUIImage(image: image)
+				.aspectRatio(.fill)
+				.scale(0.8)
+				.frame(dimension: 128)
+				.padding(8)
+				.debugFrame()
+		}
 		NSSegmentedControl()
 			.segments(["none", "bonjour", "computer"])
 			.selectedIndex(selected)
@@ -346,17 +354,17 @@ private let image2 = NSImage(named: NSImage.computerName)!
 
 		HStack {
 			AUIImage(named: NSImage.colorPanelName)
-				.scale(scale)
+				.scale(scale, animateScaleChanges: true)
 				.aspectRatio(.fit)
 				.frame(dimension: 60)
 				.debugFrame(.systemCyan)
 			AUIImage(named: NSImage.colorPanelName)
-				.scale(scale)
+				.scale(scale, animateScaleChanges: true)
 				.aspectRatio(.fit)
 				.frame(width: 30, height: 60)
 				.debugFrame(.systemCyan)
 			AUIImage(named: NSImage.colorPanelName)
-				.scale(scale)
+				.scale(scale, animateScaleChanges: true)
 				.aspectRatio(.fit)
 				.frame(width: 80, height: 30)
 				.debugFrame(.systemCyan)
