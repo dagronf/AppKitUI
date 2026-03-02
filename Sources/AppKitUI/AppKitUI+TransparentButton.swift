@@ -65,3 +65,41 @@ public class AUITransparentButton: NSButton {
 
 	private var focusBoundsFn: (NSRect) -> NSBezierPath = { NSBezierPath(rect: $0) }
 }
+
+// MARK: - Previews
+
+#if DEBUG
+
+@available(macOS 14, *)
+#Preview("default") {
+	VStack {
+		HStack {
+			AUITransparentButton()
+				.frame(dimension: 32)
+				.onAction { state in
+					Swift.print("clicked!")
+				}
+				.debugFrame()
+
+			AUITransparentButton()
+				.focusRingBounds({ r in
+					NSBezierPath(roundedRect: r, xRadius: 16, yRadius: 16)
+				})
+				.onAction { state in
+					Swift.print("clicked wheeee!")
+				}
+				.overlay(
+					NSTextField(label: "Wheeee!")
+						.padding()
+				)
+				.background(
+					Rectangle(cornerRadius: 16)
+						.fill(color: NSColor.systemBlue)
+						.stroke(.systemBlue.darker(withLevel: 0.4), lineWidth: 3)
+				)
+			.debugFrame()
+		}
+	}
+}
+
+#endif

@@ -193,11 +193,12 @@ private extension List {
 		}
 		.debugFrame()
 
-		NSButton { _ in
+		NSButton(title: "Reverse order") { _ in
 			content.wrappedValue = content.wrappedValue.reversed()
 			selection.wrappedValue = 2
 		}
 	}
+	.padding()
 }
 
 #endif
