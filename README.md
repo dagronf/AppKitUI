@@ -302,7 +302,7 @@ Semantic system fonts let you specify fonts by role rather than point size.
 ```
 MIT License
 
-Copyright (c) 2025 Darren Ford
+Copyright (c) 2026 Darren Ford
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
