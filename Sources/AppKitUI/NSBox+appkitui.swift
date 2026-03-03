@@ -86,8 +86,13 @@ public extension NSBox {
 #Preview("default") {
 	VStack {
 		NSBox(title: "Great") {
-			NSButton.radioGroup()
-				.items(["one", "two", "three"])
+			VStack {
+				NSButton.radioGroup()
+					.items(["one", "two", "three"])
+				HDivider()
+				NSButton.radioGroup()
+					.items(["four", "five", "six"])
+			}
 		}
 		NSBox(title: "This is great and it is longer") {
 			NSButton.radioGroup()

@@ -121,3 +121,38 @@ public extension NSControl {
 		return self
 	}
 }
+
+// MARK: - Previews
+
+#if DEBUG
+
+@available(macOS 14, *)
+#Preview("multi-enable") {
+
+	let v1 = Bind(false)
+	let v2 = Bind(false)
+	let v3 = Bind(false)
+	NSView(layoutStyle: .centered) {
+		HStack {
+			AUISwitch()
+				.state(v1)
+			AUISwitch()
+				.state(v2)
+			AUISwitch()
+				.state(v3)
+			VDivider()
+			NSButton(title: "Multiple enable")
+				.isEnabled(v1)
+				.isEnabled(v2)
+				.isEnabled(v3)
+				.toolTip("This control is enabled only when all the toggles are on")
+			NSTextField(string: "Multi enable")
+				.width(100)
+				.isEnabled(v1)
+				.isEnabled(v2)
+				.isEnabled(v3)
+		}
+	}
+}
+
+#endif
