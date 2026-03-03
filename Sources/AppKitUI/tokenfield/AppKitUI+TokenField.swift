@@ -40,3 +40,60 @@ public class AUITokenField: NSTokenField {
 		 return NSMakeSize(width, height)
 	}
 }
+
+// MARK: - Previews
+
+#if DEBUG
+
+@available(macOS 14, *)
+#Preview("default") {
+	let tokenField = Bind<[String]>(["red", "green", "blue", "cyan", "magenta", "yellow", "mint", "orange", "brown", "white", "black"])
+	let tokenField3 = Bind<[String]>(["Australia", "Isle of Man", "Wallis & Futuna"])
+
+	VStack {
+		NSBox(title: "Single line, no wrapping") {
+			VStack {
+				NSTokenField(content: tokenField3)
+					.isScrollable(true)
+					.frame(width: 400)
+				HStack(alignment: .top) {
+					NSTextField(label: "Tokens:")
+						.font(.system.bold)
+					NSTextField(label: tokenField3.stringValue())
+						.huggingPriority(.init(1), for: .horizontal)
+						.compressionResistancePriority(.defaultLow, for: .horizontal)
+				}
+			}
+		}
+
+		NSBox(title: "Expand vertically to fit") {
+			VStack {
+				AUITokenField(content: tokenField)
+					.wraps(true)
+					.lineBreakMode(.byWordWrapping)
+					.truncatesLastVisibleLine(false)
+					.huggingPriority(.init(1), for: .horizontal)
+					.compressionResistancePriority(.defaultLow, for: .horizontal)
+					.frame(width: 400)
+				HStack(alignment: .top) {
+					NSTextField(label: "Tokens:")
+						.font(.system.bold)
+					NSTextField(label: tokenField.stringValue())
+						.huggingPriority(.init(1), for: .horizontal)
+						.compressionResistancePriority(.defaultLow, for: .horizontal)
+				}
+
+			}
+		}
+	}
+	.padding()
+
+	.onChange(tokenField) { newValue in
+		Swift.print("tokenField -> \(newValue)")
+	}
+	.onChange(tokenField3) { newValue in
+		Swift.print("tokenField3 -> \(newValue)")
+	}
+}
+
+#endif

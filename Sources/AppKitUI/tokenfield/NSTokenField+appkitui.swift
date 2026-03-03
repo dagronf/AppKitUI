@@ -20,7 +20,7 @@
 import AppKit
 import os.log
 
-/// A string-based Token Field that expands vertically to fit the content as needed
+/// A string-based Token Field
 @MainActor
 public extension NSTokenField {
 	/// Create a TokenField
@@ -195,7 +195,10 @@ fileprivate extension NSTokenField.Storage {
 	}
 }
 
+// MARK: - Previews
+
 #if DEBUG
+
 @available(macOS 14, *)
 #Preview("default") {
 	let tokenField = Bind<[String]>(["red", "green", "blue", "cyan", "magenta", "yellow"])
@@ -290,10 +293,11 @@ fileprivate extension NSTokenField.Storage {
 		.huggingPriority(.init(1), for: .horizontal)
 	}
 	.distribution(.fill)
+	.frame(width: 500)
 	.padding()
 }
 
-func allCountries() -> [String] {
+private func allCountries() -> [String] {
 	let bg = NSLocale.current as NSLocale
 	return NSLocale.isoCountryCodes.compactMap { bg.displayName(forKey: .countryCode, value: $0) }
 }
