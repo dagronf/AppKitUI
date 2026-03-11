@@ -649,7 +649,17 @@ public extension NSView {
 // MARK: - Storage
 
 /// Windowed content associated with a view (eg. alerts, sheets etc)
-protocol WindowedContentProtocol { }
+@MainActor
+protocol WindowedContentProtocol {
+	func willCloseWindowedContent()
+}
+
+@MainActor
+extension WindowedContentProtocol {
+	/// Called when the windowed content should close
+	func willCloseWindowedContent() {}
+}
+
 
 @MainActor
 extension NSView {
@@ -710,6 +720,9 @@ extension NSView {
 
 		deinit {
 			os_log("deinit: NSView.Storage", log: logger, type: .debug)
+			self.windowedContent.forEach { wc in
+				DispatchQueue.main.async { wc.willCloseWindowedContent() }
+			}
 			self.windowedContent = []
 			self.frameObservation = nil
 			self.frameChangeBlock = nil

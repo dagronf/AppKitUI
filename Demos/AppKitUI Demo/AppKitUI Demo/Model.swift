@@ -55,6 +55,7 @@ class Model {
 			PageControlPane(),
 			GlassExamplePane(),
 			MenuPane(),
+			WindowPane(),
 		]
 		if #available(macOS 11, *) {
 			p.append(SwitchPane())
