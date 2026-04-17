@@ -88,36 +88,6 @@ public extension NSTextField {
 	}
 }
 
-@MainActor
-private extension NSTextField {
-	/// Create a non-editable text field
-	@discardableResult
-	func label() -> NSTextField {
-		self
-			.isEditable(false)        // not editable
-			.isBezeled(false)         // no border
-			.drawsBackground(false)   // transparent background
-			.alignment(.natural)      // regular alignment
-	}
-
-	/// Crete a text field with a styled and clickable link
-	/// - Parameters:
-	///   - url: The destination URL
-	///   - title: The title to display
-	/// - Returns: A non-editable text field containing a link
-	@discardableResult
-	func link(url: URL, title: String? = nil) -> NSTextField {
-		let text = NSAttributedString(string: title ?? url.absoluteString, attributes: [
-			.link: url,
-			.underlineStyle: NSUnderlineStyle.single.rawValue
-		])
-		return self.label()
-			.isSelectable(true)
-			.allowsEditingTextAttributes(true)
-			.content(text)
-	}
-}
-
 // MARK: - Modifiers
 
 @MainActor
@@ -137,24 +107,6 @@ public extension NSTextField {
 	@discardableResult @inlinable
 	func content(_ str: NSAttributedString) -> Self {
 		self.attributedStringValue = str
-		return self
-	}
-
-	/// Set the placeholder text for the text field
-	/// - Parameter str: The string
-	/// - Returns: self
-	@discardableResult @inlinable
-	func placeholder(_ str: String) -> Self {
-		self.placeholderString = str
-		return self
-	}
-
-	/// Set the placeholder text for the text field
-	/// - Parameter str: The string
-	/// - Returns: self
-	@discardableResult @inlinable
-	func placeholder(_ str: NSAttributedString) -> Self {
-		self.placeholderAttributedString = str
 		return self
 	}
 
@@ -300,7 +252,114 @@ public extension NSTextField {
 	}
 }
 
+// MARK: Placeholders
+
+@MainActor
+public extension NSTextField {
+	/// Set the placeholder text for the text field
+	/// - Parameter str: The string
+	/// - Returns: self
+	@discardableResult @inlinable
+	func placeholder(_ str: String) -> Self {
+		self.placeholderString = str
+		return self
+	}
+
+	/// Set the placeholder text for the text field
+	/// - Parameter str: The string
+	/// - Returns: self
+	@discardableResult @inlinable
+	func placeholder(_ str: NSAttributedString) -> Self {
+		self.placeholderAttributedString = str
+		return self
+	}
+
+	/// The strings the text field displays when empty to help the user understand the
+	/// text field’s purpose (macOS 26.0)
+	/// - Parameter strings: The placeholder strings
+	/// - Returns: self
+	///
+	/// On earlier macOS versions, uses the first item in the array as a placeholder string
+	///
+	/// Thanks to https://mastodon.social/@marioguzman/116395835610391313
+	@discardableResult @inlinable
+	func placeholderStrings(_ strings: [String]) -> Self {
+		if #available(macOS 26.0, *) {
+			#if compiler(>=6.2)
+			self.placeholderStrings = strings
+			#else
+			self.placeholderString = strings.first
+			#endif
+		} else {
+			self.placeholderString = strings.first
+		}
+		return self
+	}
+
+	/// The attributed string the text field displays when empty to help the user understand the
+	/// text field’s purpose (macOS 26.0).
+	/// - Parameter strings: The placeholder strings
+	/// - Returns: self
+	///
+	/// On earlier macOS versions, uses the first item in the array as a placeholder string
+	///
+	/// Thanks to https://mastodon.social/@marioguzman/116395835610391313
+	@discardableResult @inlinable
+	func placeholderStrings(_ strings: [NSAttributedString]) -> Self {
+		if #available(macOS 26.0, *) {
+			#if compiler(>=6.2)
+			self.placeholderAttributedStrings = strings
+			#else
+			self.placeholderAttributedString = strings.first
+			#endif
+		} else {
+			self.placeholderAttributedString = strings.first
+		}
+		return self
+	}
+}
+
+// MARK: Custom text fields
+
+@MainActor
+private extension NSTextField {
+	/// Create a non-editable text field
+	@discardableResult
+	func label() -> NSTextField {
+		self
+			.isEditable(false)        // not editable
+			.isBezeled(false)         // no border
+			.drawsBackground(false)   // transparent background
+			.alignment(.natural)      // regular alignment
+	}
+
+	/// Crete a text field with a styled and clickable link
+	/// - Parameters:
+	///   - url: The destination URL
+	///   - title: The title to display
+	/// - Returns: A non-editable text field containing a link
+	@discardableResult
+	func link(url: URL, title: String? = nil) -> NSTextField {
+		let text = NSAttributedString(string: title ?? url.absoluteString, attributes: [
+			.link: url,
+			.underlineStyle: NSUnderlineStyle.single.rawValue
+		])
+		return self.label()
+			.isSelectable(true)
+			.allowsEditingTextAttributes(true)
+			.content(text)
+	}
+}
+
 // MARK: - Bindings
+
+@MainActor
+internal extension NSTextField {
+	/// Push the current binding string through to the control
+	func reflect() {
+		self.usingTextFieldStorage { $0.stringValue?.wrappedValue = self.stringValue }
+	}
+}
 
 @MainActor
 public extension NSTextField {
@@ -321,10 +380,6 @@ public extension NSTextField {
 		self.stringValue = str.wrappedValue
 
 		return self
-	}
-
-	internal func reflect() {
-		self.usingTextFieldStorage { $0.stringValue?.wrappedValue = self.stringValue }
 	}
 
 	/// Bind double content
